@@ -15,5 +15,6 @@ CONFIG += exceptions
 INCLUDEPATH += ../
 INCLUDEPATH += c:/Projects/qwt/include
 
+HEADERS     += ScopePoke.h
 SOURCES	+= main.cpp
 

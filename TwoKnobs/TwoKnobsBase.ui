@@ -1,0 +1,72 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>TwoKnobsBase</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>TwoKnobsBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>144</width>
+            <height>330</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>TwoKnobsBase</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="Knob">
+            <property name="name">
+                <cstring>_knobOne</cstring>
+            </property>
+        </widget>
+        <widget class="Knob">
+            <property name="name">
+                <cstring>_knobTwo</cstring>
+            </property>
+        </widget>
+    </vbox>
+</widget>
+<customwidgets>
+</customwidgets>
+<connections>
+    <connection>
+        <sender>_knobOne</sender>
+        <signal>valueChanged(double)</signal>
+        <receiver>TwoKnobsBase</receiver>
+        <slot>knobOneChangedSlot(double)</slot>
+    </connection>
+    <connection>
+        <sender>_knobTwo</sender>
+        <signal>valueChanged(double)</signal>
+        <receiver>TwoKnobsBase</receiver>
+        <slot>knobTwoChangedSlot(double)</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">qwt_knob.h</include>
+    <include location="local" impldecl="in implementation">Knob/Knob.h</include>
+    <include location="local" impldecl="in declaration">qwidgetplugin.h</include>
+</includes>
+<signals>
+    <signal>knobOneValueChanged(double)</signal>
+    <signal>knobTwoValueChanged(double)</signal>
+</signals>
+<slots>
+    <slot>knobOneChangedSlot(double)</slot>
+    <slot>knobTwoChangedSlot(double)</slot>
+</slots>
+<pixmapinproject/>
+<exportmacro>QT_WIDGET_PLUGIN_EXPORT</exportmacro>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>Knob/Knob.h</includehint>
+    <includehint>qwt_knob.h</includehint>
+    <includehint>Knob/Knob.h</includehint>
+    <includehint>qwt_knob.h</includehint>
+</includehints>
+</UI>

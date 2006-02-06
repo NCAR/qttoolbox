@@ -1,0 +1,85 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>TwoKnobsTest</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>TwoKnobsTest</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>179</width>
+            <height>459</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>TwoKnobsTest</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout4</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&lt;p align="center"&gt;&lt;h3&gt;This is a test of TwoKnobs.&lt;/h3&gt;
+&lt;br&gt;Turn the knobs, and the LCDs should change.&lt;/p&gt;</string>
+                    </property>
+                </widget>
+                <widget class="TwoKnobs">
+                    <property name="name">
+                        <cstring>myTwoKnobs</cstring>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout3</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>_numTwo</cstring>
+                            </property>
+                            <property name="text">
+                                <string>num two</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>_numOne</cstring>
+                            </property>
+                            <property name="text">
+                                <string>num one</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+    </vbox>
+</widget>
+<customwidgets>
+</customwidgets>
+<includes>
+    <include location="local" impldecl="in implementation">../TwoKnobs.h</include>
+</includes>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>TwoKnobs/TwoKnobs.h</includehint>
+    <includehint>Knob/Knob.h</includehint>
+    <includehint>Knob/Knob.h</includehint>
+</includehints>
+</UI>

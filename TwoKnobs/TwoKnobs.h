@@ -2,7 +2,6 @@
 #define TWOKNOBS_H
 
 #include "TwoKnobsBase.h"
-#include "TwoKnobsDLL.h"
 #include <string>
 
 /// A plugin widget which combines two Knob plugins. Signals

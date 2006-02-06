@@ -1,0 +1,44 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>ScopePlotBase</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>ScopePlotBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>781</width>
+            <height>641</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>ScopeBase</string>
+    </property>
+    <widget class="QwtPlot">
+        <property name="name">
+            <cstring>qwtPlot</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>20</y>
+                <width>721</width>
+                <height>601</height>
+            </rect>
+        </property>
+    </widget>
+</widget>
+<customwidgets>
+</customwidgets>
+<includes>
+    <include location="local" impldecl="in implementation">qwt_plot.h</include>
+</includes>
+<pixmapinproject/>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>qwt_plot.h</includehint>
+    <includehint>qwt_scale_widget.h</includehint>
+    <includehint>qwt_scale_widget.h</includehint>
+</includehints>
+</UI>

@@ -24,7 +24,6 @@ HEADERS     += ScopePlot.h
 
 SOURCES     += ScrollZoomer.cpp
 SOURCES     += ScrollBar.cpp
-SOURCES     += IncrementalPlot.cpp
 SOURCES	+= ScopePlot.cpp
 
 FORMS	      += ScopePlotBase.ui

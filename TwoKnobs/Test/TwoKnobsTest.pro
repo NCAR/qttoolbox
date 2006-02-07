@@ -13,6 +13,7 @@ CONFIG += warn_on
 CONFIG += exceptions
 
 INCLUDEPATH += ../
+INCLUDEPATH += ../../
 
 SOURCES	+= main.cpp
 

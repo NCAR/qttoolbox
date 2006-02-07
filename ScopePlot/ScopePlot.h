@@ -5,41 +5,25 @@
 #include <qwt_array.h>
 #include <qwt_plot_curve.h>
 
-class CurveData
-{
-    // A container class for growing data
-public:
-
-    CurveData();
-
-    void append(double *x, double *y, int count);
-
-    int count() const;
-    int size() const;
-    const double *x() const;
-    const double *y() const;
-
-private:
-    int d_count;
-    QwtArray<double> d_x;
-    QwtArray<double> d_y;
-};
-
-class ScopePlot: public ScopePlotBase {
+class QT_WIDGET_PLUGIN_EXPORT ScopePlot: public ScopePlotBase {
 
    Q_OBJECT
 
 public:
    ScopePlot(QWidget* parent, const char* name = 0, WFlags flags = 0);
    ~ScopePlot();
-    void appendData(double x, double y);
-    void appendData(double *x, double *y, int size);
+    void newTrace(double *x, double *y, int size);
+    void replot();
 
-    void removeData();
+public slots:
+    void pause(bool doPause);
 
 private:
-    CurveData *d_data;
-    QwtPlotCurve *d_curve;
+    QwtPlotCurve* _curve;
+    double* _x;
+    double* _y;
+    int     _n;
+    bool    _paused;
 };
 
 #endif

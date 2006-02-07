@@ -2,109 +2,82 @@
 
 #include <qwt_plot.h>
 #include <qwt_plot_canvas.h>
+#include <qwt_plot_grid.h>
 #include <qwt_plot_curve.h>
 #include <qwt_symbol.h>
 
-CurveData::CurveData():
-    d_count(0)
-{
-}
-
-void CurveData::append(double *x, double *y, int count)
-{
-    int newSize = ( (d_count + count) / 1000 + 1 ) * 1000;
-    if ( newSize > size() )
-    {
-        d_x.resize(newSize);
-        d_y.resize(newSize);
-    }
-
-    for ( register int i = 0; i < count; i++ )
-    {
-        d_x[d_count + i] = x[i];
-        d_y[d_count + i] = y[i];
-    }
-    d_count += count;
-}
-
-int CurveData::count() const
-{
-    return d_count;
-}
-
-int CurveData::size() const
-{
-    return d_x.size();
-}
-
-const double *CurveData::x() const
-{
-    return d_x.data();
-}
-
-const double *CurveData::y() const
-{
-    return d_y.data();
-}
+#include "ScrollZoomer.h"
 
 ScopePlot::ScopePlot(QWidget* parent, const char* name, WFlags flags):
 ScopePlotBase(parent, name, flags),
-    d_data(NULL),
-    d_curve(NULL) 
+_curve(0),
+_x(0),
+_y(0),
+_n(0),
+_paused(false)
 {
-    qwtPlot->setAutoReplot(false);
+   qwtPlot->setAutoReplot(false);
+   qwtPlot->setFrameStyle(QFrame::NoFrame);
+   qwtPlot->setLineWidth(0);
+   qwtPlot->setCanvasLineWidth(2);
+
+   QwtPlotGrid* grid = new QwtPlotGrid;
+   grid->attach(qwtPlot);
+   qwtPlot->setCanvasBackground(QColor(29, 100, 141)); // nice blue
+
+   // enable zooming
+
+   ScrollZoomer *zoomer = new ScrollZoomer(qwtPlot->canvas());
+   zoomer->setRubberBandPen(QPen(Qt::yellow, 0, Qt::DotLine));
+
 }
 
 ScopePlot::~ScopePlot() { 
-    delete d_data;
 }
 
-
-
-void ScopePlot::appendData(double x, double y)
+void 
+ScopePlot::newTrace(double *x, double *y, int size)
 {
-    appendData(&x, &y, 1);
+   if (_paused)
+      return;
+
+   if (size != _n) {
+      if (_x)
+         delete [] _x;
+      if (_y)
+         delete [] _y;
+      if (_curve)
+         delete _curve;
+      _n = 0;
+      _x = 0;
+      _y = 0;
+   }
+
+   if (_n == 0 ) {
+      _n = size;
+      _x = new double[_n];
+      _y = new double[_n];
+      _curve = new QwtPlotCurve("trace");
+      _curve->attach(qwtPlot);
+      _curve->setPen(QPen(Qt::blue));
+   }
+
+   for (int i = 0; i < _n; i++) {
+      _x[i] = x[i];
+      _y[i] = y[i];
+   }
+   _curve->setData(_x, _y, _n);
+   qwtPlot->replot();
+
 }
 
-void ScopePlot::appendData(double *x, double *y, int size)
+void ScopePlot::replot()
 {
-    if ( d_data == NULL )
-        d_data = new CurveData;
-
-    if ( d_curve == NULL )
-    {
-        d_curve = new QwtPlotCurve("Test Curve");
-        d_curve->setStyle(QwtPlotCurve::NoCurve);
-        d_curve->setPaintAttribute(QwtPlotCurve::PaintFiltered);
-    
-        const QColor &c = Qt::white;
-        d_curve->setSymbol(QwtSymbol(QwtSymbol::XCross,
-            QBrush(c), QPen(c), QSize(5, 5)) );
-
-        d_curve->attach(qwtPlot);
-    }
-
-    d_data->append(x, y, size);
-    d_curve->setRawData(d_data->x(), d_data->y(), d_data->count());
-#ifdef __GNUC__
-#warning better use QwtData
-#endif
-
-    const bool cacheMode = 
-        qwtPlot->canvas()->testPaintAttribute(QwtPlotCanvas::PaintCached);
-
-    qwtPlot->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
-    d_curve->draw(d_curve->dataSize() - size, d_curve->dataSize() - 1);
-    qwtPlot->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, cacheMode);
+   qwtPlot->replot();
 }
 
-void ScopePlot::removeData()
+void
+ScopePlot::pause(bool doPause)
 {
-    delete d_curve;
-    d_curve = NULL;
-
-    delete d_data;
-    d_data = NULL;
-
-    qwtPlot->replot();
+   _paused = doPause;
 }

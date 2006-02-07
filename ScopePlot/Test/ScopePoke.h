@@ -10,24 +10,28 @@ class PokeScope: public QObject {
 public:
    PokeScope(ScopePlot* scope){
       _scope = scope;
-      _x = 0.0;
-   };
-public slots:
-   void timeout() {
+      _n = 2000;
+      _x = new double[_n];
+      _y = new double[_n];
+      for (int i = 0; i < _n; i++)
+         _x[i] = i;
 
-      _scope->removeData();
+      startTimer(20);
 
-      double y[100];
-      double x[100];
-      for (int i = 0; i < 100; i++) {
-         x[i] = _x;
-         y[i] = 100.0*rand()/(RAND_MAX*1.0);
-         _x += 1.0;
-      }
-      _scope->appendData(x,y,100);
    };
+
 protected:
-   double _x;
+   void timerEvent(QTimerEvent *e) {
+      for (int i = 0; i < _n; i++) {
+         _y[i] = 100.0*rand()/(RAND_MAX*1.0) + 500;
+      }
+      _scope->newTrace(_x,_y,_n);
+
+   };
+
+   double* _x;
+   double* _y;
+   int _n;
    ScopePlot* _scope;
 };
 

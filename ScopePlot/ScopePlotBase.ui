@@ -33,8 +33,10 @@
 </customwidgets>
 <includes>
     <include location="local" impldecl="in implementation">qwt_plot.h</include>
+    <include location="local" impldecl="in declaration">qwidgetplugin.h</include>
 </includes>
 <pixmapinproject/>
+<exportmacro>QT_WIDGET_PLUGIN_EXPORT</exportmacro>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>qwt_plot.h</includehint>

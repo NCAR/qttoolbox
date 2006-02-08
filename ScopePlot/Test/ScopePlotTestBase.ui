@@ -1,0 +1,36 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>ScopePlotTestBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>ScopePlotTestBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>792</width>
+            <height>676</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>ScopePlotTest</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="ScopePlot">
+            <property name="name">
+                <cstring>_scopePlot</cstring>
+            </property>
+        </widget>
+    </vbox>
+</widget>
+<customwidgets>
+</customwidgets>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>ScopePlot/ScopePlot.h</includehint>
+    <includehint>qwt_plot.h</includehint>
+</includehints>
+</UI>

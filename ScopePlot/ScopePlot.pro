@@ -17,7 +17,6 @@ CONFIG += exceptions
 INCLUDEPATH += ../
 INCLUDEPATH += c:/Projects/qwt/include
 
-#HEADERS	+= KnobPlugin.h
 HEADERS     += ScrollZoomer.h
 HEADERS     += ScrollBar.h
 HEADERS     += ScopePlot.h

@@ -13,8 +13,13 @@ CONFIG += warn_on
 CONFIG += exceptions
 
 INCLUDEPATH += ../
+INCLUDEPATH += ../../
 INCLUDEPATH += c:/Projects/qwt/include
 
 HEADERS     += ScopePoke.h
-SOURCES	+= main.cpp
+HEADERS     += ScopePlotTest.h
 
+SOURCES	+= main.cpp
+SOURCES     += ScopePlotTest.cpp
+
+FORMS       += ScopePlotTestBase.ui

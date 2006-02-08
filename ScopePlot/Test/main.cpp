@@ -1,4 +1,5 @@
 #include "ScopePlot.h"
+#include "ScopePlotTest.h"
 #include "ScopePoke.h"
 
 #include <qapplication.h>
@@ -13,10 +14,10 @@ main(int argc, char** argv)
 
   QApplication app(argc, argv);
 
-  ScopePlot scope(0);
+  ScopePlotTest scope;
   scope.show();
 
-  PokeScope pokeScope(&scope);
+  PokeScope pokeScope(scope._scopePlot);
 
   app.setMainWidget(&scope);
 

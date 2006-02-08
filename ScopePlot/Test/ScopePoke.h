@@ -3,7 +3,7 @@
 
 #include "ScopePlot.h"
 #include <qobject.h>
-#include <math.h>
+#include <stdlib.h>
 
 class PokeScope: public QObject {
    Q_OBJECT

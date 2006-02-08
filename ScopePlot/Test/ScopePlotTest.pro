@@ -20,6 +20,7 @@ HEADERS     += ScopePoke.h
 HEADERS     += ScopePlotTest.h
 
 SOURCES	+= main.cpp
+SOURCES     += ScopePoke.cpp
 SOURCES     += ScopePlotTest.cpp
 
 FORMS       += ScopePlotTestBase.ui

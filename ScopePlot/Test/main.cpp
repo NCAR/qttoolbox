@@ -15,10 +15,12 @@ main(int argc, char** argv)
   QApplication app(argc, argv);
 
   ScopePlotTest scope;
+
+  ScopePoke scopePoke(scope._scopePlot);
+
+  scope.setScopePoke(&scopePoke);
   scope.show();
-
-  PokeScope pokeScope(scope._scopePlot);
-
+  
   app.setMainWidget(&scope);
 
   app.exec();

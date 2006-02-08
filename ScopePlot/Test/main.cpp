@@ -1,4 +1,3 @@
-#include "ScopePlot.h"
 #include "ScopePlotTest.h"
 #include "ScopePoke.h"
 
@@ -12,18 +11,32 @@ int
 main(int argc, char** argv)
 {
 
-  QApplication app(argc, argv);
+   QApplication app(argc, argv);
 
-  ScopePlotTest scope;
+   // create our test dialog. It will contain a ScopePlot and 
+   // other buttons etc.
+   ScopePlotTest scopeTestDialog;
 
-  ScopePoke scopePoke(scope._scopePlot);
+   // Create the test data generator, telling it
+   // what ScopePlot to send data to. ScopePoke has
+   // a timer which peridically sends synthesized data
+   // to the ScopePlot.
+   ScopePoke scopePoke(scopeTestDialog._scopePlot);
 
-  scope.setScopePoke(&scopePoke);
-  scope.show();
-  
-  app.setMainWidget(&scope);
+   // Tell our tesst dialog about scopePoke, so that it
+   // can call scopePoke in order to change the type of 
+   // plot data being generated and sent to the ScopePlot
+   scopeTestDialog.setScopePoke(&scopePoke);
 
-  app.exec();
+   // if we don't show() the test dialog, nothing appears!
+   scopeTestDialog.show();
 
-  return 0;
+   // This tells qt to stop running when scopeTestDialog
+   // closes.
+   app.setMainWidget(&scopeTestDialog);
+
+   // run the whole thing
+   app.exec();
+
+   return 0;
 }

@@ -10,9 +10,10 @@ class PokeScope: public QObject {
 public:
    PokeScope(ScopePlot* scope){
       _scope = scope;
-      _n = 2000;
-      _x = new double[_n];
-      _y = new double[_n];
+      _n = 1000;
+      _x.resize(_n);
+      _y1.resize(_n);
+      _y2.resize(_n);
       for (int i = 0; i < _n; i++)
          _x[i] = i;
 
@@ -23,14 +24,16 @@ public:
 protected:
    void timerEvent(QTimerEvent *e) {
       for (int i = 0; i < _n; i++) {
-         _y[i] = 100.0*rand()/(RAND_MAX*1.0) + 500;
+         _y1[i] = 100.0*rand()/(RAND_MAX*1.0);
+         _y2[i] = 100.0*rand()/(RAND_MAX*1.0);
       }
-      _scope->newTrace(_x,_y,_n);
+      _scope->newTimeSeries(_y1,_y2,0.0, 100.0, 1);
 
    };
 
-   double* _x;
-   double* _y;
+   std::vector<double> _x;
+   std::vector<double> _y1;
+   std::vector<double> _y2;
    int _n;
    ScopePlot* _scope;
 };

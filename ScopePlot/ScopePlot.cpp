@@ -21,27 +21,24 @@ _curveId1(0),
 _curveId2(0),
 _plotType(TIMESERIES),
 _scaleMin(0.0),
-_scaleMax(0.0)
+_scaleMax(0.0),
+_paused(false)
 {
    qwtPlot->setFrameStyle(QFrame::NoFrame);
    qwtPlot->setLineWidth(0);
    qwtPlot->setCanvasLineWidth(2);
+   qwtPlot->setAxisScaleEngine(QwtPlot::xBottom, new QwtLinearScaleEngine());
 
-   //qwtPlot->setAxisTitle(QwtPlot::xBottom, "Normalized Frequency");
-   //qwtPlot->setAxisTitle(QwtPlot::yLeft, "Amplitude [dB]");
-
-   //enableGridX(TRUE);
-   //enableGridY(TRUE);
-   //setGridMajPen(QPen(Qt::gray, 0, Qt::DotLine));
+   _grid = new QwtPlotGrid();
+   _grid->attach(qwtPlot);
 
    qwtPlot->setCanvasBackground(QColor(29, 100, 141)); // nice blue
-
-   //  for ( size_t i = 0; i < QwtPlot::axisCnt; i++ )
-   //   setAxisLabelFormat(i, 'g', 8);
 
    // enable zooming
 
    ScrollZoomer *zoomer = new ScrollZoomer(qwtPlot->canvas());
+   zoomer->setEnabled(true);
+
    zoomer->setRubberBandPen(QPen(Qt::yellow, 0, Qt::DotLine));
    //  zoomer->setCursorLabelPen(QPen(Qt::yellow));
 
@@ -91,33 +88,35 @@ ScopePlot::initCurve()
       _curveId2->setStyle(QwtPlotCurve::Lines);
       _curveId2->setPen(QPen(red));
    }
-
-//   qwtPlot->replot();
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 
 void 
 ScopePlot::TimeSeries(std::vector<double>& I, 
-                         std::vector<double>& Q,
-                         double scaleMin,
-                         double scaleMax,
-                         double sampleRateHz)
+                      std::vector<double>& Q,
+                      double scaleMin,
+                      double scaleMax,
+                      double sampleRateHz,
+                      std::string xLabel, 
+                      std::string yLabel)
 {
+   if (_paused)
+      return;
 
    if (_plotType     != TIMESERIES || 
       _xdata.size() != I.size()   || 
       scaleMin      != _scaleMin  || 
       scaleMax      != _scaleMax  ||
       sampleRateHz  != _sampleRateHz) {
-
          configureForTimeSeries(I.size(), scaleMin, scaleMax, sampleRateHz);
+         labelAxes(xLabel, yLabel);
       }
 
       initCurve();
 
-       _curveId1->setData(&_xdata[0], &I[0], I.size());
-       _curveId2->setData(&_xdata[0], &Q[0], Q.size());
+      _curveId1->setData(&_xdata[0], &I[0], I.size());
+      _curveId2->setData(&_xdata[0], &Q[0], Q.size());
 
       qwtPlot->replot();
 }
@@ -126,16 +125,22 @@ ScopePlot::TimeSeries(std::vector<double>& I,
 
 void 
 ScopePlot::IvsQ(std::vector<double>& I, 
-                   std::vector<double>& Q,
-                   double scaleMin,
-                   double scaleMax,
-                   double sampleRateHz)
+                std::vector<double>& Q,
+                double scaleMin,
+                double scaleMax,
+                double sampleRateHz,
+                std::string xLabel, 
+                std::string yLabel)
 {
+
+   if (_paused)
+      return;
 
    if (_plotType != IVSQ      ||
       scaleMin  != _scaleMin || 
       scaleMax  != _scaleMax) {
          configureForIvsQ(scaleMin, scaleMax);
+         labelAxes(xLabel, yLabel);
       }
 
       initCurve();
@@ -150,10 +155,15 @@ ScopePlot::IvsQ(std::vector<double>& I,
 
 void 
 ScopePlot::Spectrum(std::vector<double>& power,
-                       double scaleMin,
-                       double scaleMax,
-                       double sampleRateHz)
+                    double scaleMin,
+                    double scaleMax,
+                    double sampleRateHz,
+                    std::string xLabel, 
+                    std::string yLabel)
 {
+
+   if (_paused)
+      return;
 
    if (_plotType != SPECTRUM ||
       _xdata.size() != power.size() || 
@@ -161,6 +171,7 @@ ScopePlot::Spectrum(std::vector<double>& power,
       scaleMax      != _scaleMax    ||
       sampleRateHz  != _sampleRateHz) {
          configureForSpectrum(power.size(), scaleMin, scaleMax, sampleRateHz);
+         labelAxes(xLabel, yLabel);
       }
 
       initCurve();
@@ -174,18 +185,21 @@ ScopePlot::Spectrum(std::vector<double>& power,
 //////////////////////////////////////////////////////////////////////////////////
 
 void 
-ScopePlot::configureForTimeSeries(int n, double scaleMin, double scaleMax, double sampleRateHz)
+ScopePlot::configureForTimeSeries(
+                                  int n, 
+                                  double scaleMin, 
+                                  double scaleMax, 
+                                  double sampleRateHz)
 {
    _plotType = TIMESERIES;
    _scaleMin = scaleMin;
    _scaleMax = scaleMax;
    _sampleRateHz = sampleRateHz;
 
-//   qwtPlot->setAxisScaleEngine(QwtPlot::yLeft,   &_leftAxisLinear);
-//   qwtPlot->setAxisScaleEngine(QwtPlot::xBottom, &_bottomAxisLinear);
+   qwtPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
 
-   //setAxisScale(xBottom, 0, n/_sampleRateHz);
-   //setAxisScale(yLeft, _scaleMin, _scaleMax);
+   qwtPlot->setAxisScale(QwtPlot::xBottom, 0, n/_sampleRateHz);
+   qwtPlot->setAxisScale(QwtPlot::yLeft, _scaleMin, _scaleMax);
 
    _xdata.resize(n);
 
@@ -200,17 +214,17 @@ ScopePlot::configureForTimeSeries(int n, double scaleMin, double scaleMax, doubl
 //////////////////////////////////////////////////////////////////////////////////
 
 void 
-ScopePlot::configureForIvsQ(double scaleMin, double scaleMax)
+ScopePlot::configureForIvsQ(double scaleMin, 
+                            double scaleMax)
 {
    _plotType = IVSQ;
    _scaleMin = scaleMin;
    _scaleMax = scaleMax;
 
-//   qwtPlot->setAxisScaleEngine(QwtPlot::yLeft,   &_leftAxisLinear);
-//   qwtPlot->setAxisScaleEngine(QwtPlot::xBottom, &_bottomAxisLinear);
+   qwtPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
 
-   //setAxisScale(xBottom, _scaleMin, _scaleMax);
-   //setAxisScale(yLeft,   _scaleMin, _scaleMax);
+   qwtPlot->setAxisScale(QwtPlot::xBottom, _scaleMin, _scaleMax);
+   qwtPlot->setAxisScale(QwtPlot::yLeft,   _scaleMin, _scaleMax);
 
    initCurve();
 
@@ -219,28 +233,53 @@ ScopePlot::configureForIvsQ(double scaleMin, double scaleMax)
 //////////////////////////////////////////////////////////////////////////////////
 
 void 
-ScopePlot::configureForSpectrum(int n, double scaleMin, double scaleMax, double sampleRateHz)
+ScopePlot::configureForSpectrum(int n, 
+                                double scaleMin, 
+                                double scaleMax, 
+                                double sampleRateHz)
 {
    _plotType = SPECTRUM;
    _scaleMin = scaleMin;
    _scaleMax = scaleMax;
    _sampleRateHz = sampleRateHz;
 
-   //changeAxisOptions(QwtPlot::yLeft, QwtAutoScale::Logarithmic, false);
-
-   //setAxisScale(xBottom, -n/2.0, n/2.0);
-   //setAxisScale(xBottom, -_sampleRateHz/2.0, _sampleRateHz/2.0);
-   //setAxisScale(yLeft, scaleMin, scaleMax);
-
-//   qwtPlot->setAxisScaleEngine(QwtPlot::yLeft,   &_leftAxisLog);
-//   qwtPlot->setAxisScaleEngine(QwtPlot::xBottom, &_bottomAxisLinear);
+   qwtPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLog10ScaleEngine());
+   qwtPlot->setAxisScale(QwtPlot::xBottom, -_sampleRateHz/2.0, _sampleRateHz/2.0);
+   qwtPlot->setAxisScale(QwtPlot::yLeft, scaleMin, scaleMax);
 
    _xdata.resize(n);
 
    for (int i = 0; i < n; i++)
       _xdata[i] = -(_sampleRateHz/n)*(i - n/2);
-   //    _xdata[i] = -2*(i - n/2);
 
    initCurve();
 
+}
+//////////////////////////////////////////////////////////////////////////////////
+
+void 
+ScopePlot::labelAxes(std::string xLabel, std::string yLabel) {
+   qwtPlot->setAxisTitle(QwtPlot::xBottom, xLabel);
+   qwtPlot->setAxisTitle(QwtPlot::yLeft,   yLabel);
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+void 
+ScopePlot::enableXgrid(bool tf) {
+   _grid->enableX(tf);
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+void 
+ScopePlot::enableYgrid(bool tf) {
+   _grid->enableY(tf);
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+void 
+ScopePlot::pause(bool tf) {
+   _paused = tf;
 }

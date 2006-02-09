@@ -4,6 +4,7 @@
 #include "ScopePlotBase.h"
 #include <qwt_array.h>
 #include <qwt_plot_curve.h>
+#include <qwt_plot_grid.h>
 #include <qwt_plot.h>
 #include <qwt_scale_engine.h>
 
@@ -39,11 +40,17 @@ public:
    /// @param scaleMin The minimum value to set the y scale to.
    /// @param scaleMax The maximum value to set the y scale to.
    /// @param sampleRateHz The rate of the data samples, in Hz
+   /// @param xLabel The label for the x axis. Leave 
+   /// empty if no label is required.
+   /// @param yLabel The label for the y axis. Leave 
+   /// empty if no label is required.
    void TimeSeries(std::vector<double>& I, 
       std::vector<double>& Q, 
       double scaleMin, 
       double scaleMax,
-      double sampleRateHz);
+      double sampleRateHz,
+      std::string xLabel="", 
+      std::string yLabel="");
 
    /// Draw a plot of I versus Q.
    /// @param I The I data.
@@ -51,11 +58,17 @@ public:
    /// @param scaleMin The minimum value to set the y scale to.
    /// @param scaleMax The maximum value to set the y scale to.
    /// @param sampleRateHz The rate of the data samples, in Hz
+   /// @param xLabel The label for the x axis. Leave 
+   /// empty if no label is required.
+   /// @param yLabel The label for the y axis. Leave 
+   /// empty if no label is required.
    void IvsQ(std::vector<double>& I, 
       std::vector<double>& Q, 
       double scaleMin, 
       double scaleMax,
-      double sampleRateHz);
+      double sampleRateHz,
+      std::string xLabel="", 
+      std::string yLabel="");
 
    /// Draw a plot of the power spectrum. The data values
    /// are expected to be in dB, and so both x and y scales are
@@ -65,10 +78,31 @@ public:
    /// @param scaleMin The minimum value to set the y scale to.
    /// @param scaleMax The maximum value to set the y scale to.
    /// @param sampleRateHz The rate of the data samples, in Hz
+   /// @param xLabel The label for the x axis. Leave 
+   /// empty if no label is required.
+   /// @param yLabel The label for the y axis. Leave 
+   /// empty if no label is required.
    void Spectrum(std::vector<double>& power, 
       double scaleMin, 
       double scaleMax,
-      double sampleRateHz);
+      double sampleRateHz,
+      std::string xLabel="", 
+      std::string yLabel="");
+
+public slots:
+
+   /// Enable the X grid
+   /// @param tf  True to enable, false otherwise
+   void enableXgrid(bool tf);
+
+   /// Enable the Y grid
+   /// @param tf  True to enable, false otherwise
+   void enableYgrid(bool tf);
+
+   /// Stop updating the display.
+   /// @param tf True to enable, false otherwise
+   void pause(bool tf);
+
 
 protected:
 
@@ -87,10 +121,9 @@ protected:
       double sampleRateHz);
 
    /// Reconfigure plot to display I versus Q.
-   /// @param scaleMin The y scale minimum.
-   /// @param scaleMax The y scale maximum.
-   void configureForIvsQ(double scaleMin, 
-      double scaleMax);
+   /// @param scaleMin The x and y scale minimum.
+   /// @param scaleMax The x and y scale maximum.
+   void configureForIvsQ(double scaleMin, double scaleMax);
 
    /// Reconfigure plot to display I versus Q.
    /// @param n The number of points in the time series.
@@ -102,12 +135,20 @@ protected:
       double scaleMax,
       double sampleRateHz);
 
+   /// Label the axes
+   /// @param xLabel Label for x
+   /// @param yLabel Label for y
+   void labelAxes(std::string xLabel, std::string yLabel);
+
    /// Curve id for the main plot.
    QwtPlotCurve* _curveId1;
 
    /// Curve id if we have a second curve, such as 
    /// the time series plot.
    QwtPlotCurve* _curveId2;
+
+   /// The grid
+   QwtPlotGrid* _grid;
 
    /// Type of current plot display.
    PLOTTYPE _plotType;
@@ -132,14 +173,7 @@ protected:
    /// over again.
    std::vector<double> _xdata;
 
-   /// The scale engine used for a logrithmic left axis.
-   QwtLog10ScaleEngine _leftAxisLog;
-
-   /// The scale engine used for a linear left axis.
-   QwtLinearScaleEngine _leftAxisLinear;
-
-   /// The scale engine used for a linear bottom axis.
-   QwtLinearScaleEngine _bottomAxisLinear;
+   bool _paused;
 
 };
 

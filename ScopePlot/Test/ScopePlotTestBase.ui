@@ -21,7 +21,7 @@
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout2</cstring>
+                <cstring>layout3</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -39,7 +39,56 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>31</width>
+                            <width>102</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout2</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>xGrid</cstring>
+                            </property>
+                            <property name="text">
+                                <string>X Grid</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>yGrid</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Y Grid</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer3</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>102</width>
                             <height>20</height>
                         </size>
                     </property>
@@ -103,6 +152,31 @@
                 </widget>
                 <spacer>
                     <property name="name">
+                        <cstring>spacer4</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>40</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>pauseButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Pause</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
                         <cstring>spacer1</cstring>
                     </property>
                     <property name="orientation">
@@ -113,7 +187,7 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>81</width>
+                            <width>40</width>
                             <height>20</height>
                         </size>
                     </property>

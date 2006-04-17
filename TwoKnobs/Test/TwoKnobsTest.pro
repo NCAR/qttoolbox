@@ -1,20 +1,25 @@
-win32 {
-   TEMPLATE	= vcapp
-   LIBS       += c:/Projects/lib/qwt500.lib
-   LIBS       += ../TwoKnobs.lib
-}
-
+TEMPLATE	= vcapp
 LANGUAGE	= C++
 
-CONFIG += debug
+CONFIG	+= debug
+
+INCLUDEPATH	+= ../
+
+SOURCES	+= main.cpp
+
+FORMS	= ScopePlot.pro \
+	c:\Projects\QtToolbox\ScopePlot\ScopePlotBase.ui
+
+win32 {
+         LIBS       += ../TwoKnobs.lib
+}
+
+
 CONFIG += qt 
 CONFIG += thread
 CONFIG += warn_on 
 CONFIG += exceptions
 
-INCLUDEPATH += ../
 INCLUDEPATH += ../../
 
-SOURCES	+= main.cpp
 
-FORMS	= TwoKnobsTest.ui 

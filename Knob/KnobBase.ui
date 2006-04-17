@@ -8,80 +8,83 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>144</width>
-            <height>155</height>
+            <width>181</width>
+            <height>166</height>
         </rect>
     </property>
     <property name="caption">
         <string>KnobsBase</string>
     </property>
-    <vbox>
+    <widget class="QwtKnob">
         <property name="name">
-            <cstring>unnamed</cstring>
+            <cstring>_knob</cstring>
         </property>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout16</cstring>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QwtKnob">
-                    <property name="name">
-                        <cstring>_knob</cstring>
-                    </property>
-                    <property name="knobWidth">
-                        <number>40</number>
-                    </property>
-                    <property name="borderWidth">
-                        <number>5</number>
-                    </property>
-                    <property name="symbol">
-                        <enum>Dot</enum>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout15</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>_label</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Knob </string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignCenter</set>
-                            </property>
-                        </widget>
-                        <widget class="QLCDNumber">
-                            <property name="name">
-                                <cstring>_lcd</cstring>
-                            </property>
-                            <property name="frameShape">
-                                <enum>NoFrame</enum>
-                            </property>
-                            <property name="frameShadow">
-                                <enum>Raised</enum>
-                            </property>
-                            <property name="segmentStyle">
-                                <enum>Flat</enum>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-            </vbox>
-        </widget>
-    </vbox>
+        <property name="geometry">
+            <rect>
+                <x>14</x>
+                <y>14</y>
+                <width>150</width>
+                <height>100</height>
+            </rect>
+        </property>
+        <property name="knobWidth">
+            <number>40</number>
+        </property>
+        <property name="borderWidth">
+            <number>5</number>
+        </property>
+        <property name="symbol">
+            <enum>Dot</enum>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>_label</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>14</x>
+                <y>130</y>
+                <width>70</width>
+                <height>32</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Knob </string>
+        </property>
+        <property name="alignment">
+            <set>AlignCenter</set>
+        </property>
+    </widget>
+    <widget class="QLCDNumber">
+        <property name="name">
+            <cstring>_lcd</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>88</x>
+                <y>130</y>
+                <width>90</width>
+                <height>32</height>
+            </rect>
+        </property>
+        <property name="frameShape">
+            <enum>NoFrame</enum>
+        </property>
+        <property name="frameShadow">
+            <enum>Raised</enum>
+        </property>
+        <property name="smallDecimalPoint">
+            <bool>false</bool>
+        </property>
+        <property name="numDigits">
+            <number>7</number>
+        </property>
+        <property name="segmentStyle">
+            <enum>Flat</enum>
+        </property>
+    </widget>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>_knob</sender>
@@ -99,7 +102,6 @@
 <includes>
     <include location="local" impldecl="in implementation">qwt_knob.h</include>
     <include location="local" impldecl="in declaration">qwidgetplugin.h</include>
-    <include location="local" impldecl="in implementation">KnobBase.ui.h</include>
 </includes>
 <signals>
     <signal>valueChanged(double)</signal>

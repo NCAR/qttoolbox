@@ -164,7 +164,6 @@ ScopePlot::Spectrum(std::vector<double>& power,
 
    if (_paused)
       return;
-
    if (_plotType != SPECTRUM ||
       _xdata.size() != power.size() || 
       scaleMin      != _scaleMin    || 
@@ -243,7 +242,8 @@ ScopePlot::configureForSpectrum(int n,
    _scaleMax = scaleMax;
    _sampleRateHz = sampleRateHz;
 
-   qwtPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLog10ScaleEngine());
+// original:   qwtPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLog10ScaleEngine());
+   qwtPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
    qwtPlot->setAxisScale(QwtPlot::xBottom, -_sampleRateHz/2.0, _sampleRateHz/2.0);
    qwtPlot->setAxisScale(QwtPlot::yLeft, scaleMin, scaleMax);
 
@@ -259,8 +259,8 @@ ScopePlot::configureForSpectrum(int n,
 
 void 
 ScopePlot::labelAxes(std::string xLabel, std::string yLabel) {
-   qwtPlot->setAxisTitle(QwtPlot::xBottom, xLabel);
-   qwtPlot->setAxisTitle(QwtPlot::yLeft,   yLabel);
+   qwtPlot->setAxisTitle(QwtPlot::xBottom, xLabel.c_str());	// original: does not build
+   qwtPlot->setAxisTitle(QwtPlot::yLeft,   yLabel.c_str());
 }
 
 //////////////////////////////////////////////////////////////////////////////////

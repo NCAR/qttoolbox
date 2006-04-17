@@ -8,26 +8,29 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>781</width>
-            <height>641</height>
+            <width>660</width>
+            <height>440</height>
         </rect>
     </property>
     <property name="caption">
         <string>ScopeBase</string>
     </property>
-    <widget class="QwtPlot">
+    <vbox>
         <property name="name">
-            <cstring>qwtPlot</cstring>
+            <cstring>unnamed</cstring>
         </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>20</y>
-                <width>721</width>
-                <height>601</height>
-            </rect>
-        </property>
-    </widget>
+        <widget class="QwtPlot">
+            <property name="name">
+                <cstring>qwtPlot</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>600</width>
+                    <height>400</height>
+                </size>
+            </property>
+        </widget>
+    </vbox>
 </widget>
 <customwidgets>
 </customwidgets>

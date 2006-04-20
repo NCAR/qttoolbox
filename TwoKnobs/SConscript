@@ -1,0 +1,30 @@
+import os
+
+Import('env')
+env = env.Create("qttoolbox.twoknobs", tools = ['default', 'qt'])
+
+my_tools = env.Require(['PKG_QT','PKG_QWT','PKG_QTTOOLBOX_KNOB'])
+
+mydir=Dir('.')
+
+def PKG_QTTOOLBOX_TWOKNOBS(env):
+	env.Append(CPPPATH=[mydir,])
+	env.Append(LIBPATH=[mydir,])
+	env.Append(LIBS=['twoknobs',])
+	env.Append(QT_UICIMPLFLAGS=['-L', str(mydir)])
+	env.Apply(my_tools)
+
+Export('PKG_QTTOOLBOX_TWOKNOBS')
+
+lib = env.SharedLibrary('twoknobs', 
+Split("""
+ TwoKnobsBase.ui
+ TwoKnobs.cpp
+ TwoKnobsPlugin.cpp
+"""))
+
+Default(lib)
+
+env.Install(os.path.join(env['QTDIR'],'plugins','designer'), lib)
+
+SConscript('Test/SConscript')

@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <stdlib.h>
-#include "scrollzoomer.h"
+#include "ScrollZoomer.h"
 #include "ScopePlot.h"
 #include <qpen.h>
 #include <qwt_math.h>

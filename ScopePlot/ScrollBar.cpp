@@ -2,7 +2,7 @@
 #if QT_VERSION >= 0x040000
 #include <qstyleoption.h>
 #endif
-#include "scrollbar.h"
+#include "ScrollBar.h"
 
 ScrollBar::ScrollBar(QWidget * parent):
     QScrollBar(parent)

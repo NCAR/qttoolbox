@@ -29,6 +29,7 @@ Export('env')
 
 SConscript('Knob/SConscript')
 SConscript('TwoKnobs/SConscript')
+SConscript('ScopePlot/SConscript')
 
 options.Update(env)
 

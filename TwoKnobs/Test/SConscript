@@ -1,12 +1,7 @@
 
 Import('env')
 env = env.Create("qttoolbox.twoknobstest", tools = ['default', 'qt'])
-#env.Append(CCFLAGS = " -I Knob -I TwoKnobs")
-#env.Append(LIBS=['twoknobs','knob'])
-#env.Append(LIBPATH=['#/Knob', '#/TwoKnobs'])
 env.Require(Split("""
-PKG_QWT
-PKG_QT
 PKG_QTTOOLBOX_TWOKNOBS
 """))
 

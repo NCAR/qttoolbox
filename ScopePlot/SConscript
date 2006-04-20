@@ -16,7 +16,7 @@ def PKG_QTTOOLBOX_SCOPEPLOT(env):
 
 Export('PKG_QTTOOLBOX_SCOPEPLOT')
 
-lib = env.SharedLibrary('scopeplot', 
+sharedlib = env.SharedLibrary('scopeplot', 
 Split("""
  ScopePlotBase.ui
  ScopePlot.cpp
@@ -25,8 +25,18 @@ Split("""
  ScopePlotPlugin.cpp
 """))
 
-Default(lib)
+staticlib = env.StaticLibrary('scopeplot', 
+Split("""
+ ScopePlotBase.ui
+ ScopePlot.cpp
+ ScrollBar.cpp
+ ScrollZoomer.cpp
+ ScopePlotPlugin.cpp
+"""))
 
-env.Install(os.path.join(env['QTDIR'],'plugins','designer'), lib)
+Default(sharedlib)
+Default(staticlib)
+
+env.Install(os.path.join(env['QTDIR'],'plugins','designer'), sharedlib)
 
 SConscript('Test/SConscript')

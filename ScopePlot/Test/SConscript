@@ -1,0 +1,15 @@
+
+Import('env')
+env = env.Create("qttoolbox.scopeplottest", tools = ['default', 'qt'])
+env.Require(Split("""
+PKG_QTTOOLBOX_SCOPEPLOT
+"""))
+
+p = env.Program('scopeplottest',Split("""
+  ScopePlotTestBase.ui
+  ScopePlotTest.cpp
+  ScopePoke.cpp
+  main.cpp
+  """) )
+
+Default(p)

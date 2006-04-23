@@ -1,0 +1,52 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>ColorBarTestBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>ColorBarTestBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>161</width>
+            <height>424</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>ColorBarTest</string>
+    </property>
+    <hbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="ColorBar">
+            <property name="name">
+                <cstring>_colorBar</cstring>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>111</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+    </hbox>
+</widget>
+<customwidgets>
+</customwidgets>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>ColorBar/ColorBar.h</includehint>
+</includehints>
+</UI>

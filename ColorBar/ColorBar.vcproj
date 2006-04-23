@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="ColorBar"
+	ProjectGUID="{42019193-2424-31CD-A12F-881526B511B2}">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="."
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ConfigurationType="2"
+			IntermediateDirectory="Release\"
+			UseOfMfc="0">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="..,$(QTDIR)\include,.,c:\Qt\3.3.4\mkspecs\win32-msvc.net"
+				AdditionalOptions="-Zm200 -GX -GX -w34100 -w34189"
+				AssemblerListingLocation="Release\"
+				BufferSecurityCheck="FALSE"
+				DebugInformationFormat="3"
+				ExceptionHandling="TRUE"
+				GeneratePreprocessedFile="0"
+				MinimalRebuild="TRUE"
+				ObjectFile="Release\"
+				Optimization ="1"
+				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_DLL,QT_PLUGIN,QT_THREAD_SUPPORT,NDEBUG,QT_NO_DEBUG"
+				ProgramDataBaseFileName=".\"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				SuppressStartupBanner="TRUE"
+				WarningLevel="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="qt-mt334.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib winmm.lib wsock32.lib winspool.lib delayimp.lib"
+				AdditionalLibraryDirectories="$(QTDIR)\lib"
+				BaseAddress="0x39D00000"
+				DelayLoadDLLs="comdlg32.dll,oleaut32.dll,winmm.dll,wsock32.dll,winspool.dll"
+				GenerateDebugInformation="FALSE"
+				IgnoreImportLibrary="TRUE"
+				OutputFile="Release\\ColorBar.dll"
+				ProgramDatabaseFile=""
+				SubSystem="2"
+				SuppressStartupBanner="TRUE"/>
+			<Tool
+				Name="VCMIDLTool"
+				DefaultCharType="0"
+				EnableErrorChecks="1"
+				WarningLevel="0"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="copy  &quot;$(TargetPath)&quot; &quot;c:\Windows\System32&quot; &amp;&amp; copy  &quot;$(TargetPath)&quot; &quot;$(QTDIR)\Plugins\Designer&quot;"
+				Description="Copy ColorBar.dll to c:\Windows\System32, $(QTDIR)\Plugins\Designer"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="."
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ConfigurationType="2"
+			UseOfMfc="0">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="..,$(QTDIR)\include,.,c:\Qt\3.3.4\mkspecs\win32-msvc.net"
+				AdditionalOptions="-Zm200 -GX -GX -w34100 -w34189"
+				AssemblerListingLocation=".\"
+				BufferSecurityCheck="FALSE"
+				DebugInformationFormat="3"
+				ExceptionHandling="TRUE"
+				GeneratePreprocessedFile="0"
+				MinimalRebuild="TRUE"
+				ObjectFile=".\"
+				Optimization ="4"
+				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_DLL,QT_PLUGIN,QT_THREAD_SUPPORT"
+				ProgramDataBaseFileName=".\"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				SuppressStartupBanner="TRUE"
+				WarningLevel="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="qt-mt334.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib winmm.lib wsock32.lib winspool.lib delayimp.lib"
+				AdditionalLibraryDirectories="$(QTDIR)\lib"
+				BaseAddress="0x39D00000"
+				GenerateDebugInformation="TRUE"
+				IgnoreImportLibrary="TRUE"
+				OutputFile=".\ColorBar.dll"
+				ProgramDatabaseFile=""
+				SubSystem="2"
+				SuppressStartupBanner="TRUE"/>
+			<Tool
+				Name="VCMIDLTool"
+				DefaultCharType="0"
+				EnableErrorChecks="1"
+				WarningLevel="0"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="copy  &quot;$(TargetPath)&quot; &quot;c:\Windows\System32&quot; &amp;&amp; copy  &quot;$(TargetPath)&quot; &quot;$(QTDIR)\Plugins\Designer&quot;"
+				Description="Copy ColorBar.dll to c:\Windows\System32, $(QTDIR)\Plugins\Designer"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			<File
+				RelativePath="ColorBar.cpp">
+			</File>
+			<File
+				RelativePath="ColorBarPlugin.cpp">
+			</File>
+			<File
+				RelativePath="ColorMap.cpp">
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath="ColorBar.h">
+				<FileConfiguration
+					Name="Release|Win32">
+			<Tool
+				Name="VCCustomBuildTool"
+				AdditionalDependencies="$(QTDIR)\bin\moc.exe"
+				CommandLine="$(QTDIR)\bin\moc.exe ColorBar.h -o moc_ColorBar.cpp"
+				Description="Moc&apos;ing ColorBar.h..."
+				Outputs="moc_ColorBar.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+			<Tool
+				Name="VCCustomBuildTool"
+				AdditionalDependencies="$(QTDIR)\bin\moc.exe"
+				CommandLine="$(QTDIR)\bin\moc.exe ColorBar.h -o moc_ColorBar.cpp"
+				Description="Moc&apos;ing ColorBar.h..."
+				Outputs="moc_ColorBar.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="ColorBarPlugin.h">
+			</File>
+			<File
+				RelativePath="ColorMap.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="Generated MOC Files"
+			Filter="cpp;c;cxx;moc">
+			<File
+				RelativePath="moc_ColorBar.cpp">
+			</File>
+			<File
+				RelativePath="moc_ColorBarBase.cpp">
+			</File>
+		</Filter>
+		<Filter
+			Name="Generated Form Files"
+			Filter="cpp;c;cxx;h;hpp;hxx;">
+			<File
+				RelativePath="ColorBarBase.cpp">
+			</File>
+			<File
+				RelativePath="ColorBarBase.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="Forms"
+			ParseFiles="FALSE"
+			Filter="ui">
+			<File
+				RelativePath="ColorBarBase.ui">
+				<FileConfiguration
+					Name="Release|Win32">
+			<Tool
+				Name="VCCustomBuildTool"
+				AdditionalDependencies="$(QTDIR)\bin\moc.exe;$(QTDIR)\bin\uic.exe"
+				CommandLine="$(QTDIR)\bin\uic.exe ColorBarBase.ui -o .\ColorBarBase.h
+$(QTDIR)\bin\uic.exe ColorBarBase.ui -i ColorBarBase.h -o .\ColorBarBase.cpp
+$(QTDIR)\bin\moc.exe .\ColorBarBase.h -o .\moc_ColorBarBase.cpp"
+				Description="Uic'ing ColorBarBase.ui..."
+				Outputs=".\ColorBarBase.h;.\ColorBarBase.cpp;.\moc_ColorBarBase.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+			<Tool
+				Name="VCCustomBuildTool"
+				AdditionalDependencies="$(QTDIR)\bin\moc.exe;$(QTDIR)\bin\uic.exe"
+				CommandLine="$(QTDIR)\bin\uic.exe ColorBarBase.ui -o .\ColorBarBase.h
+$(QTDIR)\bin\uic.exe ColorBarBase.ui -i ColorBarBase.h -o .\ColorBarBase.cpp
+$(QTDIR)\bin\moc.exe .\ColorBarBase.h -o .\moc_ColorBarBase.cpp"
+				Description="Uic'ing ColorBarBase.ui..."
+				Outputs=".\ColorBarBase.h;.\ColorBarBase.cpp;.\moc_ColorBarBase.cpp"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

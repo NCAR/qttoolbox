@@ -1,0 +1,14 @@
+
+Import('env')
+env = env.Create("qttoolbox.twoknobstest", tools = ['default', 'qt'])
+env.Require(Split("""
+PKG_QTTOOLBOX_COLORBAR
+"""))
+
+p = env.Program('colorbartest',Split("""
+  ColorBarTestBase.ui
+  ColorBarTest.cpp
+  main.cpp
+  """) )
+
+Default(p)

@@ -1,5 +1,5 @@
 #include "PPITest.h"
-#include "QGLWidgetPPI.h"
+#include "PPI.h"
 #include <qlcdnumber.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
@@ -74,8 +74,8 @@ PPITestBase(parent,
 	// use preallocated or dynamically allocated beams. If a third
 	// parameter is specifiec, it will set the number of preallocated
 	// beams.
-	gLWidgetPPI1->configure(_nVars, _gates, 360);
-	gLWidgetPPI2->configure(_nVars, _gates, 360);
+	_ppi1->configure(_nVars, _gates, 360);
+	_ppi2->configure(_nVars, _gates, 360);
 
 	// connect the button pressed signal to the var changed slot
 	connect( btnGroupVarSelect1, SIGNAL( clicked(int) ), this, SLOT( varSelectSlot1(int) ));
@@ -159,14 +159,14 @@ PPITest::addBeam()
 			}
 		}
 
-		gLWidgetPPI1->addBeam(startAngle, stopAngle, _gates, _beamData, 1, _maps1);
-		gLWidgetPPI2->addBeam(startAngle, stopAngle, _gates, _beamData, 1, _maps2);
+		_ppi1->addBeam(startAngle, stopAngle, _gates, _beamData, 1, _maps1);
+		_ppi2->addBeam(startAngle, stopAngle, _gates, _beamData, 1, _maps2);
 
 		angle += _angleInc;
 
 		LCDNumberCurrentAngle->display(angle);
-		LCDNumberBeamCount->display(gLWidgetPPI2->numBeams());
-		LCDNumberZoomFactor->display(gLWidgetPPI2->getZoom());
+		LCDNumberBeamCount->display(_ppi2->numBeams());
+		LCDNumberZoomFactor->display(_ppi2->getZoom());
 	}
 
 	_angle += rep*_angleInc;
@@ -182,23 +182,23 @@ PPITest::addBeam()
 
 void PPITest::zoomInSlot()
 {
-	gLWidgetPPI1->setZoom(2.0);
-	gLWidgetPPI2->setZoom(2.0);
+	_ppi1->setZoom(2.0);
+	_ppi2->setZoom(2.0);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void PPITest::zoomOutSlot()
 {
-	gLWidgetPPI1->setZoom(0.5);
-	gLWidgetPPI2->setZoom(0.5);
+	_ppi1->setZoom(0.5);
+	_ppi2->setZoom(0.5);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void PPITest::varSelectSlot1(int index)
 {
-	gLWidgetPPI1->selectVar(index); 
+	_ppi1->selectVar(index); 
 	_colorBar1->configure(*_maps1[index]);
 }
 
@@ -206,7 +206,7 @@ void PPITest::varSelectSlot1(int index)
 
 void PPITest::varSelectSlot2(int index)
 {
-	gLWidgetPPI2->selectVar(index); 
+	_ppi2->selectVar(index); 
 	_colorBar2->configure(*_maps2[index]);
 }
 
@@ -221,8 +221,8 @@ void PPITest::changeDir()
 
 void PPITest::clearVarSlot(int index)
 {
-	gLWidgetPPI1->clearVar(index);
-	gLWidgetPPI2->clearVar(index);
+	_ppi1->clearVar(index);
+	_ppi2->clearVar(index);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -231,40 +231,40 @@ void PPITest::panSlot(int panIndex)
 {
 	switch (panIndex) {
 	case 0:
-		gLWidgetPPI1->setZoom(0.0);
-		gLWidgetPPI2->setZoom(0.0);
+		_ppi1->setZoom(0.0);
+		_ppi2->setZoom(0.0);
 		break;
 	case 1:
-		gLWidgetPPI1->pan(0.0, 0.10);
-		gLWidgetPPI2->pan(0.0, 0.10);
+		_ppi1->pan(0.0, 0.10);
+		_ppi2->pan(0.0, 0.10);
 		break;
 	case 2:
-		gLWidgetPPI1->pan(-0.10, 0.10);
-		gLWidgetPPI2->pan(-0.10, 0.10);
+		_ppi1->pan(-0.10, 0.10);
+		_ppi2->pan(-0.10, 0.10);
 		break;
 	case 3:
-		gLWidgetPPI1->pan(-0.10, 0.0);
-		gLWidgetPPI2->pan(-0.10, 0.0);
+		_ppi1->pan(-0.10, 0.0);
+		_ppi2->pan(-0.10, 0.0);
 		break;
 	case 4:
-		gLWidgetPPI1->pan(-0.10, -0.10);
-		gLWidgetPPI2->pan(-0.10, -0.10);
+		_ppi1->pan(-0.10, -0.10);
+		_ppi2->pan(-0.10, -0.10);
 		break;
 	case 5:
-		gLWidgetPPI1->pan(00, -0.10);
-		gLWidgetPPI2->pan(00, -0.10);
+		_ppi1->pan(00, -0.10);
+		_ppi2->pan(00, -0.10);
 		break;
 	case 6:
-		gLWidgetPPI1->pan(0.10, -0.10);
-		gLWidgetPPI2->pan(0.10, -0.10);
+		_ppi1->pan(0.10, -0.10);
+		_ppi2->pan(0.10, -0.10);
 		break;
 	case 7:
-		gLWidgetPPI1->pan(0.10, 0.0);
-		gLWidgetPPI2->pan(0.10, 0.0);
+		_ppi1->pan(0.10, 0.0);
+		_ppi2->pan(0.10, 0.0);
 		break;
 	case 8:
-		gLWidgetPPI1->pan(0.10, 0.10);
-		gLWidgetPPI2->pan(0.10, 0.10);
+		_ppi1->pan(0.10, 0.10);
+		_ppi2->pan(0.10, 0.10);
 		break;
 	default:
 		break;

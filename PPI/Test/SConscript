@@ -1,0 +1,15 @@
+
+Import('env')
+env = env.Create("qttoolbox.ppitest", tools = ['default', 'qt'])
+env.Require(Split("""
+PKG_QTTOOLBOX_PPI
+PKG_QTTOOLBOX_COLORBAR
+"""))
+
+p = env.Program('ppitest',Split("""
+  PPITestBase.ui
+  PPITest.cc
+  main.cpp
+  """) )
+
+Default(p)

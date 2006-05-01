@@ -24,6 +24,7 @@ win32 {
    LIBPATH        += c:/Projects/lib
    LIBS           += ../ColorBar/ColorBar.lib
    LIBS           += opengl32.lib
+   LIBS           += glu32.lib
 }
 
 

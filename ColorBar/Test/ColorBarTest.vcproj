@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
@@ -12,46 +12,46 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="."
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			ConfigurationType="1"
 			IntermediateDirectory="Release\"
-			UseOfMfc="0">
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..,..\..,$(QTDIR)\include,.,c:\Qt\3.3.4\mkspecs\win32-msvc.net"
 				AdditionalOptions="-Zm200 -GX -GX -w34100 -w34189"
-				AssemblerListingLocation="Release\"
-				BufferSecurityCheck="FALSE"
-				DebugInformationFormat="3"
-				ExceptionHandling="TRUE"
+				Optimization="1"
+				AdditionalIncludeDirectories="..,..\..,$(QTDIR)\include,.,c:\Qt\3.3.4\mkspecs\win32-msvc.net"
+				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_DLL,QT_THREAD_SUPPORT,NDEBUG,QT_NO_DEBUG"
 				GeneratePreprocessedFile="0"
 				MinimalRebuild="TRUE"
-				ObjectFile="Release\"
-				Optimization ="1"
-				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_DLL,QT_THREAD_SUPPORT,NDEBUG,QT_NO_DEBUG"
-				ProgramDataBaseFileName=".\"
+				ExceptionHandling="TRUE"
 				RuntimeLibrary="3"
+				BufferSecurityCheck="FALSE"
 				RuntimeTypeInfo="TRUE"
+				AssemblerListingLocation="Release\"
+				ObjectFile="Release\"
+				ProgramDataBaseFileName=".\"
+				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
-				WarningLevel="3"/>
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				IgnoreImportLibrary="TRUE"
 				AdditionalDependencies="qt-mt334.lib qtmain.lib ..\ColorBar.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib winmm.lib wsock32.lib winspool.lib delayimp.lib"
+				OutputFile="Release\\ColorBarTest.exe"
+				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(QTDIR)\lib"
 				DelayLoadDLLs="comdlg32.dll,oleaut32.dll,winmm.dll,wsock32.dll,winspool.dll"
 				GenerateDebugInformation="FALSE"
-				IgnoreImportLibrary="TRUE"
-				OutputFile="Release\\ColorBarTest.exe"
 				ProgramDatabaseFile=""
-				SubSystem="2"
-				SuppressStartupBanner="TRUE"/>
+				SubSystem="2"/>
 			<Tool
 				Name="VCMIDLTool"
+				WarningLevel="0"
 				DefaultCharType="0"
-				EnableErrorChecks="1"
-				WarningLevel="0"/>
+				EnableErrorChecks="1"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -61,48 +61,59 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="."
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			UseOfMfc="0">
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..,..\..,$(QTDIR)\include,.,c:\Qt\3.3.4\mkspecs\win32-msvc.net"
 				AdditionalOptions="-Zm200 -GX -GX -w34100 -w34189"
-				AssemblerListingLocation=".\"
-				BufferSecurityCheck="FALSE"
-				DebugInformationFormat="3"
-				ExceptionHandling="TRUE"
+				Optimization="4"
+				AdditionalIncludeDirectories="..,..\..,$(QTDIR)\include,.,c:\Qt\3.3.4\mkspecs\win32-msvc.net"
+				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_DLL,QT_THREAD_SUPPORT"
 				GeneratePreprocessedFile="0"
 				MinimalRebuild="TRUE"
-				ObjectFile=".\"
-				Optimization ="4"
-				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_DLL,QT_THREAD_SUPPORT"
-				ProgramDataBaseFileName=".\"
+				ExceptionHandling="TRUE"
 				RuntimeLibrary="3"
+				BufferSecurityCheck="FALSE"
 				RuntimeTypeInfo="TRUE"
+				AssemblerListingLocation=".\"
+				ObjectFile=".\"
+				ProgramDataBaseFileName=".\"
+				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
-				WarningLevel="3"/>
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				IgnoreImportLibrary="TRUE"
 				AdditionalDependencies="qt-mt334.lib qtmain.lib ..\ColorBar.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib winmm.lib wsock32.lib winspool.lib delayimp.lib"
+				OutputFile=".\ColorBarTest.exe"
+				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(QTDIR)\lib"
 				GenerateDebugInformation="TRUE"
-				IgnoreImportLibrary="TRUE"
-				OutputFile=".\ColorBarTest.exe"
 				ProgramDatabaseFile=""
-				SubSystem="2"
-				SuppressStartupBanner="TRUE"/>
+				SubSystem="2"/>
 			<Tool
 				Name="VCMIDLTool"
+				WarningLevel="0"
 				DefaultCharType="0"
-				EnableErrorChecks="1"
-				WarningLevel="0"/>
+				EnableErrorChecks="1"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -112,8 +123,20 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
@@ -151,31 +174,33 @@
 		</Filter>
 		<Filter
 			Name="Forms"
-			ParseFiles="FALSE"
-			Filter="ui">
+			Filter="ui"
+			ParseFiles="FALSE">
 			<File
 				RelativePath="ColorBarTestBase.ui">
 				<FileConfiguration
 					Name="Release|Win32">
-			<Tool
-				Name="VCCustomBuildTool"
-				AdditionalDependencies="$(QTDIR)\bin\moc.exe;$(QTDIR)\bin\uic.exe"
-				CommandLine="$(QTDIR)\bin\uic.exe ColorBarTestBase.ui -o .\ColorBarTestBase.h
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing ColorBarTestBase.ui..."
+						CommandLine="$(QTDIR)\bin\uic.exe ColorBarTestBase.ui -o .\ColorBarTestBase.h
 $(QTDIR)\bin\uic.exe ColorBarTestBase.ui -i ColorBarTestBase.h -o .\ColorBarTestBase.cpp
-$(QTDIR)\bin\moc.exe .\ColorBarTestBase.h -o .\moc_ColorBarTestBase.cpp"
-				Description="Uic'ing ColorBarTestBase.ui..."
-				Outputs=".\ColorBarTestBase.h;.\ColorBarTestBase.cpp;.\moc_ColorBarTestBase.cpp"/>
+$(QTDIR)\bin\moc.exe .\ColorBarTestBase.h -o .\moc_ColorBarTestBase.cpp
+"
+						AdditionalDependencies="$(QTDIR)\bin\moc.exe;$(QTDIR)\bin\uic.exe"
+						Outputs=".\ColorBarTestBase.h;.\ColorBarTestBase.cpp;.\moc_ColorBarTestBase.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32">
-			<Tool
-				Name="VCCustomBuildTool"
-				AdditionalDependencies="$(QTDIR)\bin\moc.exe;$(QTDIR)\bin\uic.exe"
-				CommandLine="$(QTDIR)\bin\uic.exe ColorBarTestBase.ui -o .\ColorBarTestBase.h
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing ColorBarTestBase.ui..."
+						CommandLine="$(QTDIR)\bin\uic.exe ColorBarTestBase.ui -o .\ColorBarTestBase.h
 $(QTDIR)\bin\uic.exe ColorBarTestBase.ui -i ColorBarTestBase.h -o .\ColorBarTestBase.cpp
-$(QTDIR)\bin\moc.exe .\ColorBarTestBase.h -o .\moc_ColorBarTestBase.cpp"
-				Description="Uic'ing ColorBarTestBase.ui..."
-				Outputs=".\ColorBarTestBase.h;.\ColorBarTestBase.cpp;.\moc_ColorBarTestBase.cpp"/>
+$(QTDIR)\bin\moc.exe .\ColorBarTestBase.h -o .\moc_ColorBarTestBase.cpp
+"
+						AdditionalDependencies="$(QTDIR)\bin\moc.exe;$(QTDIR)\bin\uic.exe"
+						Outputs=".\ColorBarTestBase.h;.\ColorBarTestBase.cpp;.\moc_ColorBarTestBase.cpp"/>
 				</FileConfiguration>
 			</File>
 		</Filter>

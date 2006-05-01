@@ -30,6 +30,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ColorBarTest", "ColorBar\Te
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PPI", "PPI\PPI.vcproj", "{0D9743D3-2F6A-3871-A8C1-61DA73BA53EF}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PPITest", "PPI\Test\PPITest.vcproj", "{B3892DC5-741C-3A58-B9CB-E206DB913CC8}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -64,6 +72,14 @@ Global
 		{57D196B6-E53A-3196-8BCD-FE662A9FA9B4}.Debug.Build.0 = Debug|Win32
 		{57D196B6-E53A-3196-8BCD-FE662A9FA9B4}.Release.ActiveCfg = Release|Win32
 		{57D196B6-E53A-3196-8BCD-FE662A9FA9B4}.Release.Build.0 = Release|Win32
+		{0D9743D3-2F6A-3871-A8C1-61DA73BA53EF}.Debug.ActiveCfg = Debug|Win32
+		{0D9743D3-2F6A-3871-A8C1-61DA73BA53EF}.Debug.Build.0 = Debug|Win32
+		{0D9743D3-2F6A-3871-A8C1-61DA73BA53EF}.Release.ActiveCfg = Release|Win32
+		{0D9743D3-2F6A-3871-A8C1-61DA73BA53EF}.Release.Build.0 = Release|Win32
+		{B3892DC5-741C-3A58-B9CB-E206DB913CC8}.Debug.ActiveCfg = Debug|Win32
+		{B3892DC5-741C-3A58-B9CB-E206DB913CC8}.Debug.Build.0 = Debug|Win32
+		{B3892DC5-741C-3A58-B9CB-E206DB913CC8}.Release.ActiveCfg = Release|Win32
+		{B3892DC5-741C-3A58-B9CB-E206DB913CC8}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

@@ -8,7 +8,7 @@
 #endif
 #include "ColorBar/ColorMap.h"
 
-class PPI: public QGLWidget {
+class QT_WIDGET_PLUGIN_EXPORT PPI: public QGLWidget {
 
 	Q_OBJECT        // must include this if you use Qt signals/slots
 

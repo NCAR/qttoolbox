@@ -63,6 +63,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_A4EB8827857E4B68B9F3BAC19AB3C3E3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_F114337FFCC34416A4B60427684F1EB8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -76,13 +82,13 @@
         "Entry"
         {
         "MsmKey" = "8:_FA6E48B0005B97ECCA7369BA60D14861"
-        "OwnerKey" = "8:_F2B2461BBE34471C95D78B5ADD2FBD92"
+        "OwnerKey" = "8:_97F15E7AC6B94DB993163A014D19E1A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_FA6E48B0005B97ECCA7369BA60D14861"
-        "OwnerKey" = "8:_97F15E7AC6B94DB993163A014D19E1A9"
+        "OwnerKey" = "8:_F2B2461BBE34471C95D78B5ADD2FBD92"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -100,13 +106,13 @@
         "Entry"
         {
         "MsmKey" = "8:_FEDAEC115E69D60A65AF257D5F3A91E6"
-        "OwnerKey" = "8:_F2B2461BBE34471C95D78B5ADD2FBD92"
+        "OwnerKey" = "8:_97F15E7AC6B94DB993163A014D19E1A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_FEDAEC115E69D60A65AF257D5F3A91E6"
-        "OwnerKey" = "8:_97F15E7AC6B94DB993163A014D19E1A9"
+        "OwnerKey" = "8:_F2B2461BBE34471C95D78B5ADD2FBD92"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -277,6 +283,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{A582A373-4685-4296-BEFE-614B80A702C3}:_A4EB8827857E4B68B9F3BAC19AB3C3E3"
+            {
+            "SourcePath" = "8:..\\..\\qwt\\lib\\qwt500.dll"
+            "TargetName" = "8:qwt500.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_A72DF8927EAC4AE293A8A3DEE170BF06"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{A582A373-4685-4296-BEFE-614B80A702C3}:_FA6E48B0005B97ECCA7369BA60D14861"

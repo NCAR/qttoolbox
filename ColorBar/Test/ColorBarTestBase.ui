@@ -43,8 +43,9 @@
         </spacer>
     </hbox>
 </widget>
-<customwidgets>
-</customwidgets>
+<includes>
+    <include location="local" impldecl="in implementation">ColorBar/ColorBar.h</include>
+</includes>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>ColorBar/ColorBar.h</includehint>

@@ -560,6 +560,9 @@
     <slot>panSlot( int )</slot>
     <slot>varSelectSlot2( int )</slot>
 </slots>
+<includes>
+    <include location="local" impldecl="in implementation">PPI/PPI.h</include>
+</includes>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>PPI/PPI.h</includehint>

@@ -209,8 +209,6 @@
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>tsButton</sender>
@@ -231,6 +229,9 @@
         <slot>plotTypeSlot(bool)</slot>
     </connection>
 </connections>
+<includes>
+    <include location="local" impldecl="in implementation">ScopePlot/ScopePlot.h</include>
+</includes>
 <slots>
     <slot>plotTypeSlot(bool)</slot>
 </slots>

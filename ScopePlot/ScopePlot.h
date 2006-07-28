@@ -154,7 +154,8 @@ protected:
    void configureForSpectrum(int n,
       double scaleMin, 
       double scaleMax,
-      double sampleRateHz);
+      double sampleRateHz,
+      bool logYaxis = true);
 
    /// Reconfigure plot to display a product.
    /// @param n The number of points in the power data.

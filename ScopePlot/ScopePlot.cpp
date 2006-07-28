@@ -267,15 +267,18 @@ void
 ScopePlot::configureForSpectrum(int n, 
                                 double scaleMin, 
                                 double scaleMax, 
-                                double sampleRateHz)
+                                double sampleRateHz,
+                                bool logYaxis)
 {
    _plotType = SPECTRUM;
    _scaleMin = scaleMin;
    _scaleMax = scaleMax;
    _sampleRateHz = sampleRateHz;
 
-// original:   qwtPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLog10ScaleEngine());
-   qwtPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
+   if (logYaxis)
+      qwtPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLog10ScaleEngine());
+   else
+      qwtPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
    qwtPlot->setAxisScale(QwtPlot::xBottom, -_sampleRateHz/2.0, _sampleRateHz/2.0);
    qwtPlot->setAxisScale(QwtPlot::yLeft, scaleMin, scaleMax);
 

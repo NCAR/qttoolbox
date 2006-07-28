@@ -25,7 +25,7 @@ class QT_WIDGET_PLUGIN_EXPORT ScopePlot: public ScopePlotBase
 
 public:
    /// Plot type
-   enum PLOTTYPE {TIMESERIES=0, IVSQ=1, SPECTRUM=2};
+   enum PLOTTYPE {TIMESERIES=0, IVSQ=1, SPECTRUM=2, PRODUCT=3};
 
    ScopePlot(QWidget *parent, const char* name = 0);
 
@@ -89,6 +89,27 @@ public:
       std::string xLabel="", 
       std::string yLabel="");
 
+   /// Draw a plot of a product. The data values
+   /// are expected to be linear, and so both x and y scales are
+   /// linear.
+   /// @param productData The product data values, ranging from negative through
+   /// zero to positive depending on the particular product.
+   /// @param productType used by application: here used solely to signal redraw of axis labels
+   /// @param scaleMin The minimum value to set the y scale to.
+   /// @param scaleMax The maximum value to set the y scale to.
+   /// @param sampleRateHz The rate of the data samples, in Hz
+   /// @param xLabel The label for the x axis. Leave 
+   /// empty if no label is required.
+   /// @param yLabel The label for the y axis. Leave 
+   /// empty if no label is required.
+   void Product(std::vector<double>& productData, 
+      int productType,
+      double scaleMin, 
+      double scaleMax,
+      double sampleRateHz,
+      std::string xLabel="", 
+      std::string yLabel="");
+
 public slots:
 
    /// Enable the X grid
@@ -135,6 +156,16 @@ protected:
       double scaleMax,
       double sampleRateHz);
 
+   /// Reconfigure plot to display a product.
+   /// @param n The number of points in the power data.
+   /// @param scaleMin The y scale minimum.
+   /// @param scaleMax The y scale maximum.
+   /// @param sampleRateHz The sample rate, in Hz
+   void configureForProduct(int n,
+      double scaleMin, 
+      double scaleMax,
+      double sampleRateHz);
+
    /// Label the axes
    /// @param xLabel Label for x
    /// @param yLabel Label for y
@@ -152,6 +183,9 @@ protected:
 
    /// Type of current plot display.
    PLOTTYPE _plotType;
+
+   /// Product type to display
+   int _productType; 
 
    /// The current minimum scale. Use it to determine if
    /// we need reconfigure the display when the requested

@@ -184,6 +184,38 @@ ScopePlot::Spectrum(std::vector<double>& power,
 //////////////////////////////////////////////////////////////////////////////////
 
 void 
+ScopePlot::Product(std::vector<double>& productData,
+				    int productType,
+                    double scaleMin,
+                    double scaleMax,
+                    double sampleRateHz,
+                    std::string xLabel, 
+                    std::string yLabel)
+{
+
+   if (_paused)
+      return;
+   if (_plotType != PRODUCT ||
+	  productType	!= _productType || 
+      _xdata.size() != productData.size() || 
+      scaleMin      != _scaleMin    || 
+      scaleMax      != _scaleMax    ||
+      sampleRateHz  != _sampleRateHz) {
+         configureForProduct(productData.size(), scaleMin, scaleMax, sampleRateHz);
+         labelAxes(xLabel, yLabel);
+      }
+
+      initCurve();
+
+      _curveId1->setData(&_xdata[0], &productData[0], productData.size());
+
+      qwtPlot->replot();
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////
+
+void 
 ScopePlot::configureForTimeSeries(
                                   int n, 
                                   double scaleMin, 
@@ -258,8 +290,33 @@ ScopePlot::configureForSpectrum(int n,
 //////////////////////////////////////////////////////////////////////////////////
 
 void 
+ScopePlot::configureForProduct(int n, 
+                                double scaleMin, 
+                                double scaleMax, 
+                                double sampleRateHz)
+{
+   _plotType = PRODUCT;
+   _scaleMin = scaleMin;
+   _scaleMax = scaleMax;
+   _sampleRateHz = sampleRateHz;
+
+   qwtPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
+   qwtPlot->setAxisScale(QwtPlot::xBottom, 0, _sampleRateHz);
+   qwtPlot->setAxisScale(QwtPlot::yLeft, scaleMin, scaleMax);
+
+   _xdata.resize(n);
+
+   for (int i = 0; i < n; i++)
+      _xdata[i] = i;
+
+   initCurve();
+
+}
+//////////////////////////////////////////////////////////////////////////////////
+
+void 
 ScopePlot::labelAxes(std::string xLabel, std::string yLabel) {
-   qwtPlot->setAxisTitle(QwtPlot::xBottom, xLabel.c_str());	// original: does not build
+   qwtPlot->setAxisTitle(QwtPlot::xBottom, xLabel.c_str());	
    qwtPlot->setAxisTitle(QwtPlot::yLeft,   yLabel.c_str());
 }
 

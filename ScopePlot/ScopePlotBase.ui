@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>660</width>
-            <height>440</height>
+            <width>622</width>
+            <height>567</height>
         </rect>
     </property>
     <property name="caption">
@@ -32,8 +32,6 @@
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <includes>
     <include location="local" impldecl="in implementation">qwt_plot.h</include>
     <include location="local" impldecl="in declaration">qwidgetplugin.h</include>

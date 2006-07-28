@@ -7,8 +7,7 @@ INCLUDEPATH	+= ../
 
 SOURCES	+= main.cpp
 
-FORMS	= ScopePlot.pro \
-	c:\Projects\QtToolbox\ScopePlot\ScopePlotBase.ui
+FORMS +=  TwoKnobsTest.ui
 
 win32 {
          LIBS       += ../TwoKnobs.lib

@@ -158,6 +158,7 @@ ScopePlot::Spectrum(std::vector<double>& power,
                     double scaleMin,
                     double scaleMax,
                     double sampleRateHz,
+                    bool logYaxis,
                     std::string xLabel, 
                     std::string yLabel)
 {
@@ -169,7 +170,7 @@ ScopePlot::Spectrum(std::vector<double>& power,
       scaleMin      != _scaleMin    || 
       scaleMax      != _scaleMax    ||
       sampleRateHz  != _sampleRateHz) {
-         configureForSpectrum(power.size(), scaleMin, scaleMax, sampleRateHz);
+         configureForSpectrum(power.size(), scaleMin, scaleMax, sampleRateHz, logYaxis);
          labelAxes(xLabel, yLabel);
       }
 

@@ -78,6 +78,7 @@ public:
    /// @param scaleMin The minimum value to set the y scale to.
    /// @param scaleMax The maximum value to set the y scale to.
    /// @param sampleRateHz The rate of the data samples, in Hz
+   /// @param logYaxis The scale of the y-axis. TRUE=log, FALSE= linear 
    /// @param xLabel The label for the x axis. Leave 
    /// empty if no label is required.
    /// @param yLabel The label for the y axis. Leave 
@@ -86,6 +87,7 @@ public:
       double scaleMin, 
       double scaleMax,
       double sampleRateHz,
+	  bool logYaxis,	
       std::string xLabel="", 
       std::string yLabel="");
 

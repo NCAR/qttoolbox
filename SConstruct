@@ -1,8 +1,6 @@
-
-
-
 import os,os.path, sys
 sys.path.insert(0, os.path.join(os.getcwd(),'config'))
+
 import atd_scons
 import SCons
 
@@ -35,3 +33,6 @@ SConscript('PPI/SConscript')
 
 options.Update(env)
 
+options = atd_scons.Pkg_Options()
+options.Update(env)
+Help(options.GenerateHelpText(env))

@@ -36,6 +36,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PPI", "PPI\PPI.vcproj", "{0
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PPITest", "PPI\Test\PPITest.vcproj", "{B3892DC5-741C-3A58-B9CB-E206DB913CC8}"
 	ProjectSection(ProjectDependencies) = postProject
+		{0D9743D3-2F6A-3871-A8C1-61DA73BA53EF} = {0D9743D3-2F6A-3871-A8C1-61DA73BA53EF}
 	EndProjectSection
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Installer", "Installer\Installer.vdproj", "{FAEAA6E7-7C7A-4668-93BF-5149D4A536B2}"

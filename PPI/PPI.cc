@@ -234,7 +234,7 @@ PPI::setZoom(double factor)
 	// now use the projection matrix to zoom
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(-1.0/_zoomFactor, 1.0/_zoomFactor, -0.5/_zoomFactor, 0.8/_zoomFactor);
+	gluOrtho2D(-1.0/_zoomFactor, 1.0/_zoomFactor, -1.0/_zoomFactor, 1.0/_zoomFactor);
 
 	// now translate back to where we were panning to
 	glMatrixMode(GL_MODELVIEW);

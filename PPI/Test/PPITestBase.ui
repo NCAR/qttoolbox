@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>630</width>
+            <width>656</width>
             <height>634</height>
         </rect>
     </property>
@@ -503,8 +503,6 @@
         </widget>
     </hbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>pushButtonStart</sender>
@@ -549,6 +547,9 @@
         <slot>varSelectSlot2(int)</slot>
     </connection>
 </connections>
+<includes>
+    <include location="local" impldecl="in implementation">PPI/PPI.h</include>
+</includes>
 <slots>
     <slot>zoomInSlot()</slot>
     <slot>stopSlot()</slot>
@@ -560,9 +561,6 @@
     <slot>panSlot( int )</slot>
     <slot>varSelectSlot2( int )</slot>
 </slots>
-<includes>
-    <include location="local" impldecl="in implementation">PPI/PPI.h</include>
-</includes>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>PPI/PPI.h</includehint>

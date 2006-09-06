@@ -1,6 +1,7 @@
 #include "PPI.h"
 #include <math.h>
 #include <iostream>
+#include <fstream>
 
 //
 //
@@ -33,9 +34,11 @@ _nVars(nVars)
 		_triStripVertices.push_back(j*sin1);
 		_triStripVertices.push_back(j*cos2);
 		_triStripVertices.push_back(j*sin2);
-		for (int v = 0; v < nVars; v++) {
-			_varColors[v].resize(_nGates*6);
-		}
+	}
+   // Allocate space for the colors. Each vertex has an red, green and
+   // blue component, and there are 2 vertices per gate.
+   for (int v = 0; v < nVars; v++) {
+		_varColors[v].resize(_nGates*6);
 	}
 	// there will be one display list id for each variable
 	for (int i = 0; i < _nVars; i++) {
@@ -64,7 +67,7 @@ PPI::beam::vertices()
 GLfloat*
 PPI::beam::colors(int varN) 
 {
-	return &_varColors[varN][0];
+	return &(_varColors[varN])[0];
 }
 
 ////////////////////////////////////////////////////////////////
@@ -437,12 +440,12 @@ PPI::fillColors(beam* beam,
 		for (int g = 0; g < gates; g++) {
 			double data = varData[g];
 			map->dataColor(data, red, green, blue);
-			colors[cIndex++] = red;
-			colors[cIndex++] = green;
-			colors[cIndex++] = blue;
-			colors[cIndex++] = red;
-			colors[cIndex++] = green;
-			colors[cIndex++] = blue;
+			colors[cIndex++] = red/255.0;
+			colors[cIndex++] = green/255.0;
+			colors[cIndex++] = blue/255.0;
+			colors[cIndex++] = red/255.0;
+			colors[cIndex++] = green/255.0;
+			colors[cIndex++] = blue/255.0;
 		}
 		for (int g = gates; g < _maxGates; g++) {
 			colors[cIndex++] = _clearRed;
@@ -462,15 +465,15 @@ PPI::makeDisplayList(beam* b, int v)
 {
 
 	// create a display list to hold the gl commands
-	//	glDeleteLists(b->_glListId[v],1);
-	//	b->_glListId[v] = glGenLists(1);
 	glNewList(b->_glListId[v], GL_COMPILE);
 
 	// set the vertex pointer
 	glVertexPointer(2, GL_FLOAT, 0, b->vertices());
-	// set the colors pointer
+
+   // set the colors pointer
 	glColorPointer(3, GL_FLOAT, 0, b->colors(v));
-	// draw a triangle strip
+
+   // draw a triangle strip
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 2*_maxGates);
 
 	// end the display list

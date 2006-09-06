@@ -155,7 +155,10 @@ PPITest::addBeam()
 		for (int v = 0; v < _nVars; v++) {
 			_beamData[v].resize(_gates);
 			for (int g = 0; g < _gates; g++) {
-				_beamData[v][g] = 100.0*((double)rand())/RAND_MAX;
+				if (v == 0)
+               _beamData[v][g] = 100.0*((double)rand())/RAND_MAX;
+            else
+				   _beamData[v][g] = 50.0*(angle/360.0);
 			}
 		}
 

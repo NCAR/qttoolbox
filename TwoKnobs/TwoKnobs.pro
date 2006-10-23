@@ -1,6 +1,4 @@
 TEMPLATE	= vclib
-DLLDESTDIR += c:/Windows/System32
-DLLDESTDIR += $(QTDIR)/Plugins/Designer
 LIBS       += c:/Projects/lib/qwt500.lib
 LIBS       += ../Knob/Debug/Knob.lib
 
@@ -23,3 +21,6 @@ SOURCES	+= TwoKnobsPlugin.cpp
 SOURCES	+= TwoKnobs.cpp
 
 FORMS	= TwoKnobsBase.ui
+DESTDIR     = Debug
+DLLDESTDIR += c:/Windows/System32
+DLLDESTDIR += $(QTDIR)/Plugins/Designer

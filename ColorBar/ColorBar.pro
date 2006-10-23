@@ -15,10 +15,10 @@ SOURCES	+= ColorBarPlugin.cpp
 
 FORMS	= ColorBarBase.ui
 
-win32 {
-   DLLDESTDIR += c:/Windows/System32
-   DLLDESTDIR += $(QTDIR)/Plugins/Designer
-}
+DESTDIR = Debug
+DLLDESTDIR += c:/Windows/System32
+DLLDESTDIR += $(QTDIR)/Plugins/Designer
+
 
 
 CONFIG += qt 

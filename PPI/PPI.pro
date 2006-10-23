@@ -18,6 +18,7 @@ FORMS	= PPIBase.ui
 INCLUDEPATH += ../
 INCLUDEPATH += ../../
 
+DESTDIR     = Debug
 DLLDESTDIR += c:/Windows/System32
 DLLDESTDIR += $(QTDIR)/Plugins/Designer
 LIBS           += ../ColorBar/Debug/ColorBar.lib

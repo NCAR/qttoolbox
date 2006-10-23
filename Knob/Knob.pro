@@ -1,4 +1,6 @@
 TEMPLATE	= vclib
+
+DESTDIR     = Debug
 DLLDESTDIR += c:/Windows/System32
 DLLDESTDIR += $(QTDIR)/Plugins/Designer
 LIBS       += c:/Projects/qwt/lib/qwt500.lib

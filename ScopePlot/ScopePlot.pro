@@ -12,12 +12,9 @@ SOURCES	+= ScrollZoomer.cpp
 FORMS	= ScopePlotBase.ui \
 	.\ScopePlotBase.ui
 
-win32 {
-      DLLDESTDIR += c:/Windows/System32
-   DLLDESTDIR += $(QTDIR)/Plugins/Designer
-   LIBS       += c:/Projects/lib/qwt500.lib
-}
-
+DLLDESTDIR += c:/Windows/System32
+DLLDESTDIR += $(QTDIR)/Plugins/Designer
+LIBS       += c:/Projects/qwt/lib/qwt500.lib
 
 CONFIG += qt 
 CONFIG += thread

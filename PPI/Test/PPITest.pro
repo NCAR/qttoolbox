@@ -1,32 +1,28 @@
 TEMPLATE	= vcapp
 LANGUAGE	= C++
 
-CONFIG	+= debug
-
-INCLUDEPATH	+= ../
-
-HEADERS	+= PPITest.h
-
-SOURCES	+= main.cpp
-
-FORMS	= PPITestBase.ui
-
-win32 {
-      LIBS       += ../PPI.lib
-   LIBS       += ../../ColorBar/ColorBar.lib
-   LIBS       += opengl32.lib
-   LIBS       += glu32.lib
-}
-
-
+CONFIG += debug
 CONFIG += qt 
 CONFIG += thread
 CONFIG += warn_on 
 CONFIG += exceptions
 
+FORMS	= PPITestBase.ui
+
+HEADERS	+= PPITest.h
+
+SOURCES	+= main.cpp
+SOURCES     += PPITest.cc
+
+INCLUDEPATH	+= ../
 INCLUDEPATH += ../../
 INCLUDEPATH += ../../ColorBar
 
 
-SOURCES     += PPITest.cc
+LIBS       += ../Debug/PPI.lib
+LIBS       += ../../ColorBar/Debug/ColorBar.lib
+LIBS       += opengl32.lib
+LIBS       += glu32.lib
+
+
 

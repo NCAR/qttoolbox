@@ -1,9 +1,7 @@
-win32 {
-   TEMPLATE	= vclib
-   DLLDESTDIR += c:/Windows/System32
-   DLLDESTDIR += $(QTDIR)/Plugins/Designer
-   LIBS       += c:/Projects/lib/qwt500.lib
-}
+TEMPLATE	= vclib
+DLLDESTDIR += c:/Windows/System32
+DLLDESTDIR += $(QTDIR)/Plugins/Designer
+LIBS       += c:/Projects/lib/qwt500.lib
 
 LANGUAGE	= C++
 

@@ -1,10 +1,8 @@
-win32 {
-   TEMPLATE	= vclib
-   DLLDESTDIR += c:/Windows/System32
-   DLLDESTDIR += $(QTDIR)/Plugins/Designer
-   LIBS       += c:/Projects/lib/qwt500.lib
-   LIBS       += ../Knob/Knob.lib
-}
+TEMPLATE	= vclib
+DLLDESTDIR += c:/Windows/System32
+DLLDESTDIR += $(QTDIR)/Plugins/Designer
+LIBS       += c:/Projects/lib/qwt500.lib
+LIBS       += ../Knob/Debug/Knob.lib
 
 LANGUAGE	= C++
 
@@ -19,7 +17,7 @@ INCLUDEPATH += ../
 INCLUDEPATH += c:/Projects/qwt/include
 
 HEADERS	+= TwoKnobsPlugin.h
-HEADERS     += TwoKnobs.h
+HEADERS += TwoKnobs.h
 
 SOURCES	+= TwoKnobsPlugin.cpp
 SOURCES	+= TwoKnobs.cpp

@@ -1,7 +1,4 @@
-win32 {
-   TEMPLATE	= vcapp
-   LIBS       += ../ColorBar.lib
-}
+TEMPLATE = vcapp
 
 LANGUAGE	= C++
 
@@ -14,9 +11,11 @@ CONFIG += exceptions
 INCLUDEPATH += ../
 INCLUDEPATH += ../../
 
-HEADERS     += ColorBarTest.h
+HEADERS += ColorBarTest.h
 
 SOURCES	+= main.cpp
-SOURCES     += ColorBarTest.cpp
+SOURCES += ColorBarTest.cpp
 
-FORMS       += ColorBarTestBase.ui
+FORMS   += ColorBarTestBase.ui
+
+LIBS     += ../Debug/ColorBar.lib

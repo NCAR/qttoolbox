@@ -18,14 +18,11 @@ FORMS	= PPIBase.ui
 INCLUDEPATH += ../
 INCLUDEPATH += ../../
 
-win32 {
-   DLLDESTDIR += c:/Windows/System32
-   DLLDESTDIR += $(QTDIR)/Plugins/Designer
-   LIBPATH        += c:/Projects/lib
-   LIBS           += ../ColorBar/ColorBar.lib
-   LIBS           += opengl32.lib
-   LIBS           += glu32.lib
-}
+DLLDESTDIR += c:/Windows/System32
+DLLDESTDIR += $(QTDIR)/Plugins/Designer
+LIBS           += ../ColorBar/Debug/ColorBar.lib
+LIBS           += opengl32.lib
+LIBS           += glu32.lib
 
 
 

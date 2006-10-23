@@ -39,8 +39,26 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_5F36EF954B77438C836F372BC86E4FD9"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_163974CF872C8E12CB7F691940A5CF92"
+        "OwnerKey" = "8:_97F15E7AC6B94DB993163A014D19E1A9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_163974CF872C8E12CB7F691940A5CF92"
+        "OwnerKey" = "8:_F2B2461BBE34471C95D78B5ADD2FBD92"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_163974CF872C8E12CB7F691940A5CF92"
+        "OwnerKey" = "8:_F114337FFCC34416A4B60427684F1EB8"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_163974CF872C8E12CB7F691940A5CF92"
+        "OwnerKey" = "8:_9F60079FDCD54E0199B72DD9AAAC372E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -64,6 +82,12 @@
         "Entry"
         {
         "MsmKey" = "8:_A4EB8827857E4B68B9F3BAC19AB3C3E3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CDAD10FB8A3F4164B36E8DA84DA7EDC7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -245,10 +269,10 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{A582A373-4685-4296-BEFE-614B80A702C3}:_5F36EF954B77438C836F372BC86E4FD9"
+            "{A582A373-4685-4296-BEFE-614B80A702C3}:_163974CF872C8E12CB7F691940A5CF92"
             {
-            "SourcePath" = "8:C:\\Qt\\3.3.4\\lib\\qt-mt334.dll"
-            "TargetName" = "8:qt-mt334.dll"
+            "SourcePath" = "8:qt-mt336.dll"
+            "TargetName" = "8:qt-mt336.dll"
             "Tag" = "8:"
             "Folder" = "8:_A72DF8927EAC4AE293A8A3DEE170BF06"
             "Condition" = "8:"
@@ -262,7 +286,7 @@
             "PackageAs" = "3:1"
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{A582A373-4685-4296-BEFE-614B80A702C3}:_7270B7E18994124D0694C854955E2448"
@@ -289,6 +313,26 @@
             {
             "SourcePath" = "8:..\\..\\qwt\\lib\\qwt500.dll"
             "TargetName" = "8:qwt500.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_A72DF8927EAC4AE293A8A3DEE170BF06"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{A582A373-4685-4296-BEFE-614B80A702C3}:_CDAD10FB8A3F4164B36E8DA84DA7EDC7"
+            {
+            "SourcePath" = "8:..\\Knob\\Debug\\Knob.dll"
+            "TargetName" = "8:Knob.dll"
             "Tag" = "8:"
             "Folder" = "8:_A72DF8927EAC4AE293A8A3DEE170BF06"
             "Condition" = "8:"
@@ -401,7 +445,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Installer"
         "ProductCode" = "8:{AAEE39E2-CD23-485E-B361-C2C2F92B55CB}"
-        "PackageCode" = "8:{A3315906-349F-46BD-9B98-42BD203772AF}"
+        "PackageCode" = "8:{4389323F-A654-4ED2-8AB6-90F091C9CBE8}"
         "UpgradeCode" = "8:{BC5CC207-B251-4775-83EC-AD66EAC2AF35}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
@@ -903,7 +947,7 @@
         {
             "{8062640A-2EEE-46E9-AB67-688E9A886E9F}:_97F15E7AC6B94DB993163A014D19E1A9"
             {
-            "SourcePath" = "8:..\\ColorBar\\Test\\ColorBarTest.exe"
+            "SourcePath" = "8:..\\ColorBar\\Test\\Debug\\ColorBarTest.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_A72DF8927EAC4AE293A8A3DEE170BF06"
@@ -931,7 +975,7 @@
             }
             "{8062640A-2EEE-46E9-AB67-688E9A886E9F}:_9F60079FDCD54E0199B72DD9AAAC372E"
             {
-            "SourcePath" = "8:..\\TwoKnobs\\Test\\TwoKnobsTest.exe"
+            "SourcePath" = "8:..\\TwoKnobs\\Test\\Debug\\TwoKnobsTest.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_A72DF8927EAC4AE293A8A3DEE170BF06"
@@ -959,7 +1003,7 @@
             }
             "{8062640A-2EEE-46E9-AB67-688E9A886E9F}:_F114337FFCC34416A4B60427684F1EB8"
             {
-            "SourcePath" = "8:..\\ScopePlot\\Test\\ScopePlotTest.exe"
+            "SourcePath" = "8:..\\ScopePlot\\Test\\Debug\\ScopePlotTest.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_A72DF8927EAC4AE293A8A3DEE170BF06"
@@ -987,7 +1031,7 @@
             }
             "{8062640A-2EEE-46E9-AB67-688E9A886E9F}:_F2B2461BBE34471C95D78B5ADD2FBD92"
             {
-            "SourcePath" = "8:..\\Ppi\\Test\\PPITest.exe"
+            "SourcePath" = "8:..\\Ppi\\Test\\Debug\\PPITest.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_A72DF8927EAC4AE293A8A3DEE170BF06"
@@ -1013,9 +1057,6 @@
                 {
                 }
             }
-        }
-        "VJSharpPlugin"
-        {
         }
     }
 }

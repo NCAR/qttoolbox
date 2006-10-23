@@ -1,7 +1,7 @@
 win32 {
    TEMPLATE	= vcapp
    LIBS       += c:/Projects/lib/qwt500.lib
-   LIBS       += ../ScopePlot.lib
+   LIBS       += ../Debug/ScopePlot.lib
 }
 
 LANGUAGE	= C++

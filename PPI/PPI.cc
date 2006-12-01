@@ -83,7 +83,8 @@ _panHoriz(0.0),
 _panVert(0.0),
 _clearRed(0.6f),
 _clearGreen(0.3f),
-_clearBlue(0.3f)
+_clearBlue(0.3f),
+_ringsEnabled(true)
 {
 	initializeGL();
 }
@@ -109,6 +110,10 @@ PPI::configure(int nVars,
 	_nVars = nVars;
 	_maxGates = maxGates;
 	_preAllocate = true;
+
+   for (int i = 0; i < _beams.size(); i++)
+      delete _beams[i];
+   _beams.clear();
 
 	makeCurrent();
 	// This constructor is called when we are preallocating beams.
@@ -180,31 +185,44 @@ PPI::resizeGL( int w, int h )
 	glLoadIdentity();
 //	gluOrtho2D(-1.0,1.0, -0.5, 0.8);
 	gluOrtho2D(-1.0,1.0, -1.0, 1.0);
-
 	glMatrixMode(GL_MODELVIEW);
-
 }
 
+////////////////////////////////////////////////////////////////
+void
+PPI::rings(bool enabled) {
+   _ringsEnabled = enabled;
+
+	//redraw
+	makeCurrent();
+	paintGL();
+	swapBuffers();
+}
 ////////////////////////////////////////////////////////////////
 
 void 
 PPI::paintGL()
 {
 
+  if (_ringsEnabled) {
 	glStencilFunc(GL_NEVER, 0x0, 0x0);
 	glStencilOp(GL_INCR, GL_INCR, GL_INCR);
 
-	// draw range rings
-	glClear(GL_STENCIL_BUFFER_BIT);  
-	glColor3f(1.0, 1.0, 0.0);
+ 	   // draw range rings
+	   glClear(GL_STENCIL_BUFFER_BIT);  
+	   glColor3f(1.0, 1.0, 0.0);
 
-	GLUquadricObj* o = gluNewQuadric();
+      GLUquadricObj* o = gluNewQuadric();
 
-	for (double x = 0.1; x <=1.0; x += 0.1)
-		gluDisk(o, x, x+0.005, 100, 1);
+   	for (double x = 0.1; x <=1.0; x += 0.1)
+	   	gluDisk(o, x, x+0.003, 100, 1);
 
-	glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+   	glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
+	   glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+  } else {
+     glClear(GL_STENCIL_BUFFER_BIT);  
+	  glColor3f(1.0, 1.0, 0.0);
+  }
 
 	glClear(GL_COLOR_BUFFER_BIT);
 	for (unsigned int i = 0; i < _beams.size(); i++) {

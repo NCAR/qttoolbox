@@ -69,6 +69,8 @@ public:
 
 	inline int beamIndex(double startAngle, double stopAngle);
 
+   void rings(bool enabled);
+
 	double getZoom();
 
 	int numBeams();
@@ -113,6 +115,8 @@ protected:
 	float _clearGreen;
 
 	float _clearBlue;
+
+   bool _ringsEnabled;
 
 };
 

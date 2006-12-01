@@ -24,7 +24,7 @@
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout8</cstring>
+                <cstring>layout10</cstring>
             </property>
             <vbox>
                 <property name="name">
@@ -78,6 +78,32 @@
                         <string>Reverse</string>
                     </property>
                 </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout9</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>ringsCheckBox</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Rings</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>gridCheckBox</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Grid</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
                 <spacer>
                     <property name="name">
                         <cstring>spacer5</cstring>
@@ -91,7 +117,7 @@
                     <property name="sizeHint">
                         <size>
                             <width>20</width>
-                            <height>41</height>
+                            <height>100</height>
                         </size>
                     </property>
                 </spacer>
@@ -223,7 +249,7 @@
                     <property name="sizeHint">
                         <size>
                             <width>20</width>
-                            <height>121</height>
+                            <height>175</height>
                         </size>
                     </property>
                 </spacer>
@@ -503,6 +529,8 @@
         </widget>
     </hbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>pushButtonStart</sender>
@@ -546,6 +574,18 @@
         <receiver>PPITestBase</receiver>
         <slot>varSelectSlot2(int)</slot>
     </connection>
+    <connection>
+        <sender>ringsCheckBox</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>PPITestBase</receiver>
+        <slot>ringsSlot(bool)</slot>
+    </connection>
+    <connection>
+        <sender>gridCheckBox</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>PPITestBase</receiver>
+        <slot>gridSlot(bool)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">PPI/PPI.h</include>
@@ -560,6 +600,8 @@
     <slot>clearVarSlot( int )</slot>
     <slot>panSlot( int )</slot>
     <slot>varSelectSlot2( int )</slot>
+    <slot>ringsSlot(bool)</slot>
+    <slot>gridSlot(bool)</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>

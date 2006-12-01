@@ -5,6 +5,7 @@
 #include <qradiobutton.h>
 #include <qbuttongroup.h>
 #include <qlayout.h>
+#include <qcheckbox.h>
 
 #include <iostream>
 
@@ -76,6 +77,10 @@ PPITestBase(parent,
 	// beams.
 	_ppi1->configure(_nVars, _gates, 360);
 	_ppi2->configure(_nVars, _gates, 360);
+
+   // set the rings to the current state of the check box
+   _ppi1->rings(ringsCheckBox->state());
+   _ppi1->rings(ringsCheckBox->state());
 
 	// connect the button pressed signal to the var changed slot
 	connect( btnGroupVarSelect1, SIGNAL( clicked(int) ), this, SLOT( varSelectSlot1(int) ));
@@ -228,6 +233,20 @@ void PPITest::clearVarSlot(int index)
 	_ppi2->clearVar(index);
 }
 
+///////////////////////////////////////////////////////////////////////
+
+void PPITest::ringsSlot(bool enabled)
+{
+   _ppi1->rings(enabled);
+   _ppi2->rings(enabled);
+}
+///////////////////////////////////////////////////////////////////////
+
+void PPITest::gridSlot(bool enabled)
+{
+//   _ppi1->grid(enabled);
+//   _ppi2->grid(enabled);
+}
 ///////////////////////////////////////////////////////////////////////
 
 void PPITest::panSlot(int panIndex)

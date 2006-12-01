@@ -21,6 +21,8 @@ class PPITest: public PPITestBase
     void changeDir();
     void clearVarSlot(int);
     void panSlot(int);
+    void ringsSlot(bool);
+    void gridSlot(bool);
    
   public slots:
     void addBeam();

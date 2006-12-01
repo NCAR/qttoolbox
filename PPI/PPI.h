@@ -12,7 +12,25 @@ class QT_WIDGET_PLUGIN_EXPORT PPI: public QGLWidget {
 
 	Q_OBJECT        // must include this if you use Qt signals/slots
 
-	class beam {
+   /// Manage static data for one display beam that can
+   /// render multiple variables.
+   /// For the specified solid angle and number
+   /// of gates:
+   ///
+   /// - a vector of vertices is created.
+   /// - nVars vectors, each of length matching the vertices vector,
+   ///   is allocated.
+   /// - a vector of display list ids is allocated. These ids are
+   ///   used later when display lists are drawn.
+   /// 
+   /// The colors for each variable will be set dynamically
+   /// by the owner as data need to be rendered. At that time, 
+   /// a display list is also created (by the beam owner)
+   /// that uses the display list id. By having display lists
+   /// create for all variables, the display of beams can be
+   /// rapidly switched between variables just by executing
+   /// the correct display list.
+   class beam {
 	public:
 		beam(double startAngle, double stopAngle, int nGates, int nVars);
 		virtual ~beam();

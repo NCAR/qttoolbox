@@ -10,7 +10,25 @@
 	/// as plotlib::ColorBar.
 	class QT_WIDGET_PLUGIN_EXPORT ColorMap {
 	public:
-		ColorMap(double minRange, double maxRange);
+		/// Create a color map using the built-in
+      /// color table.
+      /// @param minRange The minimum value for the color map.
+      /// @param maxRange The maximum value for the color map.
+      ColorMap(double minRange, double maxRange);
+
+		/// Create a color map using the provided colors.
+      /// The color table will be constructed from the color
+      /// vectors, using the number of entries found in
+      /// the shortest of the three color vectors. (They 
+      /// really should all be the same length).
+      ColorMap(
+         double minRange,         ///< The minimum map range
+         double maxRange,         ///< The maximum map range
+         std::vector<float> red,  ///< A vector of red hues, ranging between 0 and 255
+         std::vector<float> green,///< A vector of green hues, ranging between 0 and 255
+         std::vector<float> blue  ///< A vector of blue hues, ranging between 0 and 255
+         );
+
 		virtual ~ColorMap();
 
 		/**

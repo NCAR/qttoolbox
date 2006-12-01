@@ -37,7 +37,7 @@ ColorBar::makeSwatches (ColorMap& map, double min, double max)
 		delete _widgets[i];
 	_widgets.clear();
 
-	QFont fn("Helvetica",8);
+	QFont fn("Helvetica",7);
 	QLabel* l;
 
 	// create a blank swatch to indicate the maximum of the scale

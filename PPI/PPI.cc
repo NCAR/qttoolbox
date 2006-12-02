@@ -3,6 +3,8 @@
 #include <iostream>
 #include <fstream>
 
+#include <qtimer.h>
+
 //
 //
 // Any drawing action must insure that the GL context is current. paintGL() and
@@ -84,9 +86,13 @@ _panVert(0.0),
 _clearRed(0.6f),
 _clearGreen(0.3f),
 _clearBlue(0.3f),
-_ringsEnabled(true)
+_ringsEnabled(true),
+_resizing(false)
 {
 	initializeGL();
+
+   // connect thre resize timer
+   connect(&_resizeTimer, SIGNAL(timeout()), this, SLOT(resizeTimerTimeout()));
 }
 ////////////////////////////////////////////////////////////////
 
@@ -183,7 +189,6 @@ PPI::resizeGL( int w, int h )
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-//	gluOrtho2D(-1.0,1.0, -0.5, 0.8);
 	gluOrtho2D(-1.0,1.0, -1.0, 1.0);
 	glMatrixMode(GL_MODELVIEW);
 }
@@ -279,6 +284,17 @@ PPI::getZoom()
 ////////////////////////////////////////////////////////////////
 
 void
+PPI::refresh()
+{
+	//redraw
+	makeCurrent();
+	glClear(GL_COLOR_BUFFER_BIT);
+	paintGL();
+	swapBuffers();
+}
+////////////////////////////////////////////////////////////////
+
+void
 PPI::pan(double horizFrac, double vertFrac) 
 {
 	// pan, by setting up a translation
@@ -286,12 +302,27 @@ PPI::pan(double horizFrac, double vertFrac)
 	_panHoriz += horizFrac/_zoomFactor;
 	_panVert += vertFrac/_zoomFactor;
 
-	//redraw
-	makeCurrent();
-	paintGL();
-	swapBuffers();
+   refresh();
 }
 
+
+////////////////////////////////////////////////////////////////
+void 
+PPI::resizeEvent( QResizeEvent * e )
+{
+   _resizing = true;
+   _resizeTimer.start(200, true);
+}
+
+////////////////////////////////////////////////////////////////
+void 
+PPI::resizeTimerTimeout()
+{
+	makeCurrent();
+   resizeGL(this->width(), this->height());
+   _resizing = false;
+   refresh();
+}
 
 ////////////////////////////////////////////////////////////////
 
@@ -426,10 +457,11 @@ PPI::addBeam(float startAngle,
 		makeDisplayList(b,_selectedVar);
 
 		// draw it
-		glCallList(b->_glListId[_selectedVar]);
+         glCallList(b->_glListId[_selectedVar]);
 	}
 
-	swapBuffers();
+	if (!_resizing)
+	   swapBuffers();
 
 	if (!_preAllocate) {
 		// in dynamic mode, cull hidden beams

@@ -207,6 +207,12 @@ protected:
 
    void resizeEvent( QResizeEvent * e );
 
+   // create the stencil that will draw the grid and range rings.
+   void createStencil();
+
+   // clear stencil
+   void clearStencil();
+
 	std::vector<beam*> _beams;
 
 	int _nVars;

@@ -179,7 +179,9 @@ PPI::initializeGL()
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 
-	glClearStencil(0.0f);
+	// set the stencil buffer clear value.
+   glClearStencil(0.0f);
+   // allow stencil tests to occur.
 	glEnable(GL_STENCIL_TEST);
 }
 
@@ -224,26 +226,12 @@ void
 PPI::paintGL()
 {
   if (_ringsEnabled) {
-	glStencilFunc(GL_NEVER, 0x0, 0x0);
-	glStencilOp(GL_INCR, GL_INCR, GL_INCR);
-
- 	   // draw range rings
-	   glClear(GL_STENCIL_BUFFER_BIT);  
-
-      GLUquadricObj* o = gluNewQuadric();
-
-      for (double x = 0.1; x <=1.0; x += 0.1) {
-	   	gluDisk(o, x, x+0.003, 100, 1);
-      }
-
-   	glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
-	   glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-      glColor3f(_gridRingsRed, _gridRingsGreen, _gridRingsBlue);
+     createStencil();
   } else {
-     glClear(GL_STENCIL_BUFFER_BIT);  
+     clearStencil();
   }
 
-  	glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT);
 	for (unsigned int i = 0; i < _beams.size(); i++) {
 		glCallList(_beams[i]->_glListId[_selectedVar]);
 	}
@@ -737,6 +725,84 @@ PPI::gridRingColor(QColor color)
    _gridRingsBlue  = color.blue() /255.0;
 }
 
+////////////////////////////////////////////////////////////////////////
 
+void
+PPI::createStencil()
+{
+	// The stencil buffer is a funny beast.  
+   //
+   // It can mask out display of the color buffers.
+   // The stencil buffer is filled with values
+   // to affect the areas that you want masked.
+   // A stencil operation is specified, which can
+   // compare the color buffer, the stencil buffer
+   // and a reference value to determine if the color 
+   // should be displayed.
+   //
+   // The stencil buffer can also be directed to be 
+   // modified as a result of the test.
+   //
+   // Oddly, there isn't a direct call to write 
+   // into the stencil buffer. Instead, you do the
+   // following to get your pattern into the stencil 
+   // buffer:
+   // 1. clear the stencil buffer
+   // 2. set the comparrison function to always fail; i.e. all
+   //    drawing commands will fail and no actual rendering
+   //    from the color buffers will occur.
+   // 3. set the stencil buffer operation to increment the
+   //    stencil buffer when drawing to an area occurs.
+   // 4. Draw you pattern. After drawing, the stencil buffer 
+   //    will have one values set for your pattern.
+   //
+   // Okay, once the stencil buffer has one values in the 
+   // area of your pattern, we need to use it as a mask.
+   // We do this by setting the comparison function to
+   // say that drawing is allowed anywhere the stencil
+   // pattern is not equal to the reference value of 1.
+   // We also say that the stencil buffer operation is
+   // to keep the current stencil value; i.e. don't change it.
+   
+   // So, let's get going. Create the stencil pattern:
+   
+   // don't allow any drawing of the color buffer
+   glStencilFunc(GL_NEVER, 0x0, 0x0);
+	// clear the stencil buffer (to 0.0f, set in initializeGL())
+	glClear(GL_STENCIL_BUFFER_BIT);
+   // on any drawing operation, increment the stencil.
+   glStencilOp(GL_INCR, GL_INCR, GL_INCR);
+
+ 	// draw range rings
+   GLUquadricObj* o = gluNewQuadric();
+
+   for (double x = 0.1; x <=1.0; x += 0.1) {
+	  gluDisk(o, x, x+0.004, 100, 1);
+   }
+
+   // now set up to use stencil in future drawing.
+
+   // allow color buffer rendering wherever the stencil buffer
+   // is not equal to 1.
+   glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
+   // Keep (i.e. do not modify) the stencil buffer 
+   // when the stencil test passes.
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
+   //glColor3f(_gridRingsRed, _gridRingsGreen, _gridRingsBlue);
+
+}
+
+////////////////////////////////////////////////////////////////////////
+
+void
+PPI::clearStencil()
+{
+   // Clear the stencil buffer. 
+   // The glClear causes the stencil clear vaule
+   // set by glStencilClear() in initializeGL(),
+   // to be filled into the stencil buffer
+   glClear(GL_STENCIL_BUFFER_BIT);  
+}
 
 

@@ -148,10 +148,30 @@ public:
 		int stride, 
 		std::vector<ColorMap*>& maps);
 
-	inline int beamIndex(double startAngle, double stopAngle);
+   /// Specify the background color
+   /// Call refresh()
+   void backgroundColor(QColor color  ///< The background color.
+      );
+
+   /// Specify the rings/grid color
+   /// Call refresh()
+   void gridRingColor(QColor color  ///< The background color.
+      );
+
+   /// Find the index in the _beams array of the 
+   /// beam that corresponds to this angle. The
+   /// beam angles must sweep in a counter clockwise,
+   /// i.e. cartessian, direction.
+   inline int beamIndex(
+      double startAngle,   ///< Beginning angle of the beam. 
+      double stopAngle);   ///< Ending angle of the beam.
 
    /// Set ring visibility.
    void rings(bool enabled    ///< True to show them, false otherwise
+      );
+
+   /// Set grids visibility.
+   void grids(bool enabled    ///< True to show them, false otherwise
       );
 
 	/// @return The current zoom factor
@@ -209,7 +229,15 @@ protected:
 
 	float _clearBlue;
 
+	float _gridRingsRed;
+
+	float _gridRingsGreen;
+
+	float _gridRingsBlue;
+
    bool _ringsEnabled;
+
+   bool _gridsEnabled;
 
    QTimer _resizeTimer;
 

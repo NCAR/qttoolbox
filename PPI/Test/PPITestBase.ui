@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>656</width>
+            <width>658</width>
             <height>634</height>
         </rect>
     </property>
@@ -24,7 +24,7 @@
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout10</cstring>
+                <cstring>layout9</cstring>
             </property>
             <vbox>
                 <property name="name">
@@ -78,6 +78,22 @@
                         <string>Reverse</string>
                     </property>
                 </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>setBackground</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Set background color</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>setGridRing</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Set grid/ring color</string>
+                    </property>
+                </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
                         <cstring>layout9</cstring>
@@ -117,7 +133,7 @@
                     <property name="sizeHint">
                         <size>
                             <width>20</width>
-                            <height>100</height>
+                            <height>50</height>
                         </size>
                     </property>
                 </spacer>
@@ -586,6 +602,18 @@
         <receiver>PPITestBase</receiver>
         <slot>gridSlot(bool)</slot>
     </connection>
+    <connection>
+        <sender>setGridRing</sender>
+        <signal>released()</signal>
+        <receiver>PPITestBase</receiver>
+        <slot>gridRingColorSlot()</slot>
+    </connection>
+    <connection>
+        <sender>setBackground</sender>
+        <signal>released()</signal>
+        <receiver>PPITestBase</receiver>
+        <slot>backgroundColorSlot()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">PPI/PPI.h</include>
@@ -602,6 +630,8 @@
     <slot>varSelectSlot2( int )</slot>
     <slot>ringsSlot(bool)</slot>
     <slot>gridSlot(bool)</slot>
+    <slot>backgroundColorSlot()</slot>
+    <slot>gridRingColorSlot()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>

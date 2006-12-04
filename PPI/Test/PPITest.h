@@ -23,6 +23,8 @@ class PPITest: public PPITestBase
     void panSlot(int);
     void ringsSlot(bool);
     void gridSlot(bool);
+    void backgroundColorSlot();
+    void gridRingColorSlot();
    
   public slots:
     void addBeam();

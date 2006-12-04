@@ -6,6 +6,7 @@
 #include <qbuttongroup.h>
 #include <qlayout.h>
 #include <qcheckbox.h>
+#include <qcolordialog.h>
 
 #include <iostream>
 
@@ -244,9 +245,33 @@ void PPITest::ringsSlot(bool enabled)
 
 void PPITest::gridSlot(bool enabled)
 {
-//   _ppi1->grid(enabled);
-//   _ppi2->grid(enabled);
+   _ppi1->grids(enabled);
+   _ppi2->grids(enabled);
 }
+///////////////////////////////////////////////////////////////////////
+void
+PPITest::backgroundColorSlot() 
+{
+   QColor color = QColorDialog::getColor("white",this,"Colourtable");
+
+   _ppi1->backgroundColor(color);
+   _ppi1->refresh();
+   _ppi2->backgroundColor(color);
+   _ppi2->refresh();
+}
+
+///////////////////////////////////////////////////////////////////////
+void
+PPITest::gridRingColorSlot() 
+{
+   QColor color = QColorDialog::getColor("white",this,"Colourtable");
+
+   _ppi1->gridRingColor(color);
+   _ppi1->refresh();
+   _ppi2->gridRingColor(color);
+   _ppi2->refresh();
+}
+
 ///////////////////////////////////////////////////////////////////////
 
 void PPITest::panSlot(int panIndex)

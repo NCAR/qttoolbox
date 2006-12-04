@@ -84,9 +84,13 @@ _zoomFactor(1.0),
 _panHoriz(0.0),
 _panVert(0.0),
 _clearRed(0.6f),
-_clearGreen(0.3f),
-_clearBlue(0.3f),
+_clearGreen(0.6f),
+_clearBlue(0.9f),
+_gridRingsRed(0.0f),
+_gridRingsGreen(0.0f),
+_gridRingsBlue(0.0),
 _ringsEnabled(true),
+_gridsEnabled(true),
 _resizing(false)
 {
 	initializeGL();
@@ -203,33 +207,43 @@ PPI::rings(bool enabled) {
 	paintGL();
 	swapBuffers();
 }
+
+////////////////////////////////////////////////////////////////
+void
+PPI::grids(bool enabled) {
+   _gridsEnabled = enabled;
+
+	//redraw
+	makeCurrent();
+	paintGL();
+	swapBuffers();
+}
 ////////////////////////////////////////////////////////////////
 
 void 
 PPI::paintGL()
 {
-
   if (_ringsEnabled) {
 	glStencilFunc(GL_NEVER, 0x0, 0x0);
 	glStencilOp(GL_INCR, GL_INCR, GL_INCR);
 
  	   // draw range rings
 	   glClear(GL_STENCIL_BUFFER_BIT);  
-	   glColor3f(1.0, 1.0, 0.0);
 
       GLUquadricObj* o = gluNewQuadric();
 
-   	for (double x = 0.1; x <=1.0; x += 0.1)
+      for (double x = 0.1; x <=1.0; x += 0.1) {
 	   	gluDisk(o, x, x+0.003, 100, 1);
+      }
 
    	glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
 	   glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+      glColor3f(_gridRingsRed, _gridRingsGreen, _gridRingsBlue);
   } else {
      glClear(GL_STENCIL_BUFFER_BIT);  
-	  glColor3f(1.0, 1.0, 0.0);
   }
 
-	glClear(GL_COLOR_BUFFER_BIT);
+  	glClear(GL_COLOR_BUFFER_BIT);
 	for (unsigned int i = 0; i < _beams.size(); i++) {
 		glCallList(_beams[i]->_glListId[_selectedVar]);
 	}
@@ -688,15 +702,40 @@ PPI::cullBeamList()
 int
 PPI::beamIndex(double startAngle, double stopAngle)
 {
-	int i = _beams.size()*(startAngle + (stopAngle-startAngle)/2)/360.0;
-	if (i<0)
-		i = 0;
-	if (i>(int)_beams.size()-1)
-		i = _beams.size()-1;
+    int i = _beams.size()*(startAngle + (stopAngle-startAngle)/2)/360.0;
+    if (i<0)
+        i = 0;
+    if (i>(int)_beams.size()-1)
+        i = _beams.size()-1;
 
-	return i;
+    return i;
 }
 
+////////////////////////////////////////////////////////////////////////
+
+void
+PPI::backgroundColor(QColor color)
+{
+   _clearRed   = color.red()/255.0;
+   _clearGreen = color.green()/255.0;
+   _clearBlue  = color.blue()/255.0;
+   
+   makeCurrent();
+
+   // set the background color
+   glClearColor(_clearRed, _clearGreen, _clearBlue, 0.0f);
+
+}
+
+////////////////////////////////////////////////////////////////////////
+
+void
+PPI::gridRingColor(QColor color)
+{
+   _gridRingsRed   = color.red()  /255.0;
+   _gridRingsGreen = color.green()/255.0;
+   _gridRingsBlue  = color.blue() /255.0;
+}
 
 
 

@@ -28,6 +28,12 @@ Knob::setRange(double min, double max)
 }
 
 void
+Knob::setValue(double val)
+{
+	_knob->setValue(val);
+}
+
+void
 Knob::valueChangedSlot(double v)
 {
    emit valueChanged(v);

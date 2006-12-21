@@ -31,6 +31,13 @@ TwoKnobs::setRanges(double knobOneMin, double knobOneMax,
    _knobTwo->setRange(knobTwoMin, knobTwoMax);
 }
 
+void
+TwoKnobs::setValues(double knobOne, double knobTwo)
+{
+   _knobOne->setValue(knobOne);
+   _knobTwo->setValue(knobTwo);
+}
+
 void 
 TwoKnobs::knobOneChangedSlot(double v)
 {

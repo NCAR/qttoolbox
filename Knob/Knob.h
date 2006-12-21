@@ -17,6 +17,7 @@ public:
 
     void setTitle(std::string title);
     void setRange(double min, double max);
+	void setValue(double val);
 
 public slots:
    void valueChangedSlot(double);

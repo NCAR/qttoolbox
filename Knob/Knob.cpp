@@ -38,3 +38,16 @@ Knob::valueChangedSlot(double v)
 {
    emit valueChanged(v);
 }
+
+void 
+Knob::setScaleMaxMajor(int ticks)
+{
+	_knob->setScaleMaxMajor(ticks);
+}
+
+void 
+Knob::setScaleMaxMinor(int ticks)
+{
+	_knob->setScaleMaxMinor(ticks);
+}
+

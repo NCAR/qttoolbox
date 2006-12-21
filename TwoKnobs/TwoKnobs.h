@@ -18,6 +18,8 @@ public:
     void setRanges(double knobOneMin, double knobOneMax,
        double knobTwoMin, double knobTwoMax);
 	void setValues(double val1, double val2);
+	void setScaleMaxMajor(int knobNum, int ticks);
+	void setScaleMaxMinor(int knobNum, int ticks);
 
 public slots:
     virtual void knobOneChangedSlot(double);

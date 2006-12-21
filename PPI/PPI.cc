@@ -733,6 +733,8 @@ PPI::createStencil()
 	// The stencil buffer is a funny beast.  
    //
    // It can mask out display of the color buffers.
+   // If a color buffer is masked out, the color
+   // buffer clear value is displayed instead.
    // The stencil buffer is filled with values
    // to affect the areas that you want masked.
    // A stencil operation is specified, which can

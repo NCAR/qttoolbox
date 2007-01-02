@@ -95,6 +95,12 @@ _resizing(false)
 {
 	initializeGL();
 
+	QGLFormat fmt = format();
+	fmt.setDoubleBuffer(false);
+	QGLFormat::setDefaultFormat(fmt);
+	this->setFormat(fmt);
+	this->setAutoBufferSwap(false);
+
    // connect thre resize timer
    connect(&_resizeTimer, SIGNAL(timeout()), this, SLOT(resizeTimerTimeout()));
 }
@@ -207,7 +213,6 @@ PPI::rings(bool enabled) {
 	//redraw
 	makeCurrent();
 	paintGL();
-	swapBuffers();
 }
 
 ////////////////////////////////////////////////////////////////
@@ -218,7 +223,6 @@ PPI::grids(bool enabled) {
 	//redraw
 	makeCurrent();
 	paintGL();
-	swapBuffers();
 }
 ////////////////////////////////////////////////////////////////
 
@@ -272,7 +276,6 @@ PPI::setZoom(double factor)
 
 	// redraw
 	paintGL();
-	swapBuffers();
 }
 
 ////////////////////////////////////////////////////////////////
@@ -292,7 +295,6 @@ PPI::refresh()
 	makeCurrent();
 	glClear(GL_COLOR_BUFFER_BIT);
 	paintGL();
-	swapBuffers();
 }
 ////////////////////////////////////////////////////////////////
 
@@ -347,7 +349,7 @@ PPI::selectVar(int index)
 		// draw it
 		glCallList(_beams[i]->_glListId[_selectedVar]);
 	}
-	swapBuffers();
+	glFlush();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -463,7 +465,7 @@ PPI::addBeam(float startAngle,
 	}
 
 	if (!_resizing)
-	   swapBuffers();
+	   glFlush();
 
 	if (!_preAllocate) {
 		// in dynamic mode, cull hidden beams

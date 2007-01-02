@@ -87,6 +87,7 @@ Global
 		{B3892DC5-741C-3A58-B9CB-E206DB913CC8}.Release.Build.0 = Release|Win32
 		{FAEAA6E7-7C7A-4668-93BF-5149D4A536B2}.Debug.ActiveCfg = Debug
 		{FAEAA6E7-7C7A-4668-93BF-5149D4A536B2}.Release.ActiveCfg = Release
+		{FAEAA6E7-7C7A-4668-93BF-5149D4A536B2}.Release.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

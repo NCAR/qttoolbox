@@ -51,3 +51,15 @@ Knob::setScaleMaxMinor(int ticks)
 	_knob->setScaleMaxMinor(ticks);
 }
 
+void 
+Knob::getRange(double& min, double& max)
+{
+	min = _knob->minValue();
+	max = _knob->maxValue();
+}
+
+double
+Knob::value()
+{
+	return _knob->value();
+}

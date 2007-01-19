@@ -20,6 +20,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScopePlot", "ScopePlot\Scop
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScopePlotTest", "ScopePlot\Test\ScopePlotTest.vcproj", "{56424E18-DF37-37FA-9EB0-9611764B9AA4}"
 	ProjectSection(ProjectDependencies) = postProject
+		{F48980FC-3982-3B03-8B9A-6D6CD96AF509} = {F48980FC-3982-3B03-8B9A-6D6CD96AF509}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ColorBar", "ColorBar\ColorBar.vcproj", "{42019193-2424-31CD-A12F-881526B511B2}"
@@ -28,6 +29,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ColorBar", "ColorBar\ColorB
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ColorBarTest", "ColorBar\Test\ColorBarTest.vcproj", "{57D196B6-E53A-3196-8BCD-FE662A9FA9B4}"
 	ProjectSection(ProjectDependencies) = postProject
+		{42019193-2424-31CD-A12F-881526B511B2} = {42019193-2424-31CD-A12F-881526B511B2}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PPI", "PPI\PPI.vcproj", "{0D9743D3-2F6A-3871-A8C1-61DA73BA53EF}"

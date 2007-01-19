@@ -17,9 +17,11 @@ public:
 
     void setTitle(std::string title);
     void setRange(double min, double max);
+    void getRange(double& min, double& max);
 	void setValue(double val);
 	void setScaleMaxMajor(int ticks);
 	void setScaleMaxMinor(int ticks);
+	double value();
 
 public slots:
    void valueChangedSlot(double);

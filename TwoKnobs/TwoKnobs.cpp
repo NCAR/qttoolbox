@@ -79,3 +79,18 @@ TwoKnobs::setScaleMaxMinor(int knobNum, int ticks)
 			break;
 	}
 }
+
+void 
+TwoKnobs::getRanges(double& knobOneMin, double& knobOneMax,
+       double& knobTwoMin, double& knobTwoMax)
+{
+	_knobOne->getRange(knobOneMin, knobOneMax);
+	_knobTwo->getRange(knobTwoMin, knobTwoMax);
+}
+
+void 
+TwoKnobs::getValues(double& val1, double& val2)
+{
+	val1 = _knobOne->value();
+	val2 = _knobTwo->value();
+}

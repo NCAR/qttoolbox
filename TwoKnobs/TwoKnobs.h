@@ -17,9 +17,12 @@ public:
     void setTitles(std::string titleKnobOne, std::string titleKnobTwo);
     void setRanges(double knobOneMin, double knobOneMax,
        double knobTwoMin, double knobTwoMax);
-	void setValues(double val1, double val2);
+	void setValues(double  val1, double val2);
 	void setScaleMaxMajor(int knobNum, int ticks);
 	void setScaleMaxMinor(int knobNum, int ticks);
+    void getRanges(double& knobOneMin, double& knobOneMax,
+       double& knobTwoMin, double& knobTwoMax);
+	void getValues(double& val1, double& val2);
 
 public slots:
     virtual void knobOneChangedSlot(double);

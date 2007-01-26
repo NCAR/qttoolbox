@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include <qtimer.h>
+#include <QResizeEvent>
 
 //
 //
@@ -37,9 +38,9 @@ _nVars(nVars)
 		_triStripVertices.push_back(j*cos2);
 		_triStripVertices.push_back(j*sin2);
 	}
-   // Allocate space for the colors. Each vertex has an red, green and
-   // blue component, and there are 2 vertices per gate.
-   for (int v = 0; v < nVars; v++) {
+	// Allocate space for the colors. Each vertex has an red, green and
+	// blue component, and there are 2 vertices per gate.
+	for (int v = 0; v < nVars; v++) {
 		_varColors[v].resize(_nGates*6);
 	}
 	// there will be one display list id for each variable
@@ -74,11 +75,8 @@ PPI::beam::colors(int varN)
 
 ////////////////////////////////////////////////////////////////
 
-PPI::PPI(QWidget* parent, 
-						   const char * name, 
-						   const QGLWidget * shareWidget, 
-						   WFlags f):
-QGLWidget(parent, name, shareWidget, f),
+PPI::PPI(QWidget* parent):
+QGLWidget(parent),
 _selectedVar(0),
 _zoomFactor(1.0),
 _panHoriz(0.0),
@@ -101,14 +99,15 @@ _resizing(false)
 	this->setFormat(fmt);
 	this->setAutoBufferSwap(false);
 
-   // connect thre resize timer
-   connect(&_resizeTimer, SIGNAL(timeout()), this, SLOT(resizeTimerTimeout()));
+	// connect thre resize timer
+	_resizeTimer.setSingleShot(true);
+	connect(&_resizeTimer, SIGNAL(timeout()), this, SLOT(resizeTimerTimeout()));
 }
 ////////////////////////////////////////////////////////////////
 
 void
 PPI::configure(int nVars,
-						int maxGates) 
+			   int maxGates) 
 {
 	// Configure for dynamically allocated beams
 	_nVars = nVars;
@@ -119,17 +118,17 @@ PPI::configure(int nVars,
 
 void
 PPI::configure(int nVars,
-						int maxGates,
-						int nBeams) 
+			   int maxGates,
+			   int nBeams) 
 {
 	// Configure for preallocated beamd
 	_nVars = nVars;
 	_maxGates = maxGates;
 	_preAllocate = true;
 
-   for (int i = 0; i < _beams.size(); i++)
-      delete _beams[i];
-   _beams.clear();
+	for (int i = 0; i < _beams.size(); i++)
+		delete _beams[i];
+	_beams.clear();
 
 	makeCurrent();
 	// This constructor is called when we are preallocating beams.
@@ -186,8 +185,8 @@ PPI::initializeGL()
 	glDisableClientState(GL_NORMAL_ARRAY);
 
 	// set the stencil buffer clear value.
-   glClearStencil(0.0f);
-   // allow stencil tests to occur.
+	glClearStencil(0.0f);
+	// allow stencil tests to occur.
 	glEnable(GL_STENCIL_TEST);
 }
 
@@ -208,7 +207,7 @@ PPI::resizeGL( int w, int h )
 ////////////////////////////////////////////////////////////////
 void
 PPI::rings(bool enabled) {
-   _ringsEnabled = enabled;
+	_ringsEnabled = enabled;
 
 	//redraw
 	makeCurrent();
@@ -218,7 +217,7 @@ PPI::rings(bool enabled) {
 ////////////////////////////////////////////////////////////////
 void
 PPI::grids(bool enabled) {
-   _gridsEnabled = enabled;
+	_gridsEnabled = enabled;
 
 	//redraw
 	makeCurrent();
@@ -226,16 +225,19 @@ PPI::grids(bool enabled) {
 }
 ////////////////////////////////////////////////////////////////
 
-void 
+void
 PPI::paintGL()
 {
-  if (_ringsEnabled) {
-     createStencil();
-  } else {
-     clearStencil();
-  }
+	if(_resizing)
+		return;
 
-  glClear(GL_COLOR_BUFFER_BIT);
+	if (_ringsEnabled) {
+		createStencil();
+	} else {
+		clearStencil();
+	}
+
+	glClear(GL_COLOR_BUFFER_BIT);
 	for (unsigned int i = 0; i < _beams.size(); i++) {
 		glCallList(_beams[i]->_glListId[_selectedVar]);
 	}
@@ -291,6 +293,8 @@ PPI::getZoom()
 void
 PPI::refresh()
 {
+	if(_resizing)
+		return;
 	//redraw
 	makeCurrent();
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -306,7 +310,7 @@ PPI::pan(double horizFrac, double vertFrac)
 	_panHoriz += horizFrac/_zoomFactor;
 	_panVert += vertFrac/_zoomFactor;
 
-   refresh();
+	refresh();
 }
 
 
@@ -314,8 +318,11 @@ PPI::pan(double horizFrac, double vertFrac)
 void 
 PPI::resizeEvent( QResizeEvent * e )
 {
-   _resizing = true;
-   _resizeTimer.start(200, true);
+	if(_resizing)
+		return;
+	
+	_resizing = true;
+	_resizeTimer.start(500);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -323,9 +330,9 @@ void
 PPI::resizeTimerTimeout()
 {
 	makeCurrent();
-   resizeGL(this->width(), this->height());
-   _resizing = false;
-   refresh();
+	resizeGL(this->width(), this->height());
+	_resizing = false;
+	refresh();
 }
 
 ////////////////////////////////////////////////////////////////
@@ -384,11 +391,11 @@ PPI::clearVar(int index)
 
 void 
 PPI::addBeam(float startAngle, 
-					  float stopAngle, 
-					  int gates, 
-					  std::vector<std::vector<double> >& _beamData, 
-					  int stride, 
-					  std::vector<ColorMap*>& maps)
+			 float stopAngle, 
+			 int gates, 
+			 std::vector<std::vector<double> >& _beamData, 
+			 int stride, 
+			 std::vector<ColorMap*>& maps)
 {
 
 	makeCurrent();
@@ -461,11 +468,12 @@ PPI::addBeam(float startAngle,
 		makeDisplayList(b,_selectedVar);
 
 		// draw it
-         glCallList(b->_glListId[_selectedVar]);
+	if(!_resizing)
+		glCallList(b->_glListId[_selectedVar]);
 	}
 
 	if (!_resizing)
-	   glFlush();
+		glFlush();
 
 	if (!_preAllocate) {
 		// in dynamic mode, cull hidden beams
@@ -478,10 +486,10 @@ PPI::addBeam(float startAngle,
 
 void
 PPI::fillColors(beam* beam, 
-						 std::vector<std::vector<double> >& _beamData, 
-						 int gates, 
-						 int stride,
-						 std::vector<ColorMap*>& maps) 
+				std::vector<std::vector<double> >& _beamData, 
+				int gates, 
+				int stride,
+				std::vector<ColorMap*>& maps) 
 {
 
 	double red, green, blue;
@@ -524,10 +532,10 @@ PPI::makeDisplayList(beam* b, int v)
 	// set the vertex pointer
 	glVertexPointer(2, GL_FLOAT, 0, b->vertices());
 
-   // set the colors pointer
+	// set the colors pointer
 	glColorPointer(3, GL_FLOAT, 0, b->colors(v));
 
-   // draw a triangle strip
+	// draw a triangle strip
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 2*_maxGates);
 
 	// end the display list
@@ -692,13 +700,13 @@ PPI::cullBeamList()
 int
 PPI::beamIndex(double startAngle, double stopAngle)
 {
-    int i = _beams.size()*(startAngle + (stopAngle-startAngle)/2)/360.0;
-    if (i<0)
-        i = 0;
-    if (i>(int)_beams.size()-1)
-        i = _beams.size()-1;
+	int i = _beams.size()*(startAngle + (stopAngle-startAngle)/2)/360.0;
+	if (i<0)
+		i = 0;
+	if (i>(int)_beams.size()-1)
+		i = _beams.size()-1;
 
-    return i;
+	return i;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -706,14 +714,14 @@ PPI::beamIndex(double startAngle, double stopAngle)
 void
 PPI::backgroundColor(QColor color)
 {
-   _clearRed   = color.red()/255.0;
-   _clearGreen = color.green()/255.0;
-   _clearBlue  = color.blue()/255.0;
-   
-   makeCurrent();
+	_clearRed   = color.red()/255.0;
+	_clearGreen = color.green()/255.0;
+	_clearBlue  = color.blue()/255.0;
 
-   // set the background color
-   glClearColor(_clearRed, _clearGreen, _clearBlue, 0.0f);
+	makeCurrent();
+
+	// set the background color
+	glClearColor(_clearRed, _clearGreen, _clearBlue, 0.0f);
 
 }
 
@@ -722,9 +730,9 @@ PPI::backgroundColor(QColor color)
 void
 PPI::gridRingColor(QColor color)
 {
-   _gridRingsRed   = color.red()  /255.0;
-   _gridRingsGreen = color.green()/255.0;
-   _gridRingsBlue  = color.blue() /255.0;
+	_gridRingsRed   = color.red()  /255.0;
+	_gridRingsGreen = color.green()/255.0;
+	_gridRingsBlue  = color.blue() /255.0;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -733,67 +741,67 @@ void
 PPI::createStencil()
 {
 	// The stencil buffer is a funny beast.  
-   //
-   // It can mask out display of the color buffers.
-   // If a color buffer is masked out, the color
-   // buffer clear value is displayed instead.
-   // The stencil buffer is filled with values
-   // to affect the areas that you want masked.
-   // A stencil operation is specified, which can
-   // compare the color buffer, the stencil buffer
-   // and a reference value to determine if the color 
-   // should be displayed.
-   //
-   // The stencil buffer can also be directed to be 
-   // modified as a result of the test.
-   //
-   // Oddly, there isn't a direct call to write 
-   // into the stencil buffer. Instead, you do the
-   // following to get your pattern into the stencil 
-   // buffer:
-   // 1. clear the stencil buffer
-   // 2. set the comparrison function to always fail; i.e. all
-   //    drawing commands will fail and no actual rendering
-   //    from the color buffers will occur.
-   // 3. set the stencil buffer operation to increment the
-   //    stencil buffer when drawing to an area occurs.
-   // 4. Draw you pattern. After drawing, the stencil buffer 
-   //    will have one values set for your pattern.
-   //
-   // Okay, once the stencil buffer has one values in the 
-   // area of your pattern, we need to use it as a mask.
-   // We do this by setting the comparison function to
-   // say that drawing is allowed anywhere the stencil
-   // pattern is not equal to the reference value of 1.
-   // We also say that the stencil buffer operation is
-   // to keep the current stencil value; i.e. don't change it.
-   
-   // So, let's get going. Create the stencil pattern:
-   
-   // don't allow any drawing of the color buffer
-   glStencilFunc(GL_NEVER, 0x0, 0x0);
+	//
+	// It can mask out display of the color buffers.
+	// If a color buffer is masked out, the color
+	// buffer clear value is displayed instead.
+	// The stencil buffer is filled with values
+	// to affect the areas that you want masked.
+	// A stencil operation is specified, which can
+	// compare the color buffer, the stencil buffer
+	// and a reference value to determine if the color 
+	// should be displayed.
+	//
+	// The stencil buffer can also be directed to be 
+	// modified as a result of the test.
+	//
+	// Oddly, there isn't a direct call to write 
+	// into the stencil buffer. Instead, you do the
+	// following to get your pattern into the stencil 
+	// buffer:
+	// 1. clear the stencil buffer
+	// 2. set the comparrison function to always fail; i.e. all
+	//    drawing commands will fail and no actual rendering
+	//    from the color buffers will occur.
+	// 3. set the stencil buffer operation to increment the
+	//    stencil buffer when drawing to an area occurs.
+	// 4. Draw you pattern. After drawing, the stencil buffer 
+	//    will have one values set for your pattern.
+	//
+	// Okay, once the stencil buffer has one values in the 
+	// area of your pattern, we need to use it as a mask.
+	// We do this by setting the comparison function to
+	// say that drawing is allowed anywhere the stencil
+	// pattern is not equal to the reference value of 1.
+	// We also say that the stencil buffer operation is
+	// to keep the current stencil value; i.e. don't change it.
+
+	// So, let's get going. Create the stencil pattern:
+
+	// don't allow any drawing of the color buffer
+	glStencilFunc(GL_NEVER, 0x0, 0x0);
 	// clear the stencil buffer (to 0.0f, set in initializeGL())
 	glClear(GL_STENCIL_BUFFER_BIT);
-   // on any drawing operation, increment the stencil.
-   glStencilOp(GL_INCR, GL_INCR, GL_INCR);
+	// on any drawing operation, increment the stencil.
+	glStencilOp(GL_INCR, GL_INCR, GL_INCR);
 
- 	// draw range rings
-   GLUquadricObj* o = gluNewQuadric();
+	// draw range rings
+	GLUquadricObj* o = gluNewQuadric();
 
-   for (double x = 0.1; x <=1.0; x += 0.1) {
-	  gluDisk(o, x, x+0.004, 100, 1);
-   }
+	for (double x = 0.1; x <=1.0; x += 0.1) {
+		gluDisk(o, x, x+0.004, 100, 1);
+	}
 
-   // now set up to use stencil in future drawing.
+	// now set up to use stencil in future drawing.
 
-   // allow color buffer rendering wherever the stencil buffer
-   // is not equal to 1.
-   glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
-   // Keep (i.e. do not modify) the stencil buffer 
-   // when the stencil test passes.
+	// allow color buffer rendering wherever the stencil buffer
+	// is not equal to 1.
+	glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
+	// Keep (i.e. do not modify) the stencil buffer 
+	// when the stencil test passes.
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
-   //glColor3f(_gridRingsRed, _gridRingsGreen, _gridRingsBlue);
+	//glColor3f(_gridRingsRed, _gridRingsGreen, _gridRingsBlue);
 
 }
 
@@ -802,11 +810,11 @@ PPI::createStencil()
 void
 PPI::clearStencil()
 {
-   // Clear the stencil buffer. 
-   // The glClear causes the stencil clear vaule
-   // set by glStencilClear() in initializeGL(),
-   // to be filled into the stencil buffer
-   glClear(GL_STENCIL_BUFFER_BIT);  
+	// Clear the stencil buffer. 
+	// The glClear causes the stencil clear vaule
+	// set by glStencilClear() in initializeGL(),
+	// to be filled into the stencil buffer
+	glClear(GL_STENCIL_BUFFER_BIT);  
 }
 
 

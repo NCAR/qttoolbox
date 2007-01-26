@@ -2,20 +2,23 @@ TEMPLATE = vcapp
 
 LANGUAGE	= C++
 
-CONFIG += debug
 CONFIG += qt 
 CONFIG += thread
 CONFIG += warn_on 
 CONFIG += exceptions
 
+CONFIG(release, debug|release) {
+  LIBS += ../Release/ColorBar.lib
+} else {
+  LIBS += ../Debug/ColorBard.lib
+}
+
 INCLUDEPATH += ../
 INCLUDEPATH += ../../
 
-HEADERS += ColorBarTest.h
+SOURCES += main.cpp
 
-SOURCES	+= main.cpp
-SOURCES += ColorBarTest.cpp
+FORMS   += ColorBarTest.ui
 
-FORMS   += ColorBarTestBase.ui
 
-LIBS     += ../Debug/ColorBar.lib
+

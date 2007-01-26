@@ -1,93 +1,93 @@
-#include "Knob/KnobPlugin.h"
+#include "KnobPlugin.h"
 #include "Knob.h"
 
-#include <qstring.h>
-
-static const char *filechooser_pixmap[] = {
-  "22 22 3 1",
-  "       c #FFFF00000000",
-  ".      c #0000FFFF0000",
-  "X      c #00000000FFFF",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX"
-};
-
-KnobPlugin::KnobPlugin()
+KnobPlugin::KnobPlugin(QObject *parent)
 {
+	initialized = false;
 }
 
-QStringList KnobPlugin::keys() const
+void
+KnobPlugin::initialize(QDesignerFormEditorInterface *core)
 {
-  QStringList list;
-  list << "Knob";
-  return list;
+	if (initialized)
+		return;
+
+	initialized = true;
 }
 
-QWidget* KnobPlugin::create( const QString &key, QWidget* parent,
-			      const char* name )
+bool 
+KnobPlugin::isInitialized() const
 {
-  if ( key == "Knob" )
-    return new Knob( parent );
-  return 0;
+	return initialized;
 }
 
-QString KnobPlugin::group( const QString& feature ) const
+QWidget*
+KnobPlugin::createWidget(QWidget *parent)
 {
-  if ( feature == "Knob" )
-    return "Display";
-  return QString::null;
+	return new Knob(parent);
 }
 
-QIconSet KnobPlugin::iconSet( const QString& ) const
+QString 
+KnobPlugin::name() const
 {
-  return QIconSet( QPixmap( filechooser_pixmap ) );
+	return "Knob";
 }
 
-QString KnobPlugin::includeFile( const QString& feature ) const
+QString 
+KnobPlugin::group() const
 {
-  if ( feature == "Knob" )
-    return "Knob/Knob.h";
-  return QString::null;
+	return "QtToolbox";
 }
 
-QString KnobPlugin::toolTip( const QString& feature ) const
+QIcon 
+KnobPlugin::icon() const
 {
-  if ( feature == "Knob" )
-    return "Knob Widget";
-  return QString::null;
+	return QIcon();
 }
 
-QString KnobPlugin::whatsThis( const QString& feature ) const
+QString 
+KnobPlugin::toolTip() const
 {
-  if ( feature == "Knob" )
-    return "A widget with two knobs with lcd readouts";
-  return QString::null;
+	return "A knob";
 }
 
-bool KnobPlugin::isContainer( const QString& ) const
+QString KnobPlugin::whatsThis() const
 {
-  return FALSE;
+	return "A knob";
+}
+
+bool KnobPlugin::isContainer() const
+{
+	return false;
 }
 
 
-Q_EXPORT_PLUGIN( KnobPlugin )
+QString 
+KnobPlugin::domXml() const
+{
+	return "<widget class=\"Knob\" name=\"knob\">\n"
+		" <property name=\"geometry\">\n"
+		"  <rect>\n"
+		"   <x>0</x>\n"
+		"   <y>0</y>\n"
+		"   <width>100</width>\n"
+		"   <height>100</height>\n"
+		"  </rect>\n"
+		" </property>\n"
+		" <property name=\"toolTip\" >\n"
+		"  <string>knob</string>\n"
+		" </property>\n"
+		" <property name=\"whatsThis\" >\n"
+		"  <string>A knob that you can turn.</string>\n"
+		" </property>\n"
+		"</widget>\n";
+}
+
+QString 
+KnobPlugin::includeFile() const
+{
+	return "Knob.h";
+}
+
+Q_EXPORT_PLUGIN2(QtToolbox, KnobPlugin)
+

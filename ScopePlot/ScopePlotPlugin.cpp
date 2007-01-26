@@ -1,93 +1,87 @@
-#include "ScopePlot/ScopePlotPlugin.h"
+#include "ScopePlotPlugin.h"
 #include "ScopePlot.h"
 
-#include <qstring.h>
-
-static const char *filechooser_pixmap[] = {
-  "22 22 3 1",
-  "       c #FFFF00000000",
-  ".      c #0000FFFF0000",
-  "X      c #00000000FFFF",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX"
-};
-
-ScopePlotPlugin::ScopePlotPlugin()
+ScopePlotPlugin::ScopePlotPlugin(QObject *parent)
 {
+	initialized = false;
 }
 
-QStringList ScopePlotPlugin::keys() const
+void
+ScopePlotPlugin::initialize(QDesignerFormEditorInterface *core)
 {
-  QStringList list;
-  list << "ScopePlot";
-  return list;
+	if (initialized)
+		return;
+
+	initialized = true;
 }
 
-QWidget* ScopePlotPlugin::create( const QString &key, QWidget* parent,
-			      const char* name )
+bool 
+ScopePlotPlugin::isInitialized() const
 {
-  if ( key == "ScopePlot" )
-    return new ScopePlot( parent );
-  return 0;
+	return initialized;
 }
 
-QString ScopePlotPlugin::group( const QString& feature ) const
+QWidget*
+ScopePlotPlugin::createWidget(QWidget *parent)
 {
-  if ( feature == "ScopePlot" )
-    return "Display";
-  return QString::null;
+	return new ScopePlot(parent);
 }
 
-QIconSet ScopePlotPlugin::iconSet( const QString& ) const
+QString 
+ScopePlotPlugin::name() const
 {
-  return QIconSet( QPixmap( filechooser_pixmap ) );
+	return "ScopePlot";
 }
 
-QString ScopePlotPlugin::includeFile( const QString& feature ) const
+QString 
+ScopePlotPlugin::group() const
 {
-  if ( feature == "ScopePlot" )
-    return "ScopePlot/ScopePlot.h";
-  return QString::null;
+	return "QtToolbox";
 }
 
-QString ScopePlotPlugin::toolTip( const QString& feature ) const
+QIcon 
+ScopePlotPlugin::icon() const
 {
-  if ( feature == "ScopePlot" )
-    return "ScopePlot Widget";
-  return QString::null;
+	return QIcon();
 }
 
-QString ScopePlotPlugin::whatsThis( const QString& feature ) const
+QString 
+ScopePlotPlugin::toolTip() const
 {
-  if ( feature == "ScopePlot" )
-    return "A widget with two knobs with lcd readouts";
-  return QString::null;
+	return "A ScopePlot";
 }
 
-bool ScopePlotPlugin::isContainer( const QString& ) const
+QString ScopePlotPlugin::whatsThis() const
 {
-  return FALSE;
+	return "A ScopePlot";
+}
+
+bool ScopePlotPlugin::isContainer() const
+{
+	return false;
 }
 
 
-Q_EXPORT_PLUGIN( ScopePlotPlugin )
+QString 
+ScopePlotPlugin::domXml() const
+{
+	return "<widget class=\"ScopePlot\" name=\"scopePlot\">\n"
+		" <property name=\"geometry\">\n"
+		"  <rect>\n"
+		"   <x>0</x>\n"
+		"   <y>0</y>\n"
+		"   <width>200</width>\n"
+		"   <height>200</height>\n"
+		"  </rect>\n"
+		" </property>\n"
+		"</widget>\n";
+}
+
+QString 
+ScopePlotPlugin::includeFile() const
+{
+	return "ScopePlot.h";
+}
+
+Q_EXPORT_PLUGIN2(QtToolbox, ScopePlotPlugin)
+

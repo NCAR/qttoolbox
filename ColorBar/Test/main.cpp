@@ -1,7 +1,8 @@
-#include "ColorBarTest.h"
-
+#include "ui_ColorBarTest.h"
 #include <qapplication.h>
+
 #include <qstring.h>
+#include <ColorBar.h>
 #include <iostream>
 
 int
@@ -9,17 +10,15 @@ main(int argc, char** argv)
 {
 
    QApplication app(argc, argv);
+   QDialog* dialog = new QDialog;
 
    // create our test dialog. It will contain a ColorBar and 
    // other buttons etc.
-   ColorBarTest testDialog;
+   Ui::ColorBarTest t;
+   t.setupUi(dialog);
 
    // if we don't show() the test dialog, nothing appears!
-   testDialog.show();
-
-   // This tells qt to stop running when scopeTestDialog
-   // closes.
-   app.setMainWidget(&testDialog);
+   dialog->show();
 
    // run the whole thing
    app.exec();

@@ -1,7 +1,7 @@
 #ifndef SCOPEPLOT_H_
 #define SCOPEPLOT_H_ 1
 
-#include "ScopePlotBase.h"
+#include "ui_ScopePlot.h"
 #include <qwt_array.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
@@ -9,6 +9,18 @@
 #include <qwt_scale_engine.h>
 
 #include <vector>
+
+#ifndef DLL_EXPORT
+#ifdef WIN32
+#ifdef QT_PLUGIN
+#define DLL_EXPORT __declspec(dllexport)
+#else
+#define DLL_EXPORT __declspec(dllimport)
+#endif
+#else
+#define DLL_EXPORT
+#endif
+#endif
 
 /// Render time series and power spectrum data, using Qwt.
 /// Three functions are provided, to display passed data 
@@ -19,7 +31,7 @@
 /// 
 /// This code was unabashedly lifted from the Qwt examples/realtime_plot
 /// code.
-class QT_WIDGET_PLUGIN_EXPORT ScopePlot: public ScopePlotBase
+class DLL_EXPORT ScopePlot: public QWidget, private Ui::ScopePlot
 {
    Q_OBJECT
 
@@ -27,7 +39,7 @@ public:
    /// Plot type
    enum PLOTTYPE {TIMESERIES=0, IVSQ=1, SPECTRUM=2, PRODUCT=3};
 
-   ScopePlot(QWidget *parent, const char* name = 0);
+   ScopePlot(QWidget *parent);
 
    virtual ~ScopePlot();
 

@@ -1,93 +1,94 @@
-#include "TwoKnobs/TwoKnobsPlugin.h"
+#include "TwoKnobsPlugin.h"
 #include "TwoKnobs.h"
 
-#include <qstring.h>
 
-static const char *filechooser_pixmap[] = {
-  "22 22 3 1",
-  "       c #FFFF00000000",
-  ".      c #0000FFFF0000",
-  "X      c #00000000FFFF",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX"
-};
-
-TwoKnobsPlugin::TwoKnobsPlugin()
+TwoKnobsPlugin::TwoKnobsPlugin(QObject *parent)
 {
+	initialized = false;
 }
 
-QStringList TwoKnobsPlugin::keys() const
+void
+TwoKnobsPlugin::initialize(QDesignerFormEditorInterface *core)
 {
-  QStringList list;
-  list << "TwoKnobs";
-  return list;
+	if (initialized)
+		return;
+
+	initialized = true;
 }
 
-QWidget* TwoKnobsPlugin::create( const QString &key, QWidget* parent,
-			      const char* name )
+bool 
+TwoKnobsPlugin::isInitialized() const
 {
-  if ( key == "TwoKnobs" )
-    return new TwoKnobs( parent );
-  return 0;
+	return initialized;
 }
 
-QString TwoKnobsPlugin::group( const QString& feature ) const
+QWidget*
+TwoKnobsPlugin::createWidget(QWidget *parent)
 {
-  if ( feature == "TwoKnobs" )
-    return "Display";
-  return QString::null;
+	return new TwoKnobs(parent);
 }
 
-QIconSet TwoKnobsPlugin::iconSet( const QString& ) const
+QString 
+TwoKnobsPlugin::name() const
 {
-  return QIconSet( QPixmap( filechooser_pixmap ) );
+	return "TwoKnobs";
 }
 
-QString TwoKnobsPlugin::includeFile( const QString& feature ) const
+QString 
+TwoKnobsPlugin::group() const
 {
-  if ( feature == "TwoKnobs" )
-    return "TwoKnobs/TwoKnobs.h";
-  return QString::null;
+	return "QtToolbox";
 }
 
-QString TwoKnobsPlugin::toolTip( const QString& feature ) const
+QIcon 
+TwoKnobsPlugin::icon() const
 {
-  if ( feature == "TwoKnobs" )
-    return "TwoKnobs Widget";
-  return QString::null;
+	return QIcon();
 }
 
-QString TwoKnobsPlugin::whatsThis( const QString& feature ) const
+QString 
+TwoKnobsPlugin::toolTip() const
 {
-  if ( feature == "TwoKnobs" )
-    return "A widget with two knobs with lcd readouts";
-  return QString::null;
+	return "A TwoKnobs";
 }
 
-bool TwoKnobsPlugin::isContainer( const QString& ) const
+QString TwoKnobsPlugin::whatsThis() const
 {
-  return FALSE;
+	return "A TwoKnobs";
+}
+
+bool TwoKnobsPlugin::isContainer() const
+{
+	return false;
 }
 
 
-Q_EXPORT_PLUGIN( TwoKnobsPlugin )
+QString 
+TwoKnobsPlugin::domXml() const
+{
+	return "<widget class=\"TwoKnobs\" name=\"TwoKnobs\">\n"
+		" <property name=\"geometry\">\n"
+		"  <rect>\n"
+		"   <x>0</x>\n"
+		"   <y>0</y>\n"
+		"   <width>100</width>\n"
+		"   <height>100</height>\n"
+		"  </rect>\n"
+		" </property>\n"
+		" <property name=\"toolTip\" >\n"
+		"  <string>TwoKnobs</string>\n"
+		" </property>\n"
+		" <property name=\"whatsThis\" >\n"
+		"  <string>A TwoKnobs that you can turn.</string>\n"
+		" </property>\n"
+		"</widget>\n";
+}
+
+QString 
+TwoKnobsPlugin::includeFile() const
+{
+	return "TwoKnobs.h";
+}
+
+Q_EXPORT_PLUGIN2(QtToolbox, TwoKnobsPlugin)
+

@@ -1,25 +1,35 @@
 #ifndef ScopePlotPLUGIN_H_
 #define ScopePlotPLUGIN_H_
 
-#include <qwidgetplugin.h>
+#include <QtPlugin>
+#include <QDesignerCustomWidgetInterface>
 
 ///
 /// Qt plugin class for ScopePlot.
 ///
-class ScopePlotPlugin: public QWidgetPlugin {
+class ScopePlotPlugin: public QObject, public QDesignerCustomWidgetInterface 
+{
+	Q_OBJECT
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
+
 public:
-  ScopePlotPlugin();
-  QStringList keys() const;
-  QWidget* create( const QString &classname, 
-         QWidget* parent = 0,
-		   const char* name = 0 );
-  QString group( const QString& ) const;
-  QIconSet iconSet( const QString& ) const;
-  QString includeFile( const QString& ) const;
-  QString toolTip( const QString& ) const;
-  QString whatsThis( const QString& ) const;
-  bool isContainer( const QString& ) const;
-protected:
+	ScopePlotPlugin(QObject *parent = 0);
+    bool isContainer() const;
+     bool isInitialized() const;
+     QIcon icon() const;
+     QString domXml() const;
+     QString group() const;
+     QString includeFile() const;
+     QString name() const;
+     QString toolTip() const;
+     QString whatsThis() const;
+     QWidget *createWidget(QWidget *parent);
+     void initialize(QDesignerFormEditorInterface *core);
+
+private:
+	bool initialized;
 };
+
+
 
 #endif

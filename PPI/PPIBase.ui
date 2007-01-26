@@ -1,57 +1,79 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>PPIBase</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>PPIBase</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>402</width>
-            <height>402</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>PPIBase</string>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <property name="margin">
-            <number>0</number>
-        </property>
-        <widget class="QFrame">
-            <property name="name">
-                <cstring>_frame</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>3</hsizetype>
-                    <vsizetype>3</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="minimumSize">
-                <size>
-                    <width>400</width>
-                    <height>400</height>
-                </size>
-            </property>
-            <property name="frameShape">
-                <enum>StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Raised</enum>
-            </property>
-        </widget>
-    </vbox>
-</widget>
-<includes>
-    <include location="local" impldecl="in declaration">qwidgetplugin.h</include>
-</includes>
-<exportmacro>QT_WIDGET_PLUGIN_EXPORT</exportmacro>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+#ifndef PPIBASE_H
+#define PPIBASE_H
+
+#include <qvariant.h>
+
+
+#include <Qt3Support/Q3Frame>
+#include <QtCore/QVariant>
+#include <QtGui/QAction>
+#include <QtGui/QApplication>
+#include <QtGui/QButtonGroup>
+#include <QtGui/QDialog>
+#include <QtGui/QVBoxLayout>
+#include <Qt3Support/Q3MimeSourceFactory>
+#include "qwidgetplugin.h"
+
+class Ui_PPIBase
+{
+public:
+    QVBoxLayout *vboxLayout;
+    Q3Frame *_frame;
+
+    void setupUi(QDialog *PPIBase)
+    {
+    PPIBase->setObjectName(QString::fromUtf8("PPIBase"));
+    vboxLayout = new QVBoxLayout(PPIBase);
+    vboxLayout->setSpacing(6);
+    vboxLayout->setMargin(0);
+    vboxLayout->setObjectName(QString::fromUtf8("vboxLayout"));
+    _frame = new Q3Frame(PPIBase);
+    _frame->setObjectName(QString::fromUtf8("_frame"));
+    QSizePolicy sizePolicy(static_cast<QSizePolicy::Policy>(3), static_cast<QSizePolicy::Policy>(3));
+    sizePolicy.setHorizontalStretch(0);
+    sizePolicy.setVerticalStretch(0);
+    sizePolicy.setHeightForWidth(_frame->sizePolicy().hasHeightForWidth());
+    _frame->setSizePolicy(sizePolicy);
+    _frame->setMinimumSize(QSize(400, 400));
+    _frame->setFrameShape(Q3Frame::StyledPanel);
+    _frame->setFrameShadow(Q3Frame::Raised);
+
+    vboxLayout->addWidget(_frame);
+
+
+    retranslateUi(PPIBase);
+
+    QSize size(402, 402);
+    size = size.expandedTo(PPIBase->minimumSizeHint());
+    PPIBase->resize(size);
+
+
+    QMetaObject::connectSlotsByName(PPIBase);
+    } // setupUi
+
+    void retranslateUi(QDialog *PPIBase)
+    {
+    PPIBase->setWindowTitle(QApplication::translate("PPIBase", "PPIBase", 0, QApplication::UnicodeUTF8));
+    Q_UNUSED(PPIBase);
+    } // retranslateUi
+
+};
+
+namespace Ui {
+    class PPIBase: public Ui_PPIBase {};
+} // namespace Ui
+
+class QT_WIDGET_PLUGIN_EXPORT PPIBase : public QDialog, public Ui::PPIBase
+{
+    Q_OBJECT
+
+public:
+    PPIBase(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0);
+    ~PPIBase();
+
+protected slots:
+    virtual void languageChange();
+
+};
+
+#endif // PPIBASE_H

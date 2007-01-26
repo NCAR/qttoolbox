@@ -2,9 +2,10 @@
 #include <qlabel.h>
 #include <qwt_knob.h>
 
-Knob::Knob( QWidget* parent, const char* name, WFlags fl )
-    : KnobBase( parent, name, fl )
+Knob::Knob( QWidget* parent):
+QWidget(parent)
 {
+	setupUi(this);
 }
 
 /*

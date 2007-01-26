@@ -1,7 +1,23 @@
 #ifndef WIDGETPPI_H
 #define WIDGETPPI_H
 
+#include <qdialog.h>
+#include <string>
+
+#ifndef DLL_EXPORT
+#ifdef WIN32
+#ifdef QT_PLUGIN
+#define DLL_EXPORT __declspec(dllexport)
+#else
+#define DLL_EXPORT __declspec(dllimport)
+#endif
+#else
+#define DLL_EXPORT
+#endif
+#endif
+
 #include <qgl.h>
+#include <QResizeEvent>
 #include <vector>
 #include <qtimer.h>
 #include "ColorBar/ColorMap.h"
@@ -40,7 +56,8 @@
 /// and the constant generation of beam vertices, and so the
 /// performance is significantly slower than in the preallocated
 /// mode.
-class QT_WIDGET_PLUGIN_EXPORT PPI: public QGLWidget {
+class DLL_EXPORT PPI: public QGLWidget//, public Ui::PPI 
+{
 
 	Q_OBJECT        // must include this if you use Qt signals/slots
 
@@ -105,10 +122,7 @@ class QT_WIDGET_PLUGIN_EXPORT PPI: public QGLWidget {
 
 public:
 	PPI(
-		QWidget * parent = 0,               ///< parent widget
-		const char * name = 0,              ///< widget name
-		const QGLWidget * shareWidget = 0,  ///< what is this for?
-		WFlags f = 0                        ///< Qt widget flags
+		QWidget* parent = 0               ///< parent widget
       );
 
    /// Destructor

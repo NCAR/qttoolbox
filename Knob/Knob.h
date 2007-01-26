@@ -1,18 +1,29 @@
 #ifndef KNOB_H
 #define KNOB_H
 
-#include "KnobBase.h"
+#include "ui_Knob.h"
+#include <qdialog.h>
 #include <string>
 
+#ifndef DLL_EXPORT
+#ifdef WIN32
+#ifdef QT_PLUGIN
+#define DLL_EXPORT __declspec(dllexport)
+#else
+#define DLL_EXPORT __declspec(dllimport)
+#endif
+#else
+#define DLL_EXPORT
+#endif
+#endif
+
 ///
-/// A plugin widget which combines a QwtKnob, a QLabel, and a QLCDNumber
-/// A signal is generated when the knob value changes.
-class QT_WIDGET_PLUGIN_EXPORT Knob : public KnobBase
+class DLL_EXPORT Knob: public QWidget, private Ui::Knob
 {
     Q_OBJECT
 
 public:
-    Knob( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    Knob( QWidget* parent = 0);
     ~Knob();
 
     void setTitle(std::string title);

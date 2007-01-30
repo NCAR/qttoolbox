@@ -6,6 +6,9 @@ TwoKnobs::TwoKnobs( QWidget* parent):
 QWidget(parent)
 {
 	setupUi(this);
+
+	connect(_knob1, SIGNAL(valueChanged(double)), this, SLOT(knobOneChangedSlot(double)));
+	connect(_knob2, SIGNAL(valueChanged(double)), this, SLOT(knobTwoChangedSlot(double)));
 }
 
 /*

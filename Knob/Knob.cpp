@@ -6,6 +6,7 @@ Knob::Knob( QWidget* parent):
 QWidget(parent)
 {
 	setupUi(this);
+	connect(_knob, SIGNAL(valueChanged(double)), this, SLOT(valueChangedSlot(double)));
 }
 
 /*

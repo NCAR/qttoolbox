@@ -17,14 +17,11 @@ main(int argc, char** argv)
   Ui::KnobTest t;
   t.setupUi(dialog);
 
-//  t.myTwoKnobs->setTitles("Gain", "Offset");
-//  t.myTwoKnobs->setRanges(-10000, 10000, 0, 50);
+  t.knob->setTitle("Gain");
+  t.knob->setRange(-10000, 10000);
 
-//  QObject::connect(t.myTwoKnobs, SIGNAL(knobOneChanged(double)),
-//     t._numOne, SLOT(setNum(double))); 
-
-//  QObject::connect(t.myTwoKnobs, SIGNAL(knobTwoChanged(double)),
-//     t._numTwo, SLOT(setNum(double))); 
+  QObject::connect(t.knob, SIGNAL(valueChanged(double)),
+     t.testText, SLOT(setNum(double))); 
 
   dialog->show();
 

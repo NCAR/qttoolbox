@@ -97,7 +97,7 @@ _resizing(false)
 	fmt.setDoubleBuffer(false);
 	QGLFormat::setDefaultFormat(fmt);
 	this->setFormat(fmt);
-	this->setAutoBufferSwap(false);
+	this->setAutoBufferSwap(true);
 
 	// connect thre resize timer
 	_resizeTimer.setSingleShot(true);

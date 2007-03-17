@@ -35,8 +35,12 @@ public:
 	/// @param map The corresponding color map.
 	void configure(ColorMap& map);
 
-protected:
+signals:
+	void released();
 
+protected:
+	/// Capture a mouse release and emit a released() signal.
+	virtual void mouseReleaseEvent(QMouseEvent* e);
 	/// (Re)make the color swatches and the labels.
 	void makeSwatches(ColorMap& map, double min, double max);
 	/// Container for the swatched and labels, so that 

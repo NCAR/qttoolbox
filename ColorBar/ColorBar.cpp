@@ -83,3 +83,9 @@ ColorBar::makeSwatches (ColorMap& map, double min, double max)
 }
 
 /******************************************************************/
+void
+ColorBar::mouseReleaseEvent(QMouseEvent *e) {
+	emit released();
+}
+
+/******************************************************************/

@@ -35,9 +35,21 @@ public:
 	ColorMap(
 		double minRange,         ///< The minimum map range
 		double maxRange,         ///< The maximum map range
-		std::vector<float> red,  ///< A vector of red hues, ranging between 0 and 255
-		std::vector<float> green,///< A vector of green hues, ranging between 0 and 255
-		std::vector<float> blue  ///< A vector of blue hues, ranging between 0 and 255
+		std::vector<int> red,  ///< A vector of red hues, ranging between 0 and 255
+		std::vector<int> green,///< A vector of green hues, ranging between 0 and 255
+		std::vector<int> blue  ///< A vector of blue hues, ranging between 0 and 255
+		);
+
+	/// Create a color map using the provided colors.
+	/// The color table will be constructed from the color
+	/// vectors, using the number of entries found in
+	/// the outer vector. The inner vectors must be of
+	/// length three. If they are not, a color map using
+	/// the default color table will be constructed.
+	ColorMap(
+		double minRange,         ///< The minimum map range
+		double maxRange,         ///< The maximum map range
+		std::vector<std::vector<int> >colors  ///< A vector of vectors of hues, ranging between 0 and 255. The inner vector values correcpond to red, green and blue.
 		);
 
 	/// Destructor
@@ -51,9 +63,9 @@ public:
 	void setMap(
 		double minRange,         ///< The minimum map range
 		double maxRange,         ///< The maximum map range
-		std::vector<float> red,  ///< A vector of red hues, ranging between 0 and 255
-		std::vector<float> green,///< A vector of green hues, ranging between 0 and 255
-		std::vector<float> blue  ///< A vector of blue hues, ranging between 0 and 255
+		std::vector<int> red,  ///< A vector of red hues, ranging between 0 and 255
+		std::vector<int> green,///< A vector of green hues, ranging between 0 and 255
+		std::vector<int> blue  ///< A vector of blue hues, ranging between 0 and 255
 		);
 
 	/// Change the range of an existing map.
@@ -81,9 +93,9 @@ public:
 	/// Map the data value to a color. Return values will be luminances
 	/// in the range 0-255.
 	/// @param data The data value
-	/// Data values less than this will be mapped to the minimum color table
+	/// Data values less than _rangeMin will be mapped to the minimum color table
 	/// color.
-	/// Data values greater than this will be mapped to the maximum color table
+	/// Data values greater than _rangeMax will be mapped to the maximum color table
 	/// color.
 	/// @param red value returned here.
 	/// @param green value returned here.

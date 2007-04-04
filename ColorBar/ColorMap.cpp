@@ -42,23 +42,63 @@ _range(maxRange-minRange)
 ColorMap::ColorMap(
 				   double minRange,         ///< The minimum map range
 				   double maxRange,         ///< The maximum map range
-				   std::vector<float> red,  ///< A vector of red hues, ranging between 0 and 255
-				   std::vector<float> green,///< A vector of green hues, ranging between 0 and 255
-				   std::vector<float> blue  ///< A vector of blue hues, ranging between 0 and 255
+				   std::vector<int> red,  ///< A vector of red hues, ranging between 0 and 255
+				   std::vector<int> green,///< A vector of green hues, ranging between 0 and 255
+				   std::vector<int> blue  ///< A vector of blue hues, ranging between 0 and 255
 				   )
 {
 	setMap(minRange, maxRange, red, blue, green);
 }
 
 /**********************************************************/
-void
-ColorMap::setMap(
+ColorMap::ColorMap(
 				   double minRange,         ///< The minimum map range
 				   double maxRange,         ///< The maximum map range
-				   std::vector<float> red,  ///< A vector of red hues, ranging between 0 and 255
-				   std::vector<float> green,///< A vector of green hues, ranging between 0 and 255
-				   std::vector<float> blue  ///< A vector of blue hues, ranging between 0 and 255
+				   std::vector<std::vector<int> >colors
 				   )
+{
+	std::vector<int> red;
+	std::vector<int> green;
+	std::vector<int> blue;
+
+	// verify that the inner vectors are of length three. If
+	// not, then ignore the colors vector and use our default one.
+	for (int i = 0; i < colors.size(); i++) {
+		if (colors[i].size() != 3) {
+			int tableSize = sizeof(redTable)/sizeof(redTable[0]);
+			red.resize(tableSize);
+			green.resize(tableSize);
+			blue.resize(tableSize);
+			for (int j = 0; j < sizeof(redTable)/sizeof(redTable[0]); j++) {
+				red[j]   = redTable[j];
+				green[j] = greenTable[j];
+				blue[j]  = blueTable[j];
+				break;
+			}
+		}
+	}
+
+	// if the incoming colors passed the test, then create the rgb vectors
+	if (red.size() == 0) {
+		red.resize(colors.size());
+		for (int i = 0; i < colors.size(); i++) {
+			red[i]  = colors[i][0];
+			green[i] = colors[i][1];
+			blue[i]  = colors[i][2];
+		}
+	}
+
+	setMap(minRange, maxRange, red, blue, green);
+}
+/**********************************************************/
+void
+ColorMap::setMap(
+				 double minRange,         ///< The minimum map range
+				 double maxRange,         ///< The maximum map range
+				 std::vector<int> red,  ///< A vector of red hues, ranging between 0 and 255
+				 std::vector<int> green,///< A vector of green hues, ranging between 0 and 255
+				 std::vector<int> blue  ///< A vector of blue hues, ranging between 0 and 255
+				 )
 {
 	setRange(minRange, maxRange);
 

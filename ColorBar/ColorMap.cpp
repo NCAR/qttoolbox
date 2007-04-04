@@ -86,6 +86,8 @@ ColorMap::ColorMap(
 	// if the incoming colors passed the test, then create the rgb vectors
 	if (red.size() == 0) {
 		red.resize(colors.size());
+		green.resize(colors.size());
+		blue.resize(colors.size());
 		for (int i = 0; i < colors.size(); i++) {
 			red[i]  = colors[i][0];
 			green[i] = colors[i][1];
@@ -93,7 +95,7 @@ ColorMap::ColorMap(
 		}
 	}
 
-	setMap(minRange, maxRange, red, blue, green);
+	setMap(minRange, maxRange, red, green, blue);
 }
 /**********************************************************/
 void

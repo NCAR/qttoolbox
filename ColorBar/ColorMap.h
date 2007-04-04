@@ -21,6 +21,9 @@
 /// as plotlib::ColorBar.
 class DLL_EXPORT ColorMap {
 public:
+	/// Default constructor for a ColorMap
+	/// Will create a map with a range 0-1, and the standard colors
+	ColorMap();
 	/// Create a color map using the built-in
 	/// color table.
 	/// @param minRange The minimum value for the color map.

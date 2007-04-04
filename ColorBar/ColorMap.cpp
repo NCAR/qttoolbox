@@ -22,6 +22,11 @@ int greenTable[] =
 };
 
 /**********************************************************/
+ColorMap::ColorMap()
+{
+	*this = ColorMap(0.0, 1.0);
+}
+/**********************************************************/
 ColorMap::ColorMap(double minRange, 
 				   double maxRange):
 _minRange(minRange),

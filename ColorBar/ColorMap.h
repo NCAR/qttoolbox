@@ -40,6 +40,9 @@ public:
 		std::vector<float> blue  ///< A vector of blue hues, ranging between 0 and 255
 		);
 
+	/// Destructor
+	virtual ~ColorMap();
+
 	/// Change the color map using the provided colors.
 	/// The color table will be constructed from the color
 	/// vectors, using the number of entries found in
@@ -52,7 +55,12 @@ public:
 		std::vector<float> green,///< A vector of green hues, ranging between 0 and 255
 		std::vector<float> blue  ///< A vector of blue hues, ranging between 0 and 255
 		);
-	virtual ~ColorMap();
+
+	/// Change the range of an existing map.
+	void setRange(
+		double minRange,         ///< The minimum map range
+		double maxRange         ///< The maximum map range
+		);
 
 	/**
 	* @returns The red color table
@@ -73,7 +81,7 @@ public:
 	/// Map the data value to a color. Return values will be luminances
 	/// in the range 0-255.
 	/// @param data The data value
-	/// Data valsue less than this will be mapped to the minimum color table
+	/// Data values less than this will be mapped to the minimum color table
 	/// color.
 	/// Data values greater than this will be mapped to the maximum color table
 	/// color.

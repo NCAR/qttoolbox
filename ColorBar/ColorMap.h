@@ -40,6 +40,18 @@ public:
 		std::vector<float> blue  ///< A vector of blue hues, ranging between 0 and 255
 		);
 
+	/// Change the color map using the provided colors.
+	/// The color table will be constructed from the color
+	/// vectors, using the number of entries found in
+	/// the shortest of the three color vectors. (They 
+	/// really should all be the same length).
+	void setMap(
+		double minRange,         ///< The minimum map range
+		double maxRange,         ///< The maximum map range
+		std::vector<float> red,  ///< A vector of red hues, ranging between 0 and 255
+		std::vector<float> green,///< A vector of green hues, ranging between 0 and 255
+		std::vector<float> blue  ///< A vector of blue hues, ranging between 0 and 255
+		);
 	virtual ~ColorMap();
 
 	/**

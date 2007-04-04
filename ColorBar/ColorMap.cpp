@@ -45,16 +45,32 @@ ColorMap::ColorMap(
 				   std::vector<float> red,  ///< A vector of red hues, ranging between 0 and 255
 				   std::vector<float> green,///< A vector of green hues, ranging between 0 and 255
 				   std::vector<float> blue  ///< A vector of blue hues, ranging between 0 and 255
-				   ):
-_minRange(minRange),
-_maxRange(maxRange),
-_range(maxRange-minRange)
+				   )
 {
+	setMap(minRange,maxRange, red, blue, green);
+}
+
+/**********************************************************/
+void
+ColorMap::setMap(
+				   double minRange,         ///< The minimum map range
+				   double maxRange,         ///< The maximum map range
+				   std::vector<float> red,  ///< A vector of red hues, ranging between 0 and 255
+				   std::vector<float> green,///< A vector of green hues, ranging between 0 and 255
+				   std::vector<float> blue  ///< A vector of blue hues, ranging between 0 and 255
+				   )
+{
+	_range = maxRange - minRange;
+
 	_tableSize = red.size();
 	if (_tableSize > green.size())
 		_tableSize = green.size();
 	if (_tableSize >  blue.size())
 		_tableSize = blue.size();
+
+	_red.clear();
+	_blue.clear();
+	_green.clear();
 
 	for (int i = 0; i < _tableSize; i++) {
 		_red.push_back(red[i]);
@@ -62,6 +78,7 @@ _range(maxRange-minRange)
 		_blue.push_back(blue[i]);
 	}
 }
+
 /**********************************************************/
 ColorMap::~ColorMap()
 {

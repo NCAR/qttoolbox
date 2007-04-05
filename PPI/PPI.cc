@@ -823,7 +823,7 @@ PPI::makeRingsAndGrids() {
 
 
 	double gridSpacing = (1/ringsGridsPerSide) / _zoomFactor;
-	double lineWidth = 0.005/ _zoomFactor;
+	double lineWidth = 0.004/ _zoomFactor;
 
 	// Do range rings?
 	if (ringSpacing > 0 && _ringsEnabled) {
@@ -878,6 +878,8 @@ PPI::makeRingsAndGrids() {
 
 	// do the grid
 	if (gridSpacing > 0 && _gridsEnabled) {
+		glLineWidth(2);
+
 		glBegin(GL_LINES);
 		// First the vertical lines.
 		// set the first x value

@@ -25,7 +25,6 @@ public:
 		void ringsSlot(bool);
 		void gridSlot(bool);
 		void backgroundColorSlot();
-		void gridRingColorSlot();
 		void startSlot();
 		void stopSlot();
 		void addBeam();

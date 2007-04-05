@@ -89,8 +89,8 @@ _gates(1000)
 	connect(_zoomIn,        SIGNAL(released()),     this, SLOT(zoomInSlot()));
 	connect(_zoomOut,       SIGNAL(released()),     this, SLOT(zoomOutSlot()));
 	connect(&_timer,        SIGNAL(timeout()),      this, SLOT(addBeam()));
-	connect(_colorButton,   SIGNAL(released()),     this, SLOT(gridRingColorSlot()));
 	connect(_backgroundButton, SIGNAL(released()),  this, SLOT(backgroundColorSlot()));
+
 	_beamData.resize(_nVars);
 }
 
@@ -255,18 +255,6 @@ PPITest::backgroundColorSlot()
 	_ppi1->backgroundColor(color);
 	_ppi1->refresh();
 	_ppi2->backgroundColor(color);
-	_ppi2->refresh();
-}
-
-///////////////////////////////////////////////////////////////////////
-void
-PPITest::gridRingColorSlot() 
-{
-	QColor color = QColorDialog::getColor("white");
-
-	_ppi1->gridRingColor(color);
-	_ppi1->refresh();
-	_ppi2->gridRingColor(color);
 	_ppi2->refresh();
 }
 

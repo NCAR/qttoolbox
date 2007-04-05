@@ -19,7 +19,7 @@ win32 {
 }
 
 INCLUDEPATH += ../
-INCLUDEPATH += c:/Qwt/include
+
 
 HEADERS += ColorBar.h
 HEADERS += ColorMap.h

@@ -80,13 +80,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="_colorButton" >
-       <property name="text" >
-        <string>Set grid/ring color</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <layout class="QHBoxLayout" >
        <property name="margin" >
         <number>0</number>
@@ -375,7 +368,7 @@
         <number>6</number>
        </property>
        <item>
-        <widget class="PPI" name="_ppi1" >
+        <widget class="PPI" native="1" name="_ppi1" >
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>7</hsizetype>
@@ -393,7 +386,7 @@
         </widget>
        </item>
        <item>
-        <widget class="ColorBar" name="_colorBar1" >
+        <widget class="ColorBar" native="1" name="_colorBar1" >
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>0</hsizetype>
@@ -442,7 +435,7 @@
         <number>6</number>
        </property>
        <item>
-        <widget class="PPI" name="_ppi2" >
+        <widget class="PPI" native="1" name="_ppi2" >
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>3</hsizetype>
@@ -460,7 +453,7 @@
         </widget>
        </item>
        <item>
-        <widget class="ColorBar" name="_colorBar2" >
+        <widget class="ColorBar" native="1" name="_colorBar2" >
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>0</hsizetype>

@@ -5,11 +5,12 @@
 
 #include <qtimer.h>
 #include <QResizeEvent>
+#include "glut.h"
 
 //
 //
 // Any drawing action must insure that the GL context is current. paintGL() and
-//resize can be called by QGLWidget, and it will make sure that the context
+// resize can be called by QGLWidget, and it will make sure that the context
 // is current. However, external calls to zoom, pan, draw a new beam,
 // and so forth will not have come through QGLWidget's GL code, and so we need
 // to explicitly make sure that the context is current in these cases.
@@ -81,15 +82,13 @@ _selectedVar(0),
 _zoomFactor(1.0),
 _panHoriz(0.0),
 _panVert(0.0),
-_clearRed(0.6f),
-_clearGreen(0.6f),
-_clearBlue(0.9f),
-_gridRingsRed(0.0f),
-_gridRingsGreen(0.0f),
-_gridRingsBlue(0.0),
+_clearRed(0.0f),
+_clearGreen(0.0f),
+_clearBlue(0.0f),
 _ringsEnabled(true),
-_gridsEnabled(true),
-_resizing(false)
+_gridsEnabled(false),
+_resizing(false),
+_scaledLabel(ScaledLabel::DistanceEng)
 {
 	initializeGL();
 
@@ -107,24 +106,32 @@ _resizing(false)
 
 void
 PPI::configure(int nVars,
-			   int maxGates) 
+			   int maxGates, 
+			   double distanceSpanKm,
+			   int ringsPerPPI) 
 {
 	// Configure for dynamically allocated beams
 	_nVars = nVars;
 	_maxGates = maxGates;
 	_preAllocate = false;
+	_distanceSpanKm = distanceSpanKm;
+	_ringsPerPPI = ringsPerPPI;
 }
 ////////////////////////////////////////////////////////////////
 
 void
 PPI::configure(int nVars,
 			   int maxGates,
-			   int nBeams) 
+			   int nBeams, 
+			   double distanceSpanKm,
+			   int ringsPerPPI) 
 {
 	// Configure for preallocated beamd
 	_nVars = nVars;
 	_maxGates = maxGates;
 	_preAllocate = true;
+	_distanceSpanKm = distanceSpanKm;
+	_ringsPerPPI = ringsPerPPI;
 
 	for (int i = 0; i < _beams.size(); i++)
 		delete _beams[i];
@@ -231,7 +238,7 @@ PPI::paintGL()
 	if(_resizing)
 		return;
 
-	if (_ringsEnabled) {
+	if (_ringsEnabled || _gridsEnabled) {
 		createStencil();
 	} else {
 		clearStencil();
@@ -320,7 +327,7 @@ PPI::resizeEvent( QResizeEvent * e )
 {
 	if(_resizing)
 		return;
-	
+
 	_resizing = true;
 	_resizeTimer.start(500);
 }
@@ -468,8 +475,8 @@ PPI::addBeam(float startAngle,
 		makeDisplayList(b,_selectedVar);
 
 		// draw it
-	if(!_resizing)
-		glCallList(b->_glListId[_selectedVar]);
+		if(!_resizing)
+			glCallList(b->_glListId[_selectedVar]);
 	}
 
 	if (!_resizing)
@@ -728,16 +735,6 @@ PPI::backgroundColor(QColor color)
 ////////////////////////////////////////////////////////////////////////
 
 void
-PPI::gridRingColor(QColor color)
-{
-	_gridRingsRed   = color.red()  /255.0;
-	_gridRingsGreen = color.green()/255.0;
-	_gridRingsBlue  = color.blue() /255.0;
-}
-
-////////////////////////////////////////////////////////////////////////
-
-void
 PPI::createStencil()
 {
 	// The stencil buffer is a funny beast.  
@@ -785,13 +782,8 @@ PPI::createStencil()
 	// on any drawing operation, increment the stencil.
 	glStencilOp(GL_INCR, GL_INCR, GL_INCR);
 
-	// draw range rings
-	GLUquadricObj* o = gluNewQuadric();
-
-	for (double x = 0.1; x <=1.0; x += 0.1) {
-		gluDisk(o, x, x+0.004, 100, 1);
-	}
-
+	// draw range rings and grids
+	makeRingsAndGrids();
 	// now set up to use stencil in future drawing.
 
 	// allow color buffer rendering wherever the stencil buffer
@@ -817,4 +809,92 @@ PPI::clearStencil()
 	glClear(GL_STENCIL_BUFFER_BIT);  
 }
 
+////////////////////////////////////////////////////////////////////////
+void
+PPI::makeRingsAndGrids() {
 
+	if (!_ringsEnabled && !_gridsEnabled)
+		return;
+
+	double ringsGridsPerSide = _ringsPerPPI;
+	double ringSpacing = (1/ringsGridsPerSide)  / _zoomFactor;
+	double ringLabelIncrement = ringSpacing;
+	double ringLabelOffset = 0.02/_zoomFactor;  // used to move some of the labelling so that it does not overlap the rings.
+
+
+	double gridSpacing = (1/ringsGridsPerSide) / _zoomFactor;
+	double lineWidth = 0.005/ _zoomFactor;
+
+	// Do range rings?
+	if (ringSpacing > 0 && _ringsEnabled) {
+		// Get a new quadric object.
+		GLUquadricObj *quadObject = gluNewQuadric();
+
+		GLdouble radius = ringSpacing;
+
+		// Draw our range rings.
+		while (radius <= 1.0) {
+			gluDisk(quadObject,radius-lineWidth/2,radius+lineWidth/2,100,1);
+			radius += ringSpacing;
+		}
+
+		// label the rings
+
+		if (ringLabelIncrement > 0.0) {
+			std::vector<std::string> ringLabels;
+			// creat the labels. Note that we are not creating a lable at zero
+			for (int i = 0; i < 1/ringLabelIncrement; i++) {
+				double value = (i+1)*ringLabelIncrement*_distanceSpanKm / 2.0;
+				ringLabels.push_back(_scaledLabel.scale(value));
+			}
+
+			for (unsigned int j = 0 ; j < ringLabels.size(); j++) {
+				double d = 0.707*(j+1)*ringSpacing;
+				const char* cStart = ringLabels[j].c_str();
+				const char* c;
+
+				// upper right qudrant lables
+				glRasterPos2d( d,  d); c = cStart;
+				while (*c) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,*c++);
+
+				// lower left quadrant labels
+				glRasterPos2d(-d, -d); c = cStart;
+				while (*c) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,*c++);
+
+				// lower right quadrant labels
+				glRasterPos2d( d+ringLabelOffset, -d-ringLabelOffset); c = cStart;
+				while (*c) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,*c++);
+
+				// upper left qudrant labels
+				glRasterPos2d(-d+ringLabelOffset,  d-ringLabelOffset); c = cStart;
+				while (*c) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,*c++);
+
+			}
+		}
+		// get rid of quad object
+		gluDeleteQuadric(quadObject);
+
+	}
+
+	// do the grid
+	if (gridSpacing > 0 && _gridsEnabled) {
+		glBegin(GL_LINES);
+		// First the vertical lines.
+		// set the first x value
+		GLdouble x = (-(int)((1.0/gridSpacing)/2)) * gridSpacing;
+		while (x <= 1.0) {
+			glVertex2d(x, -1.0); 
+			glVertex2d(x,  1.0); 
+			x += gridSpacing;
+		}
+		// Now horizontial lines
+		// set the first y value to an even increment of the grid spacing.
+		GLdouble y = (-(int)((1.0/gridSpacing)/2)) * gridSpacing;;
+		while (y <= 1.0) {
+			glVertex2d(-1.0, y); 
+			glVertex2d( 1.0, y); 
+			y += gridSpacing;
+		}
+		glEnd();
+	}
+}

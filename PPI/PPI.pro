@@ -17,28 +17,27 @@ CONFIG += exceptions
 
 QT += opengl
 
-//LIBS += opengl32.lib
-//LIBS += glu32.lib
-
 CONFIG(release, debug|release) {
   TARGET = PPI
   LIBS       += ../ColorBar/Release/ColorBar.lib
+  LIBS       += ../../glut-3.7.6/lib/glut/release/glut32.lib
   DLLDESTDIR += $(QTDIR)/lib
   DLLDESTDIR += $(QTDIR)/Plugins/Designer
 } else {
   TARGET = PPId
   LIBS       += ../ColorBar/Debug/ColorBard.lib
-  LIBS  += $(QTDIR)/lib/qwt5d.lib
+  LIBS       += ../../glut-3.7.6/lib/glut/debug/glut32.lib
   DLLDESTDIR += $(QTDIR)/lib
 }
 
 INCLUDEPATH += ../
+INCLUDEPATH += ../../
+INCLUDEPATH += ../../glut-3.7.6/include/GL
 
 HEADERS	+= PPI.h
 HEADERS     += PPIPlugin.h
+HEADERS     += ScaledLabel.h
 
 SOURCES	+= PPI.cc
 SOURCES     += PPIPlugin.cpp
-
-INCLUDEPATH += ../
-INCLUDEPATH += ../../
+SOURCES     += ScaledLabel.cpp

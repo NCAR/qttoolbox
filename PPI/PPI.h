@@ -221,6 +221,9 @@ protected:
 	/// could be used if we wanted to draw acutal rings and grids
 	/// in a different color, rather than using the stencil.
 	void makeRingsAndGrids();
+	/// Dtermine a ring spacing which will give even distances,
+	/// and fit a reasonable number of rings in the display
+	double ringSpacing();
 	///
 	std::vector<beam*> _beams;
 	/// The number of variables we ar representing. A display list

@@ -757,7 +757,7 @@ PPI::createStencil()
 	// following to get your pattern into the stencil 
 	// buffer:
 	// 1. clear the stencil buffer
-	// 2. set the comparrison function to always fail; i.e. all
+	// 2. set the comparison function to always fail; i.e. all
 	//    drawing commands will fail and no actual rendering
 	//    from the color buffers will occur.
 	// 3. set the stencil buffer operation to increment the
@@ -816,30 +816,25 @@ PPI::makeRingsAndGrids() {
 	if (!_ringsEnabled && !_gridsEnabled)
 		return;
 
-	double ringsGridsPerSide = _ringsPerPPI;
-	double ringSpacing = (1/ringsGridsPerSide)  / _zoomFactor;
-	double ringLabelIncrement = ringSpacing;
+	double ringDelta = ringSpacing();
+	double ringLabelIncrement = ringDelta;
 	double ringLabelOffset = 0.02/_zoomFactor;  // used to move some of the labelling so that it does not overlap the rings.
-
-
-	double gridSpacing = (1/ringsGridsPerSide) / _zoomFactor;
 	double lineWidth = 0.004/ _zoomFactor;
 
 	// Do range rings?
-	if (ringSpacing > 0 && _ringsEnabled) {
+	if (ringDelta > 0 && _ringsEnabled) {
 		// Get a new quadric object.
 		GLUquadricObj *quadObject = gluNewQuadric();
 
-		GLdouble radius = ringSpacing;
+		GLdouble radius = ringDelta;
 
 		// Draw our range rings.
 		while (radius <= 1.0) {
 			gluDisk(quadObject,radius-lineWidth/2,radius+lineWidth/2,100,1);
-			radius += ringSpacing;
+			radius += ringDelta;
 		}
 
 		// label the rings
-
 		if (ringLabelIncrement > 0.0) {
 			std::vector<std::string> ringLabels;
 			// creat the labels. Note that we are not creating a lable at zero
@@ -849,25 +844,25 @@ PPI::makeRingsAndGrids() {
 			}
 
 			for (unsigned int j = 0 ; j < ringLabels.size(); j++) {
-				double d = 0.707*(j+1)*ringSpacing;
+				double d = 0.707*(j+1)*ringDelta;
 				const char* cStart = ringLabels[j].c_str();
 				const char* c;
 
 				// upper right qudrant lables
 				glRasterPos2d( d,  d); c = cStart;
-				while (*c) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,*c++);
+				while (*c) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,*c++);
 
 				// lower left quadrant labels
 				glRasterPos2d(-d, -d); c = cStart;
-				while (*c) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,*c++);
+				while (*c) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,*c++);
 
 				// lower right quadrant labels
 				glRasterPos2d( d+ringLabelOffset, -d-ringLabelOffset); c = cStart;
-				while (*c) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,*c++);
+				while (*c) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,*c++);
 
 				// upper left qudrant labels
 				glRasterPos2d(-d+ringLabelOffset,  d-ringLabelOffset); c = cStart;
-				while (*c) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,*c++);
+				while (*c) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,*c++);
 
 			}
 		}
@@ -877,26 +872,57 @@ PPI::makeRingsAndGrids() {
 	}
 
 	// do the grid
-	if (gridSpacing > 0 && _gridsEnabled) {
+	if (ringDelta > 0 && _gridsEnabled) {
 		glLineWidth(2);
 
 		glBegin(GL_LINES);
 		// First the vertical lines.
 		// set the first x value
-		GLdouble x = (-(int)((1.0/gridSpacing)/2)) * gridSpacing;
+		GLdouble x = (-(int)((1.0/ringDelta)/2)) * ringDelta;
 		while (x <= 1.0) {
 			glVertex2d(x, -1.0); 
 			glVertex2d(x,  1.0); 
-			x += gridSpacing;
+			x += ringDelta;
 		}
 		// Now horizontial lines
 		// set the first y value to an even increment of the grid spacing.
-		GLdouble y = (-(int)((1.0/gridSpacing)/2)) * gridSpacing;;
+		GLdouble y = (-(int)((1.0/ringDelta)/2)) * ringDelta;;
 		while (y <= 1.0) {
 			glVertex2d(-1.0, y); 
 			glVertex2d( 1.0, y); 
-			y += gridSpacing;
+			y += ringDelta;
 		}
 		glEnd();
 	}
+}
+
+////////////////////////////////////////////////////////////////////////
+double
+PPI::ringSpacing() {
+
+	// R is the visible distance from center to edge
+	double R = (_distanceSpanKm / _zoomFactor);
+	double e = (int)floor(log10(R));
+	double Rn = R / pow(10.0, e);
+
+	double delta = 2.0;
+	if (Rn <= 5.0) {
+		delta = 1.0;
+	}
+	if (Rn <= 3.0) {
+		delta = 0.5;
+	} 
+	if (Rn <= 1.0) {
+		delta = 0.2;
+	} 
+	if (Rn <= 0.5) {
+		delta = 0.1;
+	} 
+
+	delta = delta * pow(10.0, e);
+
+	delta = delta/_distanceSpanKm;
+
+	return delta;
+
 }

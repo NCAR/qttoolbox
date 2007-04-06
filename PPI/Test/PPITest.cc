@@ -73,8 +73,8 @@ _gates(1000)
 	// use preallocated or dynamically allocated beams. If a third
 	// parameter is specifiec, it will set the number of preallocated
 	// beams.
-	_ppi1->configure(_nVars, _gates, 360);
-	_ppi2->configure(_nVars, _gates, 360);
+	_ppi1->configure(_nVars, _gates, 360, 117.0);
+	_ppi2->configure(_nVars, _gates, 360, 223.0);
 
 	// set the rings to the current state of the check box
 	_ppi1->rings(_ringsCheck->isChecked());

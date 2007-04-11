@@ -43,6 +43,15 @@ public:
 		std::vector<int> blue  ///< A vector of blue hues, ranging between 0 and 255
 		);
 
+	/// Create a color map using the builtin color map 
+	/// with that name. If that name is not located,
+	/// use the dfault color map.
+	ColorMap(
+		double minRange,         ///< The minimum map range
+		double maxRange,         ///< The maximum map range
+		std::string builtinName  ///< The builtin map name..
+		);
+
 	/// Create a color map using the provided colors.
 	/// The color table will be constructed from the color
 	/// vectors, using the number of entries found in
@@ -133,20 +142,20 @@ public:
 	/// @return The maximum range value
 	double rangeMax();
 
+	/// @return The name of the builtin color maps.
+	static std::vector<std::string> builtinMaps();
 
 protected:
 	double _minRange;
 	double _maxRange;
 	double _range;
 	int _tableSize;
-
 	/// The red color table.
 	std::vector<int> _red;
 	/// The green color table.
 	std::vector<int> _green;
 	/// The blue color table.
 	std::vector<int> _blue;
-
 };
 
 #endif

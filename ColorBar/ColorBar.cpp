@@ -6,7 +6,7 @@
 
 ColorBar::ColorBar(QWidget* parent):
 QWidget(parent),
-_defaultMap(0.0, 10.0)
+_defaultMap(0.0, 10.0, "div1")
 {
 	setMinimumSize(30, 100);
 	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);

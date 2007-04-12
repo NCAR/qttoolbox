@@ -17,6 +17,9 @@ INCLUDEPATH += ../
 INCLUDEPATH += ../../
 
 SOURCES += main.cpp
+SOURCES += ColorBarTest.cpp
+
+HEADERS += ColorBarTest.h
 
 FORMS   += ColorBarTest.ui
 

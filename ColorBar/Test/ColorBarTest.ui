@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>84</width>
-    <height>267</height>
+    <width>208</width>
+    <height>636</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -14,13 +14,20 @@
   </property>
   <layout class="QHBoxLayout" >
    <property name="margin" >
-    <number>11</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
    <item>
     <widget class="ColorBar" name="_colorBar" />
+   </item>
+   <item>
+    <widget class="QGroupBox" name="_groupBox" >
+     <property name="title" >
+      <string>Maps</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

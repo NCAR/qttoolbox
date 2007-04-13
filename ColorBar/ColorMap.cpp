@@ -4,6 +4,7 @@ typedef  struct {unsigned char r,g,b;} RGB;
 #define RGBSIZE(table) (sizeof(table)/sizeof(table[0]))
 
 char* builtinNames[] = {
+	"default",
 	"rainbow",
 	"dbz1",
 	"dbz2",
@@ -176,8 +177,7 @@ ColorMap::ColorMap(
 {
 	RGB* colors;
 	int tableSize = 0;
-	if (!builtinName.compare("velocity1")) 
-	{
+	if (!builtinName.compare("velocity1")) {
 		colors = &velocity1RGB[0];
 		tableSize = RGBSIZE(velocity1RGB);
 	} else {
@@ -197,8 +197,14 @@ ColorMap::ColorMap(
 						colors = &div1RGB[0];
 						tableSize = RGBSIZE(div1RGB);
 					} else {
-						colors = &rainbowRGB[0];
-						tableSize = RGBSIZE(rainbowRGB);
+						if (!builtinName.compare("rainbow")) {
+							colors = &rainbowRGB[0];
+							tableSize = RGBSIZE(rainbowRGB);
+						} else {
+							// rainbow will be our default map.
+							colors = &rainbowRGB[0];
+							tableSize = RGBSIZE(rainbowRGB);
+						}
 					}
 				}
 			}
@@ -228,7 +234,7 @@ ColorMap::setMap(
 				 std::vector<int> red,  ///< A vector of red hues, ranging between 0 and 255
 				 std::vector<int> green,///< A vector of green hues, ranging between 0 and 255
 				 std::vector<int> blue  ///< A vector of blue hues, ranging between 0 and 255
-					)
+				 )
 {
 	setRange(minRange, maxRange);
 

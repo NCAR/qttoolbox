@@ -69,7 +69,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PPITest", "PPI\Test\PPITest
 		{3AA8A8A8-D800-3058-9BB3-EADC6A8BFB15} = {3AA8A8A8-D800-3058-9BB3-EADC6A8BFB15}
 	EndProjectSection
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "QtToolbox Installer", "Installer\Installer.vdproj", "{583FBBDC-4FDC-4CE7-B440-287BBEA818EF}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "QtToolboxTest", "QtToolboxTest\QtToolboxTest.vdproj", "{28930F0A-47F6-4E3D-97CB-B385A8558CC7}"
 	GlobalSection(Qt) = preSolution
 		Integration = True
 	EndGlobalSection
@@ -123,8 +123,9 @@ Global
 		{086796B9-9E97-3EE3-B723-D14909D60409}.Debug|Win32.Build.0 = Debug|Win32
 		{086796B9-9E97-3EE3-B723-D14909D60409}.Release|Win32.ActiveCfg = Release|Win32
 		{086796B9-9E97-3EE3-B723-D14909D60409}.Release|Win32.Build.0 = Release|Win32
-		{583FBBDC-4FDC-4CE7-B440-287BBEA818EF}.Debug|Win32.ActiveCfg = Debug
-		{583FBBDC-4FDC-4CE7-B440-287BBEA818EF}.Release|Win32.ActiveCfg = Release
+		{28930F0A-47F6-4E3D-97CB-B385A8558CC7}.Debug|Win32.ActiveCfg = Debug
+		{28930F0A-47F6-4E3D-97CB-B385A8558CC7}.Release|Win32.ActiveCfg = Release
+		{28930F0A-47F6-4E3D-97CB-B385A8558CC7}.Release|Win32.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

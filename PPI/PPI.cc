@@ -80,8 +80,8 @@ PPI::PPI(QWidget* parent):
 QGLWidget(parent),
 _selectedVar(0),
 _zoomFactor(1.0),
-_panHoriz(0.0),
-_panVert(0.0),
+_currentX(0.0),
+_currentY(0.0),
 _clearRed(0.0f),
 _clearGreen(0.0f),
 _clearBlue(0.0f),
@@ -96,9 +96,9 @@ _scaledLabel(ScaledLabel::DistanceEng)
 	fmt.setDoubleBuffer(false);
 	QGLFormat::setDefaultFormat(fmt);
 	this->setFormat(fmt);
-	this->setAutoBufferSwap(true);
+	this->setAutoBufferSwap(false);
 
-	// connect thre resize timer
+	// connect the resize timer
 	_resizeTimer.setSingleShot(true);
 	connect(&_resizeTimer, SIGNAL(timeout()), this, SLOT(resizeTimerTimeout()));
 }
@@ -248,6 +248,8 @@ PPI::paintGL()
 	for (unsigned int i = 0; i < _beams.size(); i++) {
 		glCallList(_beams[i]->_glListId[_selectedVar]);
 	}
+
+	//swapBuffers();
 }
 
 ////////////////////////////////////////////////////////////////
@@ -257,32 +259,18 @@ PPI::setZoom(double factor)
 {
 
 	makeCurrent();
-	_zoomFactor *= factor;
+	_zoomFactor = factor;
 	// if the zoom request is to go smaller than 1:1, 
 	// restore to centered normal display
-	if (_zoomFactor < 1.0) {
+	if (_zoomFactor <= 1.0) {
 		_zoomFactor = 1.0;
-		_panHoriz = 0.0;
-		_panVert = 0.0;
-		factor = 1.0;
-		glLoadIdentity();
+		_currentX = 0.0;
+		_currentY = 0.0;
 	}
 
-	// first translate back to zero, so that our zoom doesn't
-	// effect an offset
-	glTranslatef(-_panHoriz, -_panVert, 0.0);
-
-	// now use the projection matrix to zoom
-	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(-1.0/_zoomFactor, 1.0/_zoomFactor, -1.0/_zoomFactor, 1.0/_zoomFactor);
-
-	// now translate back to where we were panning to
-	glMatrixMode(GL_MODELVIEW);
-	_panHoriz /= factor;
-	_panVert /= factor;
-	glTranslatef(_panHoriz, _panVert, 0.0);
-
+	glScalef(_zoomFactor, _zoomFactor, 1.0);
+	glTranslatef(_currentX, _currentY, 0.0);
 	// redraw
 	paintGL();
 }
@@ -310,14 +298,37 @@ PPI::refresh()
 ////////////////////////////////////////////////////////////////
 
 void
-PPI::pan(double horizFrac, double vertFrac) 
+PPI::pan(double x, double y) 
 {
-	// pan, by setting up a translation
-	glTranslatef(horizFrac/_zoomFactor, vertFrac/_zoomFactor, 0.0);
-	_panHoriz += horizFrac/_zoomFactor;
-	_panVert += vertFrac/_zoomFactor;
+	makeCurrent();
 
-	refresh();
+	glTranslatef(x-_currentX, y-_currentY, 0.0);
+
+	_currentX = x;
+	_currentY = y;
+
+	// redraw
+	paintGL();
+	return;
+}
+
+////////////////////////////////////////////////////////////////
+
+void
+PPI::resetView() 
+{
+	makeCurrent();
+
+	_currentX = 0.0;
+	_currentY = 0.0;
+	_zoomFactor = 1.0;
+
+	glLoadIdentity();
+	glScalef(_zoomFactor, _zoomFactor, 1.0);
+	glTranslatef(_currentX, _currentY, 0.0);
+	// redraw
+	paintGL();
+	return;
 }
 
 
@@ -486,6 +497,9 @@ PPI::addBeam(float startAngle,
 		// in dynamic mode, cull hidden beams
 		cullBeamList();
 	}
+
+	//swapBuffers();
+
 }
 
 

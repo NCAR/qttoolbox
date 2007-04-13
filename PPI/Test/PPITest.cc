@@ -17,7 +17,9 @@ QObject(parent),
 _angle(0.0),
 _nVars(nVars),
 _angleInc(1.0),
-_gates(1000)
+_gates(1000),
+_currentX(0.0),
+_currentY(0.0)
 {
 	setupUi(parent);
 
@@ -90,6 +92,11 @@ _gates(1000)
 	connect(_zoomOut,       SIGNAL(released()),     this, SLOT(zoomOutSlot()));
 	connect(&_timer,        SIGNAL(timeout()),      this, SLOT(addBeam()));
 	connect(_backgroundButton, SIGNAL(released()),  this, SLOT(backgroundColorSlot()));
+	connect(_panUp,         SIGNAL(released()),     this, SLOT(panUpSlot()));
+	connect(_panDown,       SIGNAL(released()),     this, SLOT(panDownSlot()));
+	connect(_panLeft,       SIGNAL(released()),     this, SLOT(panLeftSlot()));
+	connect(_panRight,      SIGNAL(released()),     this, SLOT(panRightSlot()));
+	connect(_viewReset,     SIGNAL(released()),     this, SLOT(resetViewSlot()));
 
 	_beamData.resize(_nVars);
 }
@@ -189,16 +196,16 @@ PPITest::addBeam()
 
 void PPITest::zoomInSlot()
 {
-	_ppi1->setZoom(2.0);
-	_ppi2->setZoom(2.0);
+	_ppi1->setZoom(_ppi1->getZoom()*2.0);
+	_ppi2->setZoom(_ppi2->getZoom()*2.0);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void PPITest::zoomOutSlot()
 {
-	_ppi1->setZoom(0.5);
-	_ppi2->setZoom(0.5);
+	_ppi1->setZoom(_ppi1->getZoom()*0.5);
+	_ppi2->setZoom(_ppi2->getZoom()*0.5);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -259,48 +266,52 @@ PPITest::backgroundColorSlot()
 }
 
 ///////////////////////////////////////////////////////////////////////
-
-void PPITest::panSlot(int panIndex)
+void
+PPITest::pan(double x, double y)
 {
-	switch (panIndex) {
-	case 0:
-		_ppi1->setZoom(0.0);
-		_ppi2->setZoom(0.0);
-		break;
-	case 1:
-		_ppi1->pan(0.0, 0.10);
-		_ppi2->pan(0.0, 0.10);
-		break;
-	case 2:
-		_ppi1->pan(-0.10, 0.10);
-		_ppi2->pan(-0.10, 0.10);
-		break;
-	case 3:
-		_ppi1->pan(-0.10, 0.0);
-		_ppi2->pan(-0.10, 0.0);
-		break;
-	case 4:
-		_ppi1->pan(-0.10, -0.10);
-		_ppi2->pan(-0.10, -0.10);
-		break;
-	case 5:
-		_ppi1->pan(00, -0.10);
-		_ppi2->pan(00, -0.10);
-		break;
-	case 6:
-		_ppi1->pan(0.10, -0.10);
-		_ppi2->pan(0.10, -0.10);
-		break;
-	case 7:
-		_ppi1->pan(0.10, 0.0);
-		_ppi2->pan(0.10, 0.0);
-		break;
-	case 8:
-		_ppi1->pan(0.10, 0.10);
-		_ppi2->pan(0.10, 0.10);
-		break;
-	default:
-		break;
-	}
+		_ppi1->pan(x, y);
+		_ppi2->pan(x, y);
+		_currentX = x;
+		_currentY = y;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void 
+PPITest::panUpSlot()
+{
+	pan(_currentX, _currentY + 0.1/_ppi1->getZoom());
+	_currentY += 0.1/_ppi1->getZoom();
+}
+///////////////////////////////////////////////////////////////////////
+
+void 
+PPITest::panDownSlot()
+{
+	pan(_currentX, _currentY - 0.1/_ppi1->getZoom());
+	_currentY -= 0.1/_ppi1->getZoom();
+}
+///////////////////////////////////////////////////////////////////////
+
+void 
+PPITest::panLeftSlot()
+{
+	pan(_currentX - 0.1/_ppi1->getZoom(), _currentY);
+	_currentX -= 0.1/_ppi1->getZoom();
+}
+///////////////////////////////////////////////////////////////////////
+
+void 
+PPITest::panRightSlot()
+{
+	pan(_currentX + 0.1/_ppi1->getZoom(), _currentY );
+	_currentX += 0.1/_ppi1->getZoom();
+}
+///////////////////////////////////////////////////////////////////////
+void
+PPITest::resetViewSlot()
+{
+	_ppi1->resetView();
+	_ppi2->resetView();
 }
 

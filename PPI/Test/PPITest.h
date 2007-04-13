@@ -21,7 +21,11 @@ public:
 		void varSelectSlot2(int);
 		void changeDir();
 		void clearVarSlot(int);
-		void panSlot(int);
+		void panUpSlot();
+		void panDownSlot();
+		void panLeftSlot();
+		void panRightSlot();
+		void resetViewSlot();
 		void ringsSlot(bool);
 		void gridSlot(bool);
 		void backgroundColorSlot();
@@ -32,6 +36,7 @@ public:
 		void zoomOutSlot();
 
 protected:
+	void pan(double x, double y);
 	double _angle;
 	double _angleInc;
 	int _nVars;
@@ -42,6 +47,8 @@ protected:
 	std::vector<ColorMap*> _maps1;
 	std::vector<ColorMap*> _maps2;
 	QTimer _timer;
+	double _currentX;
+	double _currentY;
 };
 
 #endif

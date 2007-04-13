@@ -194,9 +194,11 @@ public:
 		///
 		void setZoom(double factor);
 		///
-		void pan(double horizFrac, double vertFrac);
+		void pan(double x, double y);
 		///
 		void resizeTimerTimeout();
+		///
+		void resetView();
 
 protected:
 	///
@@ -239,9 +241,9 @@ protected:
 	// increase. At full zoom out, it is equal to 1.
 	double _zoomFactor;
 	///
-	double _panHoriz;
+	double _currentX;
 	///
-	double _panVert;
+	double _currentY;
 	/// red value for the background (and thus stencil) color.
 	float _clearRed;
 	/// green value for the background (and thus stencil) color.

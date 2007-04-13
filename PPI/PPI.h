@@ -213,7 +213,11 @@ protected:
 	///
 	void cullBeamList();
 	///
-	void resizeEvent( QResizeEvent * e );
+	virtual void resizeEvent( QResizeEvent * e );
+	/// capture mouse move events
+	virtual void mouseMoveEvent(QMouseEvent* event);
+	virtual void mousePressEvent(QMouseEvent* event);
+	virtual void mouseReleaseEvent(QMouseEvent* event);
 	// create the stencil that will draw the grid and range rings.
 	void createStencil();
 	/// clear the range ring and grids stencil
@@ -268,6 +272,10 @@ protected:
 	/// The distance across the whole display, in km.
 	/// It affects the labelling of the range rings
 	double _distanceSpanKm;
+	/// Last X location of the mouse during mouse move events; used for panning
+	int _oldMouseX;
+	/// Last Y location of the mouse during mouse move events; used for panning
+	int _oldMouseY;
 };
 
 #endif

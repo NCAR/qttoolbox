@@ -345,6 +345,40 @@ PPI::resizeEvent( QResizeEvent * e )
 
 ////////////////////////////////////////////////////////////////
 void 
+PPI::mousePressEvent( QMouseEvent * e )
+{
+	_oldMouseX = e->x();
+	_oldMouseY = e->y();
+}
+
+////////////////////////////////////////////////////////////////
+void 
+PPI::mouseReleaseEvent( QMouseEvent * e )
+{
+}
+////////////////////////////////////////////////////////////////
+void 
+PPI::mouseMoveEvent( QMouseEvent * e )
+{
+	makeCurrent();
+	
+	int x = e->x();
+	int y = e->y();
+
+	double deltaX = (x - _oldMouseX) / (double)width() / _zoomFactor / 2.0;
+	double deltaY = (_oldMouseY - y) / (double)height()/ _zoomFactor / 2.0;
+
+	glTranslatef(deltaX, deltaY, 0.0);
+
+	_currentX += deltaX;
+	_currentY += deltaY;
+
+	// redraw
+	paintGL();
+}
+
+////////////////////////////////////////////////////////////////
+void 
 PPI::resizeTimerTimeout()
 {
 	makeCurrent();

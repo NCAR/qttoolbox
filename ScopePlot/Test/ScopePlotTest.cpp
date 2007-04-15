@@ -2,6 +2,8 @@
 #include "ScopePlotTest.h"
 #include <QButtonGroup>
 #include <QCheckBox>
+#include <QFileDialog>
+#include <QDateTime>
 
 ScopePlotTest::ScopePlotTest(QWidget* parent):
 QObject(parent),
@@ -56,7 +58,17 @@ ScopePlotTest::plotType(int j)
 void
 ScopePlotTest::saveImageSlot()
 {
-	this->_scopePlot->saveImageToFile("c:/tmp/scopeTest.png");
+	QString f = QString("C:/tmp/ScopePlot-");
+	f += QDateTime::currentDateTime().toString("dd-MM-yyyy-hh-mm-ss");
+	f += ".png";
+	
+	QString fileName = QFileDialog::getSaveFileName(0, tr("Save Image File"),
+		f, tr("PNG files (*.png)"));
+
+	if (fileName == "")
+		return;
+
+	this->_scopePlot->saveImageToFile(fileName.toStdString());
 }
 
 

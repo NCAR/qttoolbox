@@ -17,7 +17,7 @@ _scopePoke(0)
 	connect(xGrid, SIGNAL(toggled(bool)), _scopePlot, SLOT(enableXgrid(bool)));
 	connect(yGrid, SIGNAL(toggled(bool)), _scopePlot, SLOT(enableYgrid(bool)));
 	connect(pause, SIGNAL(toggled(bool)), _scopePlot, SLOT(pause(bool)));
-
+	connect(saveImage, SIGNAL(released()), this, SLOT(saveImageSlot()));
 	connect(plotGroup, SIGNAL(buttonReleased(int)), this, SLOT(plotType(int)));
 
 }
@@ -52,4 +52,11 @@ ScopePlotTest::plotType(int j)
 	}
 
 }
+
+void
+ScopePlotTest::saveImageSlot()
+{
+	this->_scopePlot->saveImageToFile("c:/tmp/scopeTest.png");
+}
+
 

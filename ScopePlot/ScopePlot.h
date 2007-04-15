@@ -123,6 +123,9 @@ public:
       double sampleRateHz,
       std::string xLabel="", 
       std::string yLabel="");
+   /// Save a screenshot of the image
+   /// @param filePath The path where the image wil be saved.
+   void saveImageToFile(std::string filePath);
 
 public slots:
 

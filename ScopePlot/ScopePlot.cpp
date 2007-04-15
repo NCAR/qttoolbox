@@ -1,4 +1,6 @@
 #include "ScopePlot.h"
+#include <QPainter>
+#include <QPixmap>
 
 #include <iostream>
 #include <stdlib.h>
@@ -335,4 +337,11 @@ ScopePlot::enableYgrid(bool tf) {
 void 
 ScopePlot::pause(bool tf) {
 	_paused = tf;
+}
+////////////////////////////////////////////////////////////////////////
+void
+ScopePlot::saveImageToFile(std::string filePath) {
+	QPixmap pixmap = QPixmap::grabWidget(this);
+
+	pixmap.save(filePath.c_str(), "PNG", 100);
 }

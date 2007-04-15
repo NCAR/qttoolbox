@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>675</width>
-    <height>422</height>
+    <width>770</width>
+    <height>651</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -37,8 +37,8 @@
        </property>
        <property name="sizeHint" >
         <size>
-         <width>81</width>
-         <height>41</height>
+         <width>21</width>
+         <height>52</height>
         </size>
        </property>
       </spacer>
@@ -154,8 +154,28 @@
        </property>
        <property name="sizeHint" >
         <size>
-         <width>20</width>
-         <height>41</height>
+         <width>31</width>
+         <height>52</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="saveImage" >
+       <property name="text" >
+        <string>Save Image</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
         </size>
        </property>
       </spacer>

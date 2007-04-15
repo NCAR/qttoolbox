@@ -14,6 +14,7 @@ public:
 
 public slots:
     void plotType(int);
+	void saveImageSlot();
 
 protected:
    ScopePoke* _scopePoke;

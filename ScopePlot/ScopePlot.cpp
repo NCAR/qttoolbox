@@ -103,9 +103,14 @@ ScopePlot::TimeSeries(std::vector<double>& I,
 		_xdata.size() != I.size()   || 
 		scaleMin      != _scaleMin  || 
 		scaleMax      != _scaleMax  ||
-		sampleRateHz  != _sampleRateHz) {
-			configureForTimeSeries(I.size(), scaleMin, scaleMax, sampleRateHz);
-			labelAxes(xLabel, yLabel);
+		sampleRateHz  != _sampleRateHz ||
+		xLabel        != _timeSeriesXlabel ||
+		yLabel        != _timeSeriesYlabel ) 
+	{
+		configureForTimeSeries(I.size(), scaleMin, scaleMax, sampleRateHz);
+		_timeSeriesXlabel = xLabel;
+		_timeSeriesYlabel = yLabel;
+		labelAxes(_timeSeriesXlabel, _timeSeriesYlabel);
 	}
 
 	initCurve();
@@ -133,9 +138,13 @@ ScopePlot::IvsQ(std::vector<double>& I,
 
 	if (_plotType != IVSQ      ||
 		scaleMin  != _scaleMin || 
-		scaleMax  != _scaleMax) {
+		scaleMax  != _scaleMax ||
+		xLabel        != _iqXlabel ||
+		yLabel        != _iqYlabel) {
 			configureForIvsQ(scaleMin, scaleMax);
-			labelAxes(xLabel, yLabel);
+			_iqXlabel = xLabel;
+			_iqYlabel = yLabel;
+			labelAxes(_iqXlabel, _iqYlabel);
 	}
 
 	initCurve();
@@ -163,9 +172,13 @@ ScopePlot::Spectrum(std::vector<double>& power,
 		_xdata.size() != power.size() || 
 		scaleMin      != _scaleMin    || 
 		scaleMax      != _scaleMax    ||
-		sampleRateHz  != _sampleRateHz) {
+		sampleRateHz  != _sampleRateHz ||
+		xLabel        != _spectrumXlabel ||
+		yLabel        != _spectrumYlabel) {
 			configureForSpectrum(power.size(), scaleMin, scaleMax, sampleRateHz, logYaxis);
-			labelAxes(xLabel, yLabel);
+			_spectrumXlabel = xLabel;
+			_spectrumYlabel = yLabel;
+			labelAxes(_spectrumXlabel, _spectrumYlabel);
 	}
 
 	initCurve();
@@ -195,9 +208,13 @@ ScopePlot::Product(std::vector<double>& productData,
 		_xdata.size() != productData.size() || 
 		scaleMin      != _scaleMin    || 
 		scaleMax      != _scaleMax    ||
-		sampleRateHz  != _sampleRateHz) {
+		sampleRateHz  != _sampleRateHz ||
+		xLabel        != _productXlabel ||
+		yLabel        != _productYlabel) {
 			configureForProduct(productData.size(), scaleMin, scaleMax, sampleRateHz);
-			labelAxes(xLabel, yLabel);
+			_productXlabel = xLabel;
+			_productYlabel = yLabel;
+			labelAxes(_productXlabel, _productYlabel);
 	}
 
 	initCurve();

@@ -224,8 +224,24 @@ protected:
    /// data points doesn't change, we can use the x axis values
    /// over again.
    std::vector<double> _xdata;
-
+	/// set true to pause the plot
    bool _paused;
+   /// Current timeseries x axis label
+   std::string _timeSeriesXlabel;
+   /// Current timeseries y axis label
+   std::string _timeSeriesYlabel;
+   /// Current I/Q x axis label
+   std::string _iqXlabel;
+   /// Current I/Q y axis label
+   std::string _iqYlabel;
+   /// Current I/Q x axis label
+   std::string _spectrumXlabel;
+   /// Current I/Q y axis label
+   std::string _spectrumYlabel;
+   /// Current product x axis label
+   std::string _productXlabel;
+   /// Current product y axis label
+   std::string _productYlabel;
 
 };
 

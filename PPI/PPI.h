@@ -1,9 +1,6 @@
 #ifndef WIDGETPPI_H
 #define WIDGETPPI_H
 
-#include <qdialog.h>
-#include <string>
-
 #ifndef DLL_EXPORT
 #ifdef WIN32
 #ifdef QT_PLUGIN
@@ -16,13 +13,16 @@
 #endif
 #endif
 
-#include <qgl.h>
-#include <QResizeEvent>
+#include <string>
 #include <vector>
-#include <qtimer.h>
+#include <QDialog>
+#include <QGLWidget>
+#include <QResizeEvent>
+#include <QImage>
+#include <QTimer>
+
 #include "ColorBar/ColorMap.h"
 #include "ScaledLabel.h"
-//#include "GLColor.hh"
 
 #ifdef WIN32
 //#include "glut.h"
@@ -190,6 +190,9 @@ public:
 	int numBeams();
 	/// refresh the display. Useful after resizes, etc.
 	void refresh();
+	/// Capture an mage of the display
+	/// @returns The image. The caller must delete it when finished with it.
+	QImage* getImage();
 	public slots:
 		///
 		void setZoom(double factor);

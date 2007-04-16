@@ -974,3 +974,11 @@ PPI::ringSpacing() {
 	return delta;
 
 }
+////////////////////////////////////////////////////////////////////////
+QImage*
+PPI::getImage() {
+	makeCurrent();
+	glReadBuffer(GL_FRONT);
+	QImage* pImage = new QImage(grabFrameBuffer(true));
+	return pImage;
+}

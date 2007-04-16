@@ -34,6 +34,7 @@ public:
 		void addBeam();
 		void zoomInSlot();
 		void zoomOutSlot();
+		void saveImageSlot();
 
 protected:
 	void pan(double x, double y);

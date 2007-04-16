@@ -8,6 +8,10 @@
 #include <qcheckbox.h>
 #include <qcolordialog.h>
 #include <QVBoxLayout>
+#include <QImage>
+#include <QDateTime>
+#include <QFileDialog>
+#include <QStringList>
 
 #include <iostream>
 
@@ -97,6 +101,7 @@ _currentY(0.0)
 	connect(_panLeft,       SIGNAL(released()),     this, SLOT(panLeftSlot()));
 	connect(_panRight,      SIGNAL(released()),     this, SLOT(panRightSlot()));
 	connect(_viewReset,     SIGNAL(released()),     this, SLOT(resetViewSlot()));
+	connect(_saveImage,     SIGNAL(released()),     this, SLOT(saveImageSlot()));
 
 	_beamData.resize(_nVars);
 }
@@ -224,6 +229,52 @@ void PPITest::varSelectSlot2(int index)
 	_colorBar2->configure(*_maps2[index]);
 }
 
+///////////////////////////////////////////////////////////////////////
+void PPITest::saveImageSlot()
+{
+	QString f;
+	QString d = QDateTime::currentDateTime().toString("yyyy-MM-dd-hh-mm-ss");
+	QImage* ppi1Image = _ppi1->getImage();
+	QImage* ppi2Image = _ppi2->getImage();
+	
+	QFileDialog d1(0, tr("Save PPI1 Image"),
+		"c:/tmp", tr("PNG files (*.png);;All files (*.*)"));
+	d1.setFileMode(QFileDialog::AnyFile);
+	d1.setViewMode(QFileDialog::Detail);
+	d1.setAcceptMode(QFileDialog::AcceptSave);
+	d1.setConfirmOverwrite(true);
+	d1.setDefaultSuffix("png");
+	d1.setDirectory(f);
+	f = "CP2PPI1-";
+	f += d;
+	f += ".png";
+	d1.selectFile(f);
+	if (d1.exec()) {
+		QStringList saveNames = d1.selectedFiles();
+		ppi1Image->save(saveNames[0], "PNG", 100);
+	}
+ 
+ 	QFileDialog d2(0, tr("Save PPI1 Image"),
+		"c:/tmp", tr("PNG files (*.png);;All files (*.*)"));
+	d2.setFileMode(QFileDialog::AnyFile);
+	d2.setViewMode(QFileDialog::Detail);
+	d2.setAcceptMode(QFileDialog::AcceptSave);
+	d2.setConfirmOverwrite(true);
+	d2.setDefaultSuffix("png");
+	d2.setDirectory(f);
+	f = "CP2PPI2-";
+	f += d;
+	f += ".png";
+	d2.selectFile(f);
+	if (d2.exec()) {
+		QStringList saveNames = d2.selectedFiles();
+		ppi2Image->save(saveNames[0], "PNG", 100);
+	}
+
+	delete ppi1Image;
+	delete ppi2Image;
+
+}
 ///////////////////////////////////////////////////////////////////////
 
 void PPITest::changeDir() 

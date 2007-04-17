@@ -7,6 +7,8 @@
 #include <qlayout.h>
 #include <QVBoxLayout>
 #include <vector>
+#include <QImage>
+#include <QPixmap>
 
 #ifndef DLL_EXPORT
 #ifdef WIN32
@@ -34,6 +36,14 @@ public:
 	/// Configure the ColorBar.
 	/// @param map The corresponding color map.
 	void configure(ColorMap& map);
+
+	/// @returns An image of the color bar. The caller must delte
+	/// it when finished.
+	QImage* getImage();
+
+	/// @returns A pixmap of the color bar. The caller must delete it 
+	/// when finished.
+	QPixmap* getPixmap();
 
 signals:
 	void released();

@@ -89,3 +89,18 @@ ColorBar::mouseReleaseEvent(QMouseEvent *e) {
 }
 
 /******************************************************************/
+QImage*
+ColorBar::getImage()
+{	
+	QPixmap pixmap = QPixmap::grabWidget(this);
+	QImage* image = new QImage(pixmap.toImage());
+	return image;
+}
+
+/******************************************************************/
+QPixmap*
+ColorBar::getPixmap()
+{	
+	QPixmap* pixmap = new QPixmap(QPixmap::grabWidget(this));
+	return pixmap;
+}

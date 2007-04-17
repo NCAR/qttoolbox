@@ -193,6 +193,10 @@ public:
 	/// Capture an mage of the display
 	/// @returns The image. The caller must delete it when finished with it.
 	QImage* getImage();
+	/// Capture a pixmap of the display
+	/// @returns The pixmap. The caller must delete it when finished with it.
+	QPixmap* getPixmap();
+
 	public slots:
 		///
 		void setZoom(double factor);

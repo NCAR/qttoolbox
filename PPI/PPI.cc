@@ -982,3 +982,10 @@ PPI::getImage() {
 	QImage* pImage = new QImage(grabFrameBuffer(true));
 	return pImage;
 }
+
+////////////////////////////////////////////////////////////////////////
+QPixmap*
+PPI::getPixmap() {
+	QPixmap* pImage = new QPixmap(renderPixmap());
+	return pImage;
+}

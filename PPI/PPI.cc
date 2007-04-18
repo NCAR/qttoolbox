@@ -82,9 +82,9 @@ _selectedVar(0),
 _zoomFactor(1.0),
 _currentX(0.0),
 _currentY(0.0),
-_clearRed(0.0f),
-_clearGreen(0.0f),
-_clearBlue(0.0f),
+_clearRed(0.5f),
+_clearGreen(0.5f),
+_clearBlue(0.7f),
 _ringsEnabled(true),
 _gridsEnabled(false),
 _resizing(false),
@@ -164,7 +164,9 @@ PPI::initializeGL()
 
 	glClearColor(_clearRed, _clearGreen, _clearBlue, 0.0f);
 
+	glDrawBuffer(GL_FRONT);
 	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_FILL);
 
 	glShadeModel(GL_FLAT);
 
@@ -212,6 +214,37 @@ PPI::resizeGL( int w, int h )
 }
 
 ////////////////////////////////////////////////////////////////
+
+void
+PPI::paintGL()
+{
+	if(_resizing)
+		return;
+
+	// recreate the stencil
+	if (_ringsEnabled || _gridsEnabled) {
+		createStencil();
+	} else {
+		clearStencil();
+	}
+
+	// draw into the back buffer
+	glDrawBuffer(GL_BACK);
+
+	// redraw the beams
+	glClear(GL_COLOR_BUFFER_BIT);
+	for (unsigned int i = 0; i < _beams.size(); i++) {
+		glCallList(_beams[i]->_glListId[_selectedVar]);
+	}
+
+	// display the back buffer
+	swapBuffers();
+	
+	// and resume drawing to the front buffer.
+	glDrawBuffer(GL_FRONT);
+}
+
+////////////////////////////////////////////////////////////////
 void
 PPI::rings(bool enabled) {
 	_ringsEnabled = enabled;
@@ -230,28 +263,6 @@ PPI::grids(bool enabled) {
 	makeCurrent();
 	paintGL();
 }
-////////////////////////////////////////////////////////////////
-
-void
-PPI::paintGL()
-{
-	if(_resizing)
-		return;
-
-	if (_ringsEnabled || _gridsEnabled) {
-		createStencil();
-	} else {
-		clearStencil();
-	}
-
-	glClear(GL_COLOR_BUFFER_BIT);
-	for (unsigned int i = 0; i < _beams.size(); i++) {
-		glCallList(_beams[i]->_glListId[_selectedVar]);
-	}
-
-	//swapBuffers();
-}
-
 ////////////////////////////////////////////////////////////////
 
 void 

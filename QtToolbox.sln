@@ -56,20 +56,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PPId", "PPI\PPId.vcproj", "
 	GlobalSection(Qt) = preSolution
 		Integration = True
 	EndGlobalSection
-	ProjectSection(ProjectDependencies) = postProject
-		{85599015-083E-3672-B9EE-71498D034D3B} = {85599015-083E-3672-B9EE-71498D034D3B}
-	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PPITest", "PPI\Test\PPITest.vcproj", "{086796B9-9E97-3EE3-B723-D14909D60409}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "QtToolboxTest", "QtToolboxTest\QtToolboxTest.vdproj", "{28930F0A-47F6-4E3D-97CB-B385A8558CC7}"
 	GlobalSection(Qt) = preSolution
 		Integration = True
 	EndGlobalSection
-	ProjectSection(ProjectDependencies) = postProject
-		{85599015-083E-3672-B9EE-71498D034D3B} = {85599015-083E-3672-B9EE-71498D034D3B}
-		{3AA8A8A8-D800-3058-9BB3-EADC6A8BFB15} = {3AA8A8A8-D800-3058-9BB3-EADC6A8BFB15}
-	EndProjectSection
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "QtToolboxTest", "QtToolboxTest\QtToolboxTest.vdproj", "{28930F0A-47F6-4E3D-97CB-B385A8558CC7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PPITest", "PPI\Test\PPITest.vcproj", "{086796B9-9E97-3EE3-B723-D14909D60409}"
 	GlobalSection(Qt) = preSolution
 		Integration = True
 	EndGlobalSection
@@ -119,13 +112,13 @@ Global
 		{3AA8A8A8-D800-3058-9BB3-EADC6A8BFB15}.Debug|Win32.Build.0 = Debug|Win32
 		{3AA8A8A8-D800-3058-9BB3-EADC6A8BFB15}.Release|Win32.ActiveCfg = Release|Win32
 		{3AA8A8A8-D800-3058-9BB3-EADC6A8BFB15}.Release|Win32.Build.0 = Release|Win32
+		{28930F0A-47F6-4E3D-97CB-B385A8558CC7}.Debug|Win32.ActiveCfg = Debug
+		{28930F0A-47F6-4E3D-97CB-B385A8558CC7}.Release|Win32.ActiveCfg = Release
+		{28930F0A-47F6-4E3D-97CB-B385A8558CC7}.Release|Win32.Build.0 = Release
 		{086796B9-9E97-3EE3-B723-D14909D60409}.Debug|Win32.ActiveCfg = Debug|Win32
 		{086796B9-9E97-3EE3-B723-D14909D60409}.Debug|Win32.Build.0 = Debug|Win32
 		{086796B9-9E97-3EE3-B723-D14909D60409}.Release|Win32.ActiveCfg = Release|Win32
 		{086796B9-9E97-3EE3-B723-D14909D60409}.Release|Win32.Build.0 = Release|Win32
-		{28930F0A-47F6-4E3D-97CB-B385A8558CC7}.Debug|Win32.ActiveCfg = Debug
-		{28930F0A-47F6-4E3D-97CB-B385A8558CC7}.Release|Win32.ActiveCfg = Release
-		{28930F0A-47F6-4E3D-97CB-B385A8558CC7}.Release|Win32.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -128,12 +128,14 @@ public:
 	void configure(int nVars,  ///< Number of variables
 		int maxGates,           ///< Max number of gates per beam
 		int nBeams,             ///< Number of beams
-		double distanceSpanKm=100.0  ///< The distance spanned by the complete PPI.
+		double distanceSpanKm=100.0,  ///< The distance spanned by the complete PPI.
+		int decimationFactor=1    ///< The incoming data will be decimated in gates by this factor
 		); 
 	/// Configure the PPI for dynamically allocated beams. 
 	void configure(int nVars,  ///< Number of variables.
 		int maxGates,            ///< Maximum number of gates in a beam.
-		double distanceSpanKm=100.0  ///< The distance spanned by the complete PPI.
+		double distanceSpanKm=100.0,  ///< The distance spanned by the complete PPI.
+		int decimationFactor=1    ///< The incoming data will be decimated in gates by this factor
 		); 
 	/// Select the variable to display.
 	void selectVar(int index   ///< Index of the variable to display, zero based.
@@ -205,17 +207,20 @@ protected:
 	void resizeGL( int w, int h );
 	///
 	void paintGL();
-	///
-	void makeDisplayList(PPI::beam* b, 
-		int varN);
-	///
+	/// Create a display list for the given variable in the beam.
+	/// @param b The beam.
+	/// @param varN The variable number
+	void makeDisplayList(PPI::beam* b, int varN);
+	/// For dynamically allocated beams, cull the beam list, 
+	/// removing beams that are hidden.
 	void cullBeamList();
-	///
+	/// Handle a resize event. A time is used to prevent refreshes until
+	/// the resize is finished.
 	virtual void resizeEvent( QResizeEvent * e );
-	/// capture mouse move events
+	/// capture mouse move event for panning
 	virtual void mouseMoveEvent(QMouseEvent* event);
+	/// capture mouse press event which signals the start of panning
 	virtual void mousePressEvent(QMouseEvent* event);
-	virtual void mouseReleaseEvent(QMouseEvent* event);
 	// create the stencil that will draw the grid and range rings.
 	void createStencil();
 	/// clear the range ring and grids stencil
@@ -228,10 +233,12 @@ protected:
 	/// Dtermine a ring spacing which will give even distances,
 	/// and fit a reasonable number of rings in the display
 	double ringSpacing();
-	///
+	/// The incoming data will be decimated in gates by this factor
+	int _decimationFactor;   
+	/// Pointers to all of the active beams are saved here.
 	std::vector<beam*> _beams;
 	/// The number of variables we ar representing. A display list
-	/// will be created for each variable.
+	/// will be created for each variable in each beam.
 	int _nVars;
 	/// Maximum number of gates along a beam
 	int _maxGates;

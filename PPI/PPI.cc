@@ -88,7 +88,8 @@ _clearBlue(0.7f),
 _ringsEnabled(true),
 _gridsEnabled(false),
 _resizing(false),
-_scaledLabel(ScaledLabel::DistanceEng)
+_scaledLabel(ScaledLabel::DistanceEng),
+_decimationFactor(1)
 {
 	initializeGL();
 
@@ -107,13 +108,15 @@ _scaledLabel(ScaledLabel::DistanceEng)
 void
 PPI::configure(int nVars,
 			   int maxGates, 
-			   double distanceSpanKm) 
+			   double distanceSpanKm,
+			   int decimationFactor) 
 {
 	// Configure for dynamically allocated beams
 	_nVars = nVars;
-	_maxGates = maxGates;
+	_maxGates = maxGates/decimationFactor;
 	_preAllocate = false;
 	_distanceSpanKm = distanceSpanKm;
+	_decimationFactor = decimationFactor;
 }
 ////////////////////////////////////////////////////////////////
 
@@ -121,13 +124,15 @@ void
 PPI::configure(int nVars,
 			   int maxGates,
 			   int nBeams, 
-			   double distanceSpanKm) 
+			   double distanceSpanKm,
+			   int decimationFactor) 
 {
 	// Configure for preallocated beamd
 	_nVars = nVars;
-	_maxGates = maxGates;
+	_maxGates = maxGates/decimationFactor;
 	_preAllocate = true;
 	_distanceSpanKm = distanceSpanKm;
+	_decimationFactor = decimationFactor;
 
 	for (int i = 0; i < _beams.size(); i++)
 		delete _beams[i];
@@ -360,11 +365,6 @@ PPI::mousePressEvent( QMouseEvent * e )
 
 ////////////////////////////////////////////////////////////////
 void 
-PPI::mouseReleaseEvent( QMouseEvent * e )
-{
-}
-////////////////////////////////////////////////////////////////
-void 
 PPI::mouseMoveEvent( QMouseEvent * e )
 {
 	makeCurrent();
@@ -561,7 +561,7 @@ PPI::fillColors(beam* beam,
 		GLfloat* colors = beam->colors(v);
 		int cIndex = 0;
 		std::vector<double>& varData = _beamData[v];
-		for (int g = 0; g < gates; g++) {
+		for (int g = 0; g < gates; g += _decimationFactor) {
 			double data = varData[g];
 			map->dataColor(data, red, green, blue);
 			colors[cIndex++] = red/255.0;

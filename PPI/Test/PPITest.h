@@ -35,6 +35,7 @@ public:
 		void zoomInSlot();
 		void zoomOutSlot();
 		void saveImageSlot();
+		void decimationSlot(int);
 
 protected:
 	void pan(double x, double y);
@@ -50,6 +51,7 @@ protected:
 	QTimer _timer;
 	double _currentX;
 	double _currentY;
+	int _decimation;
 };
 
 #endif

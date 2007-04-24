@@ -23,9 +23,12 @@ _nVars(nVars),
 _angleInc(1.0),
 _gates(1000),
 _currentX(0.0),
-_currentY(0.0)
+_currentY(0.0),
+_decimation(1)
 {
 	setupUi(parent);
+
+	_decimation = _decimationSpin->value();
 
 	// create the color maps
 	for (int i = 0; i < _nVars; i++) {
@@ -79,29 +82,30 @@ _currentY(0.0)
 	// use preallocated or dynamically allocated beams. If a third
 	// parameter is specifiec, it will set the number of preallocated
 	// beams.
-	_ppi1->configure(_nVars, _gates, 360, 117.0);
-	_ppi2->configure(_nVars, _gates, 360, 223.0);
+	_ppi1->configure(_nVars, _gates, 360, 117.0, _decimation);
+	_ppi2->configure(_nVars, _gates, 360, 223.0, _decimation);
 
 	// set the rings to the current state of the check box
 	_ppi1->rings(_ringsCheck->isChecked());
 	_ppi2->rings(_ringsCheck->isChecked());
 
 
-	connect(_startButton,   SIGNAL(released()),     this, SLOT(startSlot()));
-	connect(_stopButton,    SIGNAL(released()),     this, SLOT(stopSlot()));
-	connect(_gridCheck,     SIGNAL(clicked(bool)),  this, SLOT(gridSlot(bool)));
-	connect(_ringsCheck,    SIGNAL(clicked(bool)),  this, SLOT(ringsSlot(bool)));
-	connect(_reverseButton, SIGNAL(released()),     this, SLOT(changeDir()));
-	connect(_zoomIn,        SIGNAL(released()),     this, SLOT(zoomInSlot()));
-	connect(_zoomOut,       SIGNAL(released()),     this, SLOT(zoomOutSlot()));
-	connect(&_timer,        SIGNAL(timeout()),      this, SLOT(addBeam()));
-	connect(_backgroundButton, SIGNAL(released()),  this, SLOT(backgroundColorSlot()));
-	connect(_panUp,         SIGNAL(released()),     this, SLOT(panUpSlot()));
-	connect(_panDown,       SIGNAL(released()),     this, SLOT(panDownSlot()));
-	connect(_panLeft,       SIGNAL(released()),     this, SLOT(panLeftSlot()));
-	connect(_panRight,      SIGNAL(released()),     this, SLOT(panRightSlot()));
-	connect(_viewReset,     SIGNAL(released()),     this, SLOT(resetViewSlot()));
-	connect(_saveImage,     SIGNAL(released()),     this, SLOT(saveImageSlot()));
+	connect(_startButton,   SIGNAL(released()),        this, SLOT(startSlot()));
+	connect(_stopButton,    SIGNAL(released()),        this, SLOT(stopSlot()));
+	connect(_gridCheck,     SIGNAL(clicked(bool)),     this, SLOT(gridSlot(bool)));
+	connect(_ringsCheck,    SIGNAL(clicked(bool)),     this, SLOT(ringsSlot(bool)));
+	connect(_reverseButton, SIGNAL(released()),        this, SLOT(changeDir()));
+	connect(_zoomIn,        SIGNAL(released()),        this, SLOT(zoomInSlot()));
+	connect(_zoomOut,       SIGNAL(released()),        this, SLOT(zoomOutSlot()));
+	connect(&_timer,        SIGNAL(timeout()),         this, SLOT(addBeam()));
+	connect(_backgroundButton, SIGNAL(released()),     this, SLOT(backgroundColorSlot()));
+	connect(_panUp,         SIGNAL(released()),        this, SLOT(panUpSlot()));
+	connect(_panDown,       SIGNAL(released()),        this, SLOT(panDownSlot()));
+	connect(_panLeft,       SIGNAL(released()),        this, SLOT(panLeftSlot()));
+	connect(_panRight,      SIGNAL(released()),        this, SLOT(panRightSlot()));
+	connect(_viewReset,     SIGNAL(released()),        this, SLOT(resetViewSlot()));
+	connect(_saveImage,     SIGNAL(released()),        this, SLOT(saveImageSlot()));
+	connect(_decimationSpin,SIGNAL(valueChanged(int)), this, SLOT(decimationSlot(int)));
 
 	_beamData.resize(_nVars);
 }
@@ -134,6 +138,15 @@ PPITest::stopSlot() {
 	_timer.stop();
 
 }
+///////////////////////////////////////////////////////////////////////
+
+void
+PPITest::decimationSlot(int n) {
+	_decimation = n;
+	_ppi1->configure(_nVars, _gates, 360, 117.0, _decimation);
+	_ppi2->configure(_nVars, _gates, 360, 223.0, _decimation);
+}
+
 ///////////////////////////////////////////////////////////////////////
 
 void

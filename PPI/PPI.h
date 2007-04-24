@@ -24,10 +24,6 @@
 #include "ColorBar/ColorMap.h"
 #include "ScaledLabel.h"
 
-#ifdef WIN32
-//#include "glut.h"
-#endif
-
 /// A Qt plugin that will display a Plan Position Index (PPI)
 /// display. Of course the same display can provide 
 /// relative Height Index (RHI) display just by manipulating
@@ -132,14 +128,12 @@ public:
 	void configure(int nVars,  ///< Number of variables
 		int maxGates,           ///< Max number of gates per beam
 		int nBeams,             ///< Number of beams
-		double distanceSpanKm=100.0,  ///< The distance spanned by the complete PPI.
-		int ringsPerPPI=4			///< The number of rings to show in the exposed PPI display.
+		double distanceSpanKm=100.0  ///< The distance spanned by the complete PPI.
 		); 
 	/// Configure the PPI for dynamically allocated beams. 
 	void configure(int nVars,  ///< Number of variables.
 		int maxGates,            ///< Maximum number of gates in a beam.
-		double distanceSpanKm=100.0,  ///< The distance spanned by the complete PPI.
-		int ringsPerPPI=4			///< The number of rings to show in the exposed PPI display.
+		double distanceSpanKm=100.0  ///< The distance spanned by the complete PPI.
 		); 
 	/// Select the variable to display.
 	void selectVar(int index   ///< Index of the variable to display, zero based.
@@ -166,9 +160,6 @@ public:
 	/// Call refresh()
 	void backgroundColor(QColor color  ///< The background color.
 		);
-	/// Set the number of rings to show for the exposed display.
-	/// This will also cause the grid spacing to match the rings.
-	void ringsPerPPI(int rings);
 	/// Find the index in the _beams array of the 
 	/// beam that corresponds to this angle. The
 	/// beam angles must sweep in a counter clockwise,
@@ -274,8 +265,6 @@ protected:
 	/// This will create labels wiith nocely scaled values and
 	/// approriate units.
 	ScaledLabel _scaledLabel;
-	/// The number of rings to display in the whole exposed PPI area.
-	int _ringsPerPPI;
 	/// The distance across the whole display, in km.
 	/// It affects the labelling of the range rings
 	double _distanceSpanKm;

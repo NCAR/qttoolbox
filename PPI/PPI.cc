@@ -107,15 +107,13 @@ _scaledLabel(ScaledLabel::DistanceEng)
 void
 PPI::configure(int nVars,
 			   int maxGates, 
-			   double distanceSpanKm,
-			   int ringsPerPPI) 
+			   double distanceSpanKm) 
 {
 	// Configure for dynamically allocated beams
 	_nVars = nVars;
 	_maxGates = maxGates;
 	_preAllocate = false;
 	_distanceSpanKm = distanceSpanKm;
-	_ringsPerPPI = ringsPerPPI;
 }
 ////////////////////////////////////////////////////////////////
 
@@ -123,15 +121,13 @@ void
 PPI::configure(int nVars,
 			   int maxGates,
 			   int nBeams, 
-			   double distanceSpanKm,
-			   int ringsPerPPI) 
+			   double distanceSpanKm) 
 {
 	// Configure for preallocated beamd
 	_nVars = nVars;
 	_maxGates = maxGates;
 	_preAllocate = true;
 	_distanceSpanKm = distanceSpanKm;
-	_ringsPerPPI = ringsPerPPI;
 
 	for (int i = 0; i < _beams.size(); i++)
 		delete _beams[i];

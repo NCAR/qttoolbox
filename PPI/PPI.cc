@@ -30,7 +30,6 @@ _nVars(nVars)
 	float cos2 = cos(3.14159*stopAngle/180.0)/nGates;
 	float sin2 = sin(3.14159*stopAngle/180.0)/nGates;
 
-	_varColors.resize(nVars);
 
 	// now calculate the vertex values, to be used for all variables
 	for (int j = 0; j < _nGates; j++) {
@@ -41,6 +40,7 @@ _nVars(nVars)
 	}
 	// Allocate space for the colors. Each vertex has an red, green and
 	// blue component, and there are 2 vertices per gate.
+	_varColors.resize(nVars);
 	for (int v = 0; v < nVars; v++) {
 		_varColors[v].resize(_nGates*6);
 	}
@@ -57,6 +57,10 @@ PPI::beam::~beam()
 {
 	for (unsigned int i = 0; i < _glListId.size(); i++)
 		glDeleteLists(_glListId[i], 1);
+
+	_glListId.clear();
+	_varColors.clear();
+	_triStripVertices.clear();
 }
 
 
@@ -597,7 +601,7 @@ PPI::makeDisplayList(beam* b, int v)
 	// set the colors pointer
 	glColorPointer(3, GL_FLOAT, 0, b->colors(v));
 
-	// draw a triangle strip
+	// draw a triangle strip. 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 2*_maxGates);
 
 	// end the display list

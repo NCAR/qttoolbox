@@ -141,8 +141,8 @@ PPITest::stopSlot() {
 ///////////////////////////////////////////////////////////////////////
 
 void
-PPITest::decimationSlot(int n) {
-	_decimation = n;
+PPITest::decimationSlot(int) {
+	_decimation = _decimationSpin->value();
 	_ppi1->configure(_nVars, _gates, 360, 117.0, _decimation);
 	_ppi2->configure(_nVars, _gates, 360, 223.0, _decimation);
 }

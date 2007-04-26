@@ -1,30 +1,30 @@
 #include "ColorMap.h"
 
-typedef  struct {unsigned char r,g,b;} RGB;
+typedef  struct {unsigned char r,g, b;} RGB;
 #define RGBSIZE(table) (sizeof(table)/sizeof(table[0]))
 
 char* builtinNames[] = {
 	"default",
 	"rainbow",
-	"dbz1",
-	"dbz2",
-	"velocity1",
-	"velocity2",
-	"div1"
+	"eldoraDbz",
+	"spolDbz",
+	"eldoraVel",
+	"spolVel",
+	"spolDiv"
 };
 
 static RGB
 rainbowRGB[] = {
-	{ 0, 0, 0}, { 84, 155, 0}, { 45, 232, 0}, { 0, 255, 30},
-	{ 0, 255, 114}, { 0, 255, 199}, { 0, 220, 255}, { 0, 135, 255},
-	{ 0, 55, 255}, { 73, 0, 255}, { 157, 0, 255}, { 246, 0, 255}, 
-	{ 255, 0, 224}, { 255, 0, 136}, { 255, 0, 53}, { 255, 255, 255}
+	{ 0, 0, 0}, { 84, 0, 155}, { 45, 0, 232}, { 0, 30, 255},
+	{ 0, 114, 255}, { 0, 199, 255}, { 0, 255, 220}, { 0, 255, 135},
+	{ 0, 255, 55}, { 73, 255, 0}, { 157, 255, 0}, { 246, 255, 0}, 
+	{ 255, 224, 0}, { 255, 136, 0}, { 255, 53, 0}, { 255, 255, 255}
 };
 
 
 // eldora dbZ
 static RGB
-dbz1RGB[33] = {
+eldoraDbzRGB[] = {
 	{60, 60, 60}, {0, 69, 0}, {0, 101, 10},
 	{0, 158, 30}, {0, 177, 59}, {0, 205, 116}, {0, 191, 150},
 	{0, 159, 206}, {8, 127, 219}, {28, 71, 232}, {56, 48, 222},
@@ -38,7 +38,7 @@ dbz1RGB[33] = {
 
 // eldora velocity
 static RGB
-velocity1RGB[33] = {
+eldoraVelocityRGB[] = {
 	{255, 0,   255}, {242, 0,   254}, {222, 0,   254},
 	{200, 0,   254}, {186, 0,   254}, {175, 0,   253}, {165, 0,   252},
 	{139, 0,   248}, {113, 1,   242}, {71,  19,  236}, {50,  75,  229},
@@ -52,7 +52,7 @@ velocity1RGB[33] = {
 
 /*      spol NCAR official reflectivity color map */
 static RGB
-dbz2RGB[] = {
+spolDbzRGB[] = {
 	{0,0,0},{60,60,60},{0,69,0},{0,101,10},
 	{0,158,30},{0,177,59},{0,205,116},{0,191,150},
 	{0,159,206},{8,127,219},{28,71,232},{56,48,222},
@@ -65,7 +65,7 @@ dbz2RGB[] = {
 
 /*      spol NCAR official divergence color map */
 static RGB
-div1RGB[] = {
+spolDivRGB[] = {
 	{0,0,0},{254,0,254},{253,0,254},{248,0,254},
 	{222,0,254},{186,0,254},{175,0,253},{165,0,252},
 	{139,0,248},{113,1,242},{71,19,236},{19,55,229},
@@ -81,7 +81,7 @@ div1RGB[] = {
 
 /*      spol NCAR official velocity color map */
 static RGB
-velocity2RGB[] = {
+spolVelocityRGB[] = {
 	{0,0,0},{254,0,254},{253,0,254},{248,0,254},
 	{222,0,254},{186,0,254},{175,0,253},{165,0,252},
 	{139,0,248},{113,1,242},{71,19,236},{19,55,229},
@@ -177,25 +177,25 @@ ColorMap::ColorMap(
 {
 	RGB* colors;
 	int tableSize = 0;
-	if (!builtinName.compare("velocity1")) {
-		colors = &velocity1RGB[0];
-		tableSize = RGBSIZE(velocity1RGB);
+	if (!builtinName.compare("eldoraVel")) {
+		colors = &eldoraVelocityRGB[0];
+		tableSize = RGBSIZE(eldoraVelocityRGB);
 	} else {
-		if (!builtinName.compare("velocity2")) { 
-			colors = &velocity2RGB[0];
-			tableSize = RGBSIZE(velocity2RGB);
+		if (!builtinName.compare("spolVel")) { 
+			colors = &spolVelocityRGB[0];
+			tableSize = RGBSIZE(spolVelocityRGB);
 		} else {
-			if (!builtinName.compare("dbz1")) {
-				colors = &dbz1RGB[0];
-				tableSize = RGBSIZE(dbz1RGB);
+			if (!builtinName.compare("eldoraDbz")) {
+				colors = &eldoraDbzRGB[0];
+				tableSize = RGBSIZE(eldoraDbzRGB);
 			} else {
-				if (!builtinName.compare("dbz2")) {
-					colors = &dbz2RGB[0];
-					tableSize = RGBSIZE(dbz2RGB);
+				if (!builtinName.compare("spolDbz")) {
+					colors = &spolDbzRGB[0];
+					tableSize = RGBSIZE(spolDbzRGB);
 				} else {
-					if (!builtinName.compare("div1")) {
-						colors = &div1RGB[0];
-						tableSize = RGBSIZE(div1RGB);
+					if (!builtinName.compare("spolDiv")) {
+						colors = &spolDivRGB[0];
+						tableSize = RGBSIZE(spolDivRGB);
 					} else {
 						if (!builtinName.compare("rainbow")) {
 							colors = &rainbowRGB[0];
@@ -224,7 +224,7 @@ ColorMap::ColorMap(
 		blue[i]  = colors[i].b;
 	}
 
-	setMap(minRange, maxRange, red, blue, green);
+	setMap(minRange, maxRange, red, green, blue);
 }
 /**********************************************************/
 void

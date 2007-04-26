@@ -183,25 +183,25 @@ PPI::initializeGL()
 	glDisable(GL_POLYGON_SMOOTH);
 	glDisable(GL_DITHER);
 	glDisable(GL_BLEND);
-
-	glEnable(GL_COLOR_ARRAY);
-	glEnable(GL_VERTEX_ARRAY);
+	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_INDEX_ARRAY);
 	glDisable(GL_EDGE_FLAG_ARRAY);
 	glDisable(GL_TEXTURE_COORD_ARRAY);
 	glDisable(GL_NORMAL_ARRAY);
-
-	glEnableClientState(GL_COLOR_ARRAY);
-	glEnableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_INDEX_ARRAY);
 	glDisableClientState(GL_EDGE_FLAG_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 
+	glEnable(GL_COLOR_ARRAY);
+	glEnable(GL_VERTEX_ARRAY);
+	glEnable(GL_STENCIL_TEST);
+
+	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_VERTEX_ARRAY);
+
 	// set the stencil buffer clear value.
 	glClearStencil(0.0f);
-	// allow stencil tests to occur.
-	glEnable(GL_STENCIL_TEST);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -379,7 +379,7 @@ PPI::mouseMoveEvent( QMouseEvent * e )
 	double deltaX = (x - _oldMouseX) / (double)width() / _zoomFactor / 2.0;
 	double deltaY = (_oldMouseY - y) / (double)height()/ _zoomFactor / 2.0;
 
-	glTranslatef(deltaX, deltaY, 0.0);
+	glTranslatef(deltaX/2.0, deltaY/2.0, 0.0);
 
 	_currentX += deltaX;
 	_currentY += deltaY;

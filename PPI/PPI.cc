@@ -244,7 +244,7 @@ PPI::paintGL()
 
 	// display the back buffer
 	swapBuffers();
-	
+
 	// and resume drawing to the front buffer.
 	glDrawBuffer(GL_FRONT);
 }
@@ -372,7 +372,7 @@ void
 PPI::mouseMoveEvent( QMouseEvent * e )
 {
 	makeCurrent();
-	
+
 	int x = e->x();
 	int y = e->y();
 
@@ -412,14 +412,8 @@ void
 PPI::selectVar(int index) 
 {
 	_selectedVar = index;
-	makeCurrent();
-	glClear(GL_COLOR_BUFFER_BIT);
-	for (unsigned int i = 0; i < _beams.size(); i++) {
-		makeDisplayList(_beams[i],_selectedVar);
-		// draw it
-		glCallList(_beams[i]->_glListId[_selectedVar]);
-	}
-	glFlush();
+	updateGL();
+	return;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -528,11 +522,12 @@ PPI::addBeam(float startAngle,
 		b = newBeams[i];
 		fillColors(b, _beamData, gates, stride, maps);
 
-		makeDisplayList(b,_selectedVar);
-
-		// draw it
-		if(!_resizing)
-			glCallList(b->_glListId[_selectedVar]);
+		for (int v = 0; v < _nVars; v++) {
+			makeDisplayList(b, v);
+			// draw it
+			if(!_resizing)
+				glCallList(b->_glListId[_selectedVar]);
+		}
 	}
 
 	if (!_resizing)

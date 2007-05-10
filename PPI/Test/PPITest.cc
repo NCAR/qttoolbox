@@ -99,6 +99,7 @@ _decimation(1)
 	connect(_zoomOut,       SIGNAL(released()),        this, SLOT(zoomOutSlot()));
 	connect(&_timer,        SIGNAL(timeout()),         this, SLOT(addBeam()));
 	connect(_backgroundButton, SIGNAL(released()),     this, SLOT(backgroundColorSlot()));
+	connect(_ringColorButton,  SIGNAL(released()),     this, SLOT(ringColorSlot()));
 	connect(_panUp,         SIGNAL(released()),        this, SLOT(panUpSlot()));
 	connect(_panDown,       SIGNAL(released()),        this, SLOT(panDownSlot()));
 	connect(_panLeft,       SIGNAL(released()),        this, SLOT(panLeftSlot()));
@@ -321,11 +322,23 @@ void PPITest::gridSlot(bool enabled)
 void
 PPITest::backgroundColorSlot() 
 {
-	QColor color = QColorDialog::getColor("white");
+	QColor color = QColorDialog::getColor("blue");
 
 	_ppi1->backgroundColor(color);
 	_ppi1->refresh();
 	_ppi2->backgroundColor(color);
+	_ppi2->refresh();
+}
+
+///////////////////////////////////////////////////////////////////////
+void
+PPITest::ringColorSlot() 
+{
+	QColor color = QColorDialog::getColor("black");
+
+	_ppi1->gridRingsColor(color);
+	_ppi1->refresh();
+	_ppi2->gridRingsColor(color);
 	_ppi2->refresh();
 }
 

@@ -86,9 +86,8 @@ _selectedVar(0),
 _zoomFactor(1.0),
 _currentX(0.0),
 _currentY(0.0),
-_clearRed(0.5f),
-_clearGreen(0.5f),
-_clearBlue(0.7f),
+_backgroundColor("lightblue"),
+_gridRingsColor("black"),
 _ringsEnabled(true),
 _gridsEnabled(false),
 _resizing(false),
@@ -164,10 +163,10 @@ PPI::~PPI() {
 void 
 PPI::initializeGL()
 {
-
-	//	makeCurrent();
-
-	glClearColor(_clearRed, _clearGreen, _clearBlue, 0.0f);
+	glClearColor(_backgroundColor.red()/255.0,
+		_backgroundColor.green()/255.0,
+		_backgroundColor.blue()/255.0,
+		0.0f);
 
 	glDrawBuffer(GL_FRONT);
 	glPolygonMode(GL_FRONT, GL_FILL);
@@ -202,6 +201,11 @@ PPI::initializeGL()
 
 	// set the stencil buffer clear value.
 	glClearStencil(0.0f);
+
+	// get a display list id for the rings
+	_ringsListId = glGenLists(1);
+	// get a display list id for the grid
+	_gridListId = glGenLists(1);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -226,22 +230,28 @@ PPI::paintGL()
 	if(_resizing)
 		return;
 
-	// recreate the stencil
-	if (_ringsEnabled || _gridsEnabled) {
-		createStencil();
-	} else {
-		clearStencil();
-	}
-
 	// draw into the back buffer
 	glDrawBuffer(GL_BACK);
 
-	// redraw the beams
+	// set the background
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	// redraw the beams
 	for (unsigned int i = 0; i < _beams.size(); i++) {
 		glCallList(_beams[i]->_glListId[_selectedVar]);
 	}
 
+	// recreate the stencil
+	if (_ringsEnabled || _gridsEnabled) {
+		//createStencil();
+		makeRingsAndGrids();
+		if (_ringsEnabled)
+			glCallList(_ringsListId);
+		if (_gridsEnabled)
+			glCallList(_gridListId);
+	} else {
+		//clearStencil();
+	}
 	// display the back buffer
 	swapBuffers();
 
@@ -385,7 +395,7 @@ PPI::mouseMoveEvent( QMouseEvent * e )
 	_currentY += deltaY;
 
 	// redraw
-	paintGL();
+	updateGL();
 }
 
 ////////////////////////////////////////////////////////////////
@@ -424,17 +434,22 @@ PPI::clearVar(int index)
 	if (index >= _nVars)
 		return;
 
-	// calling makeDisplayList with data == 0 casues the display list to be drawn completely with the background color.
+	// calling makeDisplayList with data == 0 causes the display list to 
+	// be drawn completely with the background color.
+	float r = _backgroundColor.red()/255.0;
+	float g = _backgroundColor.green()/255.0;
+	float b = _backgroundColor.blue()/255.0;
+
 	for (unsigned int i = 0; i < _beams.size(); i++) {
 		int cIndex = 0;
 		GLfloat* colors = _beams[i]->colors(index);
 		for (int g = 0; g < _maxGates; g++) {
-			colors[cIndex++] = _clearRed;
-			colors[cIndex++] = _clearGreen;
-			colors[cIndex++] = _clearBlue;
-			colors[cIndex++] = _clearRed;
-			colors[cIndex++] = _clearGreen;
-			colors[cIndex++] = _clearBlue;
+			colors[cIndex++] = r;
+			colors[cIndex++] = g;
+			colors[cIndex++] = b;
+			colors[cIndex++] = r;
+			colors[cIndex++] = g;
+			colors[cIndex++] = b;
 		}
 	}
 
@@ -530,6 +545,15 @@ PPI::addBeam(float startAngle,
 		}
 	}
 
+	// draw the rings and grid if they are enabled. Don't worry,
+	// it is only two display list calls. They are relative short
+	// lists compared to the beam drawing, and done on the graphics card anyway.
+	if (_ringsEnabled)
+		glCallList(_ringsListId);
+
+	if (_gridsEnabled)
+		glCallList(_gridListId);
+
 	if (!_resizing)
 		glFlush();
 
@@ -538,11 +562,7 @@ PPI::addBeam(float startAngle,
 		cullBeamList();
 	}
 
-	//swapBuffers();
-
 }
-
-
 ////////////////////////////////////////////////////////////////
 
 void
@@ -570,13 +590,17 @@ PPI::fillColors(beam* beam,
 			colors[cIndex++] = green/255.0;
 			colors[cIndex++] = blue/255.0;
 		}
+	float r = _backgroundColor.red()/255.0;
+	float g = _backgroundColor.green()/255.0;
+	float b = _backgroundColor.blue()/255.0;
+
 		for (int g = gates; g < _maxGates; g++) {
-			colors[cIndex++] = _clearRed;
-			colors[cIndex++] = _clearGreen;
-			colors[cIndex++] = _clearBlue;
-			colors[cIndex++] = _clearRed;
-			colors[cIndex++] = _clearGreen;
-			colors[cIndex++] = _clearBlue;
+			colors[cIndex++] = r;
+			colors[cIndex++] = g;
+			colors[cIndex++] = b;
+			colors[cIndex++] = r;
+			colors[cIndex++] = g;
+			colors[cIndex++] = b;
 		}
 	} 
 }
@@ -771,96 +795,26 @@ PPI::beamIndex(double startAngle, double stopAngle)
 }
 
 ////////////////////////////////////////////////////////////////////////
-
 void
 PPI::backgroundColor(QColor color)
 {
-	_clearRed   = color.red()/255.0;
-	_clearGreen = color.green()/255.0;
-	_clearBlue  = color.blue()/255.0;
+	_backgroundColor = color;
+	glClearColor(_backgroundColor.red()/255.0,
+		_backgroundColor.green()/255.0,
+		_backgroundColor.blue()/255.0,
+		0.0f);
 
 	makeCurrent();
-
-	// set the background color
-	glClearColor(_clearRed, _clearGreen, _clearBlue, 0.0f);
-
+	updateGL();
 }
-
 ////////////////////////////////////////////////////////////////////////
-
 void
-PPI::createStencil()
+PPI::gridRingsColor(QColor color)
 {
-	// The stencil buffer is a funny beast.  
-	//
-	// It can mask out display of the color buffers.
-	// If a color buffer is masked out, the color
-	// buffer clear value is displayed instead.
-	// The stencil buffer is filled with values
-	// to affect the areas that you want masked.
-	// A stencil operation is specified, which can
-	// compare the color buffer, the stencil buffer
-	// and a reference value to determine if the color 
-	// should be displayed.
-	//
-	// The stencil buffer can also be directed to be 
-	// modified as a result of the test.
-	//
-	// Oddly, there isn't a direct call to write 
-	// into the stencil buffer. Instead, you do the
-	// following to get your pattern into the stencil 
-	// buffer:
-	// 1. clear the stencil buffer
-	// 2. set the comparison function to always fail; i.e. all
-	//    drawing commands will fail and no actual rendering
-	//    from the color buffers will occur.
-	// 3. set the stencil buffer operation to increment the
-	//    stencil buffer when drawing to an area occurs.
-	// 4. Draw you pattern. After drawing, the stencil buffer 
-	//    will have one values set for your pattern.
-	//
-	// Okay, once the stencil buffer has one values in the 
-	// area of your pattern, we need to use it as a mask.
-	// We do this by setting the comparison function to
-	// say that drawing is allowed anywhere the stencil
-	// pattern is not equal to the reference value of 1.
-	// We also say that the stencil buffer operation is
-	// to keep the current stencil value; i.e. don't change it.
+	_gridRingsColor   = color;
 
-	// So, let's get going. Create the stencil pattern:
-
-	// don't allow any drawing of the color buffer
-	glStencilFunc(GL_NEVER, 0x0, 0x0);
-	// clear the stencil buffer (to 0.0f, set in initializeGL())
-	glClear(GL_STENCIL_BUFFER_BIT);
-	// on any drawing operation, increment the stencil.
-	glStencilOp(GL_INCR, GL_INCR, GL_INCR);
-
-	// draw range rings and grids
-	makeRingsAndGrids();
-	// now set up to use stencil in future drawing.
-
-	// allow color buffer rendering wherever the stencil buffer
-	// is not equal to 1.
-	glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
-	// Keep (i.e. do not modify) the stencil buffer 
-	// when the stencil test passes.
-	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-
-	//glColor3f(_gridRingsRed, _gridRingsGreen, _gridRingsBlue);
-
-}
-
-////////////////////////////////////////////////////////////////////////
-
-void
-PPI::clearStencil()
-{
-	// Clear the stencil buffer. 
-	// The glClear causes the stencil clear vaule
-	// set by glStencilClear() in initializeGL(),
-	// to be filled into the stencil buffer
-	glClear(GL_STENCIL_BUFFER_BIT);  
+	makeCurrent();
+	updateGL();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -877,6 +831,15 @@ PPI::makeRingsAndGrids() {
 
 	// Do range rings?
 	if (ringDelta > 0 && _ringsEnabled) {
+
+		// create a display list to hold the gl commands
+		glNewList(_ringsListId, GL_COMPILE);
+
+		// set the color
+		glColor3f(_gridRingsColor.red()/255.0, 
+			_gridRingsColor.green()/255.0,
+			_gridRingsColor.blue()/255.0);
+
 		// Get a new quadric object.
 		GLUquadricObj *quadObject = gluNewQuadric();
 
@@ -923,10 +886,21 @@ PPI::makeRingsAndGrids() {
 		// get rid of quad object
 		gluDeleteQuadric(quadObject);
 
+		glEndList();
+
 	}
 
 	// do the grid
 	if (ringDelta > 0 && _gridsEnabled) {
+
+		// create a display list to hold the gl commands
+		glNewList(_gridListId, GL_COMPILE);
+
+		// set the color
+		glColor3f(_gridRingsColor.red()/255.0, 
+			_gridRingsColor.green()/255.0,
+			_gridRingsColor.blue()/255.0);
+
 		glLineWidth(2);
 
 		glBegin(GL_LINES);
@@ -947,6 +921,8 @@ PPI::makeRingsAndGrids() {
 			y += ringDelta;
 		}
 		glEnd();
+
+		glEndList();
 	}
 }
 

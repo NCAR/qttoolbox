@@ -74,7 +74,7 @@ class DLL_EXPORT PPI: public QGLWidget//, public Ui::PPI
 		/// by the owner as data need to be rendered. At that time, 
 		/// a display list is also created (by the beam owner)
 		/// that uses the display list id. By having display lists
-		/// create for all variables, the display of beams can be
+		/// created for all variables, the display of beams can be
 		/// rapidly switched between variables just by executing
 		/// the correct display list.
 	class beam {
@@ -159,8 +159,10 @@ public:
 		int stride, 
 		std::vector<ColorMap*>& maps);
 	/// Specify the background color
-	/// Call refresh()
 	void backgroundColor(QColor color  ///< The background color.
+		);
+	/// Specify the background color
+	void gridRingsColor(QColor color  ///< The grid/rings color.
 		);
 	/// Find the index in the _beams array of the 
 	/// beam that corresponds to this angle. The
@@ -221,14 +223,8 @@ protected:
 	virtual void mouseMoveEvent(QMouseEvent* event);
 	/// capture mouse press event which signals the start of panning
 	virtual void mousePressEvent(QMouseEvent* event);
-	// create the stencil that will draw the grid and range rings.
-	void createStencil();
-	/// clear the range ring and grids stencil
-	void clearStencil();
-	/// Do the actual range ring and grid drawing. It will 
-	/// draw into what ever is currently active, so this
-	/// could be used if we wanted to draw acutal rings and grids
-	/// in a different color, rather than using the stencil.
+	/// Create the display lists for the rings and grid. The current
+	/// value of _ringsGridColor will be used for the color.
 	void makeRingsAndGrids();
 	/// Dtermine a ring spacing which will give even distances,
 	/// and fit a reasonable number of rings in the display
@@ -237,7 +233,7 @@ protected:
 	int _decimationFactor;   
 	/// Pointers to all of the active beams are saved here.
 	std::vector<beam*> _beams;
-	/// The number of variables we ar representing. A display list
+	/// The number of variables we are representing. A display list
 	/// will be created for each variable in each beam.
 	int _nVars;
 	/// Maximum number of gates along a beam
@@ -246,6 +242,10 @@ protected:
 	bool _preAllocate;
 	/// The index of the variable selected for display
 	int _selectedVar;
+	/// The display list id for the rings
+	GLuint _ringsListId;
+	/// The display list id for the grid
+	GLuint _gridListId;
 	// The current zoom factor. as the zoom in increases, it will
 	// increase. At full zoom out, it is equal to 1.
 	double _zoomFactor;
@@ -253,12 +253,10 @@ protected:
 	double _currentX;
 	///
 	double _currentY;
-	/// red value for the background (and thus stencil) color.
-	float _clearRed;
-	/// green value for the background (and thus stencil) color.
-	float _clearGreen;
-	/// blue value for the background (and thus stencil) color.
-	float _clearBlue;
+	/// The color for the grid and rings
+	QColor _gridRingsColor;
+	/// The color for the back ground
+	QColor _backgroundColor;
 	// True if the ring display is enabled.
 	bool _ringsEnabled;
 	/// True if the grids display is enabled.

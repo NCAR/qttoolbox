@@ -325,9 +325,7 @@ PPITest::backgroundColorSlot()
 	QColor color = QColorDialog::getColor("blue");
 
 	_ppi1->backgroundColor(color);
-	_ppi1->refresh();
 	_ppi2->backgroundColor(color);
-	_ppi2->refresh();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -337,9 +335,7 @@ PPITest::ringColorSlot()
 	QColor color = QColorDialog::getColor("black");
 
 	_ppi1->gridRingsColor(color);
-	_ppi1->refresh();
 	_ppi2->gridRingsColor(color);
-	_ppi2->refresh();
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -22,7 +22,7 @@ ColorBarTest::ColorBarTest(QDialog* dialog)
 	}
 	connect(&_bgroup, SIGNAL(buttonClicked(int)), this, SLOT(buttonSlot(int)));
 	_groupBox->setLayout(vbox);
-	ColorMap m(0.0, 100.0, _maps[0]);
+	ColorMap m(0.0, 160.0, _maps[0]);
 	_colorBar->configure(m);
 
 }
@@ -36,6 +36,6 @@ void
 ColorBarTest::buttonSlot(int) {
 	int id = _bgroup.checkedId();
 	std::string map = _maps[id];
-	ColorMap m(0.0, 100.0, map);
+	ColorMap m(0.0, 160.0, map);
 	_colorBar->configure(m);
 }

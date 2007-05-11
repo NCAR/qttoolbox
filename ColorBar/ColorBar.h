@@ -51,16 +51,11 @@ signals:
 protected:
 	/// Capture a mouse release and emit a released() signal.
 	virtual void mouseReleaseEvent(QMouseEvent* e);
-	/// (Re)make the color swatches and the labels.
-	void makeSwatches(ColorMap& map, double min, double max);
-	/// Container for the swatched and labels, so that 
-	/// they can be deleted when the configuration is changed.
-	std::vector<QWidget*> _widgets;
-	/// A layout for the swatches
-	QVBoxLayout* _swatchLayout;
+	/// The paint event is where we will draw the color bar.
+	virtual void paintEvent(QPaintEvent* e);
 	/// A default color map, so that the plugin can
 	/// display something.
-	ColorMap _defaultMap;
+	ColorMap _colorMap;
 };
 
 #endif

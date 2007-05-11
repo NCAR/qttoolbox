@@ -227,13 +227,16 @@ PPI::resizeGL( int w, int h )
 void
 PPI::paintGL()
 {
-	if(_resizing)
+	if(_resizing) {
+		// clear the image
+		glClear(GL_COLOR_BUFFER_BIT);
 		return;
+	}
 
 	// draw into the back buffer
 	glDrawBuffer(GL_BACK);
 
-	// set the background
+	// clear the display
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	// redraw the beams
@@ -241,7 +244,7 @@ PPI::paintGL()
 		glCallList(_beams[i]->_glListId[_selectedVar]);
 	}
 
-	// recreate the stencil
+	// draw rings/grid
 	if (_ringsEnabled || _gridsEnabled) {
 		//createStencil();
 		makeRingsAndGrids();
@@ -249,9 +252,8 @@ PPI::paintGL()
 			glCallList(_ringsListId);
 		if (_gridsEnabled)
 			glCallList(_gridListId);
-	} else {
-		//clearStencil();
-	}
+	} 
+
 	// display the back buffer
 	swapBuffers();
 
@@ -362,10 +364,15 @@ PPI::resetView()
 void 
 PPI::resizeEvent( QResizeEvent * e )
 {
-	if(_resizing)
+
+	if(_resizing) {
+		makeCurrent();
+		glClear(GL_COLOR_BUFFER_BIT);
 		return;
+	}
 
 	_resizing = true;
+
 	_resizeTimer.start(500);
 }
 
@@ -590,9 +597,9 @@ PPI::fillColors(beam* beam,
 			colors[cIndex++] = green/255.0;
 			colors[cIndex++] = blue/255.0;
 		}
-	float r = _backgroundColor.red()/255.0;
-	float g = _backgroundColor.green()/255.0;
-	float b = _backgroundColor.blue()/255.0;
+		float r = _backgroundColor.red()/255.0;
+		float g = _backgroundColor.green()/255.0;
+		float b = _backgroundColor.blue()/255.0;
 
 		for (int g = gates; g < _maxGates; g++) {
 			colors[cIndex++] = r;

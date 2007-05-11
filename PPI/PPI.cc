@@ -92,7 +92,8 @@ _ringsEnabled(true),
 _gridsEnabled(false),
 _resizing(false),
 _scaledLabel(ScaledLabel::DistanceEng),
-_decimationFactor(1)
+_decimationFactor(1),
+_configured(false)
 {
 	initializeGL();
 
@@ -120,6 +121,7 @@ PPI::configure(int nVars,
 	_preAllocate = false;
 	_distanceSpanKm = distanceSpanKm;
 	_decimationFactor = decimationFactor;
+	_configured = true;
 }
 ////////////////////////////////////////////////////////////////
 
@@ -136,6 +138,8 @@ PPI::configure(int nVars,
 	_preAllocate = true;
 	_distanceSpanKm = distanceSpanKm;
 	_decimationFactor = decimationFactor;
+	_configured = true;
+
 
 	for (int i = 0; i < _beams.size(); i++)
 		delete _beams[i];
@@ -828,6 +832,11 @@ PPI::gridRingsColor(QColor color)
 void
 PPI::makeRingsAndGrids() {
 
+	// don't try to draw rings if we haven't been configured yet
+	if (!_configured)
+		return;
+	
+	// or if the rings or grids aren't enabled
 	if (!_ringsEnabled && !_gridsEnabled)
 		return;
 

@@ -277,6 +277,8 @@ protected:
 	int _oldMouseX;
 	/// Last Y location of the mouse during mouse move events; used for panning
 	int _oldMouseY;
+	/// Set false until we have been configured with some operating paramters.
+	bool _configured;
 };
 
 #endif

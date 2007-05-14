@@ -179,10 +179,13 @@ protected:
    /// @param scaleMin The y scale minimum.
    /// @param scaleMax The y scale maximum.
    /// @param sampleRateHz The sample rate, in Hz
+   /// @param newProductType The requested product type. Keep track 
+   /// of this so that we can set the zoom base if the product type changes.
    void configureForProduct(int n,
       double scaleMin, 
       double scaleMax,
-      double sampleRateHz);
+      double sampleRateHz,
+	  int newProductType);
 
    /// Label the axes
    /// @param xLabel Label for x

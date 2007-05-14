@@ -220,7 +220,7 @@ ScopePlot::Product(std::vector<double>& productData,
 		sampleRateHz  != _sampleRateHz ||
 		xLabel        != _productXlabel ||
 		yLabel        != _productYlabel) {
-			configureForProduct(productData.size(), scaleMin, scaleMax, sampleRateHz);
+			configureForProduct(productData.size(), scaleMin, scaleMax, sampleRateHz, productType);
 			_productXlabel = xLabel;
 			_productYlabel = yLabel;
 			labelAxes(_productXlabel, _productYlabel);
@@ -243,6 +243,9 @@ ScopePlot::configureForTimeSeries(
 								  double scaleMax, 
 								  double sampleRateHz)
 {
+	// we need to reset the zoom base when the plot type changes
+	bool reZoom = (_plotType != TIMESERIES);
+
 	_plotType = TIMESERIES;
 	_scaleMin = scaleMin;
 	_scaleMax = scaleMax;
@@ -262,7 +265,7 @@ ScopePlot::configureForTimeSeries(
 
 	_qwtPlot->replot();
 
-	if(_zoomer->zoomStack().size() == 1)
+	if((_zoomer->zoomStack().size() == 1) || reZoom )
 		_zoomer->setZoomBase();
 }
 
@@ -272,6 +275,9 @@ void
 ScopePlot::configureForIvsQ(double scaleMin, 
 							double scaleMax)
 {
+	// we need to reset the zoom base when the plot type changes
+	bool reZoom = (_plotType != IVSQ);
+
 	_plotType = IVSQ;
 	_scaleMin = scaleMin;
 	_scaleMax = scaleMax;
@@ -284,7 +290,8 @@ ScopePlot::configureForIvsQ(double scaleMin,
 	initCurve();
 
 	_qwtPlot->replot();
-	_zoomer->setZoomBase();
+	if((_zoomer->zoomStack().size() == 1) || reZoom)
+		_zoomer->setZoomBase();
 
 }
 
@@ -297,6 +304,9 @@ ScopePlot::configureForSpectrum(int n,
 								double sampleRateHz,
 								bool logYaxis)
 {
+	// we need to reset the zoom base when the plot type changes
+	bool reZoom = (_plotType != SPECTRUM);
+
 	_plotType = SPECTRUM;
 	_scaleMin = scaleMin;
 	_scaleMax = scaleMax;
@@ -306,6 +316,7 @@ ScopePlot::configureForSpectrum(int n,
 		_qwtPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLog10ScaleEngine());
 	else
 		_qwtPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
+
 	_qwtPlot->setAxisScale(QwtPlot::xBottom, -_sampleRateHz/2.0, _sampleRateHz/2.0);
 	_qwtPlot->setAxisScale(QwtPlot::yLeft, scaleMin, scaleMax);
 
@@ -317,7 +328,9 @@ ScopePlot::configureForSpectrum(int n,
 	initCurve();
 
 	_qwtPlot->replot();
-	_zoomer->setZoomBase();
+
+	if((_zoomer->zoomStack().size() == 1) || reZoom)
+		_zoomer->setZoomBase();
 
 }
 //////////////////////////////////////////////////////////////////////////////////
@@ -326,9 +339,14 @@ void
 ScopePlot::configureForProduct(int n, 
 							   double scaleMin, 
 							   double scaleMax, 
-							   double sampleRateHz)
+							   double sampleRateHz,
+							   int newProductType)
 {
+	// we need to reset the zoom base when the plot type changes
+	bool reZoom = (_plotType != PRODUCT) || (_productType != newProductType);
+
 	_plotType = PRODUCT;
+	_productType = newProductType;
 	_scaleMin = scaleMin;
 	_scaleMax = scaleMax;
 	_sampleRateHz = sampleRateHz;
@@ -345,7 +363,9 @@ ScopePlot::configureForProduct(int n,
 	initCurve();
 
 	_qwtPlot->replot();
-	_zoomer->setZoomBase();
+
+	if((_zoomer->zoomStack().size() == 1) || reZoom)
+		_zoomer->setZoomBase();
 
 }
 //////////////////////////////////////////////////////////////////////////////////

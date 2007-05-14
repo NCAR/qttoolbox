@@ -1,41 +1,80 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ColorBarTest", "ColorBar\Test\ColorBarTest.vcproj", "{CBE519A0-B026-343E-9C35-19F3FE9A2B39}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 	ProjectSection(ProjectDependencies) = postProject
 		{85599015-083E-3672-B9EE-71498D034D3B} = {85599015-083E-3672-B9EE-71498D034D3B}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ColorBard", "ColorBar\ColorBard.vcproj", "{85599015-083E-3672-B9EE-71498D034D3B}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TwoKnobsd", "TwoKnobs\TwoKnobsd.vcproj", "{FDBF7F4E-0DCA-313B-B0D5-741D6E62230F}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TwoKnobsTest", "TwoKnobs\Test\TwoKnobsTest.vcproj", "{23DA7E25-5651-3CE1-924C-BE5A696368DF}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 	ProjectSection(ProjectDependencies) = postProject
 		{FDBF7F4E-0DCA-313B-B0D5-741D6E62230F} = {FDBF7F4E-0DCA-313B-B0D5-741D6E62230F}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Knobd", "Knob\Knobd.vcproj", "{8939E6EC-06C4-319C-AEA6-59E3638594B7}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KnobTest", "Knob\Test\KnobTest.vcproj", "{6ED30BE5-0AFE-317E-AAF6-2C4C4E47649C}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 	ProjectSection(ProjectDependencies) = postProject
 		{8939E6EC-06C4-319C-AEA6-59E3638594B7} = {8939E6EC-06C4-319C-AEA6-59E3638594B7}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScopePlotd", "ScopePlot\scopePlotd.vcproj", "{79E391FA-A330-344D-8325-DDDD7F40F77C}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScopePlotTest", "ScopePlot\Test\ScopePlotTest.vcproj", "{584CB3D8-6D6E-3708-9D76-5F8EF5FA56A9}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+	ProjectSection(ProjectDependencies) = postProject
+		{79E391FA-A330-344D-8325-DDDD7F40F77C} = {79E391FA-A330-344D-8325-DDDD7F40F77C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PPId", "PPI\PPId.vcproj", "{3AA8A8A8-D800-3058-9BB3-EADC6A8BFB15}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "QtToolboxTest", "QtToolboxTest\QtToolboxTest.vdproj", "{28930F0A-47F6-4E3D-97CB-B385A8558CC7}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PPITest", "PPI\Test\PPITest.vcproj", "{086796B9-9E97-3EE3-B723-D14909D60409}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 	ProjectSection(ProjectDependencies) = postProject
-		{85599015-083E-3672-B9EE-71498D034D3B} = {85599015-083E-3672-B9EE-71498D034D3B}
 		{3AA8A8A8-D800-3058-9BB3-EADC6A8BFB15} = {3AA8A8A8-D800-3058-9BB3-EADC6A8BFB15}
+		{85599015-083E-3672-B9EE-71498D034D3B} = {85599015-083E-3672-B9EE-71498D034D3B}
 	EndProjectSection
 EndProject
 Global
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
@@ -86,41 +125,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
-	GlobalSection(Qt) = preSolution
-		Integration = True
-	EndGlobalSection
-	GlobalSection(Qt) = preSolution
-		Integration = True
 	EndGlobalSection
 EndGlobal

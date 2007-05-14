@@ -3,11 +3,9 @@
 
 #include <qglobal.h>
 #if QT_VERSION < 0x040000
-#include <q3scrollview.h>
+#include <qscrollview.h>
 #endif
 #include <qwt_plot_zoomer.h>
-//Added by qt3to4:
-#include <QEvent>
 
 class ScrollData;
 class ScrollBar;
@@ -29,11 +27,11 @@ public:
     ScrollBar *verticalScrollBar() const;
 
 #if QT_VERSION < 0x040000
-    void setHScrollBarMode(Q3ScrollView::ScrollBarMode);
-    void setVScrollBarMode(Q3ScrollView::ScrollBarMode);
+    void setHScrollBarMode(QScrollView::ScrollBarMode);
+    void setVScrollBarMode(QScrollView::ScrollBarMode);
 
-    Q3ScrollView::ScrollBarMode vScrollBarMode () const;
-    Q3ScrollView::ScrollBarMode hScrollBarMode () const;
+    QScrollView::ScrollBarMode vScrollBarMode () const;
+    QScrollView::ScrollBarMode hScrollBarMode () const;
 #else
     void setHScrollBarMode(Qt::ScrollBarPolicy);
     void setVScrollBarMode(Qt::ScrollBarPolicy);

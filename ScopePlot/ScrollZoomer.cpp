@@ -3,11 +3,8 @@
 #include <qwt_plot_layout.h>
 #include <qwt_scale_engine.h>
 #include <qwt_scale_widget.h>
-//Added by qt3to4:
-#include <QResizeEvent>
-#include <QChildEvent>
-#include "ScrollBar.h"
-#include "ScrollZoomer.h"
+#include "scrollbar.h"
+#include "scrollzoomer.h"
 
 class ScrollData
 {
@@ -16,7 +13,7 @@ public:
         scrollBar(NULL),
         position(ScrollZoomer::OppositeToScale),
 #if QT_VERSION < 0x040000
-        mode(Q3ScrollView::Auto)
+        mode(QScrollView::Auto)
 #else
         mode(Qt::ScrollBarAsNeeded)
 #endif
@@ -31,7 +28,7 @@ public:
     ScrollBar *scrollBar;
     ScrollZoomer::ScrollBarPosition position;
 #if QT_VERSION < 0x040000
-    Q3ScrollView::ScrollBarMode mode;
+    QScrollView::ScrollBarMode mode;
 #else
     Qt::ScrollBarPolicy mode;
 #endif
@@ -127,7 +124,7 @@ ScrollBar *ScrollZoomer::verticalScrollBar() const
 }
     
 #if QT_VERSION < 0x040000
-void ScrollZoomer::setHScrollBarMode(Q3ScrollView::ScrollBarMode mode)
+void ScrollZoomer::setHScrollBarMode(QScrollView::ScrollBarMode mode)
 #else
 void ScrollZoomer::setHScrollBarMode(Qt::ScrollBarPolicy mode)
 #endif
@@ -140,7 +137,7 @@ void ScrollZoomer::setHScrollBarMode(Qt::ScrollBarPolicy mode)
 }
 
 #if QT_VERSION < 0x040000
-void ScrollZoomer::setVScrollBarMode(Q3ScrollView::ScrollBarMode mode)
+void ScrollZoomer::setVScrollBarMode(QScrollView::ScrollBarMode mode)
 #else
 void ScrollZoomer::setVScrollBarMode(Qt::ScrollBarPolicy mode)
 #endif
@@ -153,7 +150,7 @@ void ScrollZoomer::setVScrollBarMode(Qt::ScrollBarPolicy mode)
 }
 
 #if QT_VERSION < 0x040000
-Q3ScrollView::ScrollBarMode ScrollZoomer::hScrollBarMode() const
+QScrollView::ScrollBarMode ScrollZoomer::hScrollBarMode() const
 #else
 Qt::ScrollBarPolicy ScrollZoomer::hScrollBarMode() const
 #endif
@@ -162,7 +159,7 @@ Qt::ScrollBarPolicy ScrollZoomer::hScrollBarMode() const
 }
 
 #if QT_VERSION < 0x040000
-Q3ScrollView::ScrollBarMode ScrollZoomer::vScrollBarMode() const
+QScrollView::ScrollBarMode ScrollZoomer::vScrollBarMode() const
 #else
 Qt::ScrollBarPolicy ScrollZoomer::vScrollBarMode() const
 #endif
@@ -264,7 +261,7 @@ bool ScrollZoomer::eventFilter(QObject *o, QEvent *e)
 bool ScrollZoomer::needScrollBar(Qt::Orientation o) const
 {
 #if QT_VERSION < 0x040000
-    Q3ScrollView::ScrollBarMode mode;
+    QScrollView::ScrollBarMode mode;
 #else
     Qt::ScrollBarPolicy mode;
 #endif
@@ -291,14 +288,14 @@ bool ScrollZoomer::needScrollBar(Qt::Orientation o) const
     switch(mode)
     {
 #if QT_VERSION < 0x040000
-        case Q3ScrollView::AlwaysOn:
+        case QScrollView::AlwaysOn:
 #else
         case Qt::ScrollBarAlwaysOn:
 #endif
             needed = true;
             break;
 #if QT_VERSION < 0x040000
-        case Q3ScrollView::AlwaysOff:    
+        case QScrollView::AlwaysOff:    
 #else
         case Qt::ScrollBarAlwaysOff:
 #endif

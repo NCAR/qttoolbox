@@ -1,13 +1,13 @@
 #include "ScopePlotPlugin.h"
 #include "ScopePlot.h"
 
-ScopePlotPlugin::ScopePlotPlugin(QObject *parent)
+ScopePlotPlugin::ScopePlotPlugin(QObject * /*parent*/)
 {
 	initialized = false;
 }
 
 void
-ScopePlotPlugin::initialize(QDesignerFormEditorInterface *core)
+ScopePlotPlugin::initialize(QDesignerFormEditorInterface * /*core*/)
 {
 	if (initialized)
 		return;

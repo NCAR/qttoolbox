@@ -13,6 +13,8 @@
 #include <qwt_plot_curve.h>
 #include <qwt_legend.h>
 #include <qwt_text.h>
+#include <qwt_scale_widget.h>
+#include <qwt_double_rect.h>
 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -37,12 +39,19 @@ _paused(false)
 
 	_qwtPlot->setCanvasBackground(QColor(29, 100, 141)); // nice blue
 
+    // enable zooming
+
+    _zoomer = new ScrollZoomer(_qwtPlot->canvas());
+    _zoomer->setRubberBandPen(QPen(Qt::red, 2, Qt::DotLine));
+    _zoomer->setTrackerPen(QPen(Qt::white));
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 
 ScopePlot::~ScopePlot()
 {
+	delete _zoomer;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -128,7 +137,7 @@ ScopePlot::IvsQ(std::vector<double>& I,
 				std::vector<double>& Q,
 				double scaleMin,
 				double scaleMax,
-				double sampleRateHz,
+				double /*sampleRateHz*/,
 				std::string xLabel, 
 				std::string yLabel)
 {
@@ -252,6 +261,9 @@ ScopePlot::configureForTimeSeries(
 	initCurve();
 
 	_qwtPlot->replot();
+
+	if(_zoomer->zoomStack().size() == 1)
+		_zoomer->setZoomBase();
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -270,6 +282,9 @@ ScopePlot::configureForIvsQ(double scaleMin,
 	_qwtPlot->setAxisScale(QwtPlot::yLeft,   _scaleMin, _scaleMax);
 
 	initCurve();
+
+	_qwtPlot->replot();
+	_zoomer->setZoomBase();
 
 }
 
@@ -301,6 +316,9 @@ ScopePlot::configureForSpectrum(int n,
 
 	initCurve();
 
+	_qwtPlot->replot();
+	_zoomer->setZoomBase();
+
 }
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -325,6 +343,9 @@ ScopePlot::configureForProduct(int n,
 		_xdata[i] = i;
 
 	initCurve();
+
+	_qwtPlot->replot();
+	_zoomer->setZoomBase();
 
 }
 //////////////////////////////////////////////////////////////////////////////////

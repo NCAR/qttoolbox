@@ -13,14 +13,16 @@ CONFIG += thread
 CONFIG += warn_on 
 CONFIG += exceptions
 
+DEFINES += QWT_DLL
+
 CONFIG(release, debug|release) {
   TARGET = ScopePlot
-  LIBS  += $(QTDIR)/lib/qwt5.lib
+  LIBS  += c:/Projects/qwt/lib/qwt5.lib
   DLLDESTDIR += $(QTDIR)/lib
   DLLDESTDIR += $(QTDIR)/Plugins/Designer
 } else {
   TARGET = ScopePlotd
-  LIBS  += $(QTDIR)/lib/qwt5d.lib
+  LIBS  += c:/Projects/qwt/lib/qwt5d.lib
   DLLDESTDIR += $(QTDIR)/lib
 }
 
@@ -29,12 +31,12 @@ INCLUDEPATH += c:/Projects/qwt/src
 
 HEADERS     += ScopePlot.h
 HEADERS     += ScopePlotPlugin.h
-#HEADERS	+= ScrollZoomer.h
 HEADERS     += ScrollBar.h
+HEADERS	+= ScrollZoomer.h
 
 SOURCES	+= ScopePlot.cpp
 SOURCES	+= ScopePlotPlugin.cpp
-#SOURCES	+= ScrollZoomer.cpp
 SOURCES     += ScrollBar.cpp
+SOURCES	+= ScrollZoomer.cpp
 
 FORMS	= ScopePlot.ui 

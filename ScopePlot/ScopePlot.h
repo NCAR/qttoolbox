@@ -7,6 +7,7 @@
 #include <qwt_plot_grid.h>
 #include <qwt_plot.h>
 #include <qwt_scale_engine.h>
+#include "ScrollZoomer.h"
 
 #include <vector>
 
@@ -33,8 +34,7 @@
 /// code.
 class DLL_EXPORT ScopePlot: public QWidget, private Ui::ScopePlot
 {
-   Q_OBJECT
-
+	Q_OBJECT
 public:
    /// Plot type
    enum PLOTTYPE {TIMESERIES=0, IVSQ=1, SPECTRUM=2, PRODUCT=3};
@@ -123,6 +123,7 @@ public:
       double sampleRateHz,
       std::string xLabel="", 
       std::string yLabel="");
+
    /// Save a screenshot of the image
    /// @param filePath The path where the image wil be saved.
    void saveImageToFile(std::string filePath);
@@ -140,7 +141,6 @@ public slots:
    /// Stop updating the display.
    /// @param tf True to enable, false otherwise
    void pause(bool tf);
-
 
 protected:
 
@@ -198,6 +198,9 @@ protected:
 
    /// The grid
    QwtPlotGrid* _grid;
+
+   // The zoomer
+   ScrollZoomer* _zoomer;
 
    /// Type of current plot display.
    PLOTTYPE _plotType;

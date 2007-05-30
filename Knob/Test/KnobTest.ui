@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>TwoKnobsTest</string>
+   <string>KnobTest</string>
   </property>
   <layout class="QVBoxLayout" >
    <property name="margin" >
@@ -68,9 +68,6 @@
    <header>Knob.h</header>
   </customwidget>
  </customwidgets>
- <includes>
-  <include location="local" >TwoKnobs/TwoKnobs.h</include>
- </includes>
  <resources/>
  <connections/>
 </ui>

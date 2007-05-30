@@ -1,0 +1,19 @@
+import os
+
+env = Environment(tools=['default', 'qt4']) 
+env.EnableQt4Modules(['QtCore','QtGui',])
+env['QWTDIR'] = os.environ.get('QWTDIR', None)
+env.AppendUnique(CPPPATH=['$QWTDIR/include', '..',])
+
+# process forms with uic
+env.Uic4('KnobTest.ui')
+
+# build knobtest
+knobtest = env.Program(
+   'knobtest',
+   'main.cpp',
+   LIBS=['QtCore','QtGui','knob','qwt'],
+   LIBPATH=['../','$QWTDIR/lib','$QTDIR/lib']
+)
+
+Default(knobtest)

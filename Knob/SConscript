@@ -1,28 +1,25 @@
 import os
 
-Import('env')
-env = env.Create("qttoolbox.knob", tools = ['default', 'qt'])
+SConscript('Test/SConscript')
 
-my_tools = env.Require(['PKG_QT','PKG_QWT'])
+env = Environment(tools=['default', 'qt4'])
+env['QWTDIR'] = os.environ.get('QWTDIR', None)
+env.AppendUnique(CPPPATH=['$QWTDIR/include', '..', '$QTDIR/include/QtDesigner'])
+env.AppendUnique(QT4_MOCFROMHFLAGS=['-I', '$QTDIR/include/QtDesigner/'])
+env.EnableQt4Modules(['QtCore','QtGui',])
 
-mydir=Dir('.')
+# uic knob form
+env.Uic4('Knob.ui')
 
-def PKG_QTTOOLBOX_KNOB(env):
-        env.Append(CPPPATH=[mydir,])
-	env.Append(LIBPATH=[mydir,])
-	env.Append(LIBS=['knob',])
-	env.Append(QT_UICIMPLFLAGS=['-L', str(mydir)])
-	env.Apply(my_tools)
+# build knob shared library
+knob = env.SharedLibrary(
+   'knob',
+   ['Knob.cpp','KnobPlugin.cpp',],
+   LIBS=['qwt',],
+   LIBPATH=['$QWTDIR/lib',]
+)
 
-Export('PKG_QTTOOLBOX_KNOB')
+Default(knob)
 
-lib = env.SharedLibrary('knob', 
-Split("""
- KnobBase.ui
- Knob.cpp
- KnobPlugin.cpp
-"""))
+env.Install(os.path.join(env['QTDIR'],'plugins','designer'), knob)
 
-Default(lib)
-
-env.Install(os.path.join(env['QTDIR'],'plugins','designer'), lib)

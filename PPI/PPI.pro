@@ -31,6 +31,7 @@ CONFIG(release, debug|release) {
 }
 
 INCLUDEPATH += ../
+INCLUDEPATH += ../ColorBar
 INCLUDEPATH += ../../
 INCLUDEPATH += ../../glut-3.7.6/include/GL
 

@@ -1,4 +1,5 @@
 #include "ColorMap.h"
+#include <string>
 
 typedef  struct {unsigned char r,g, b;} RGB;
 #define RGBSIZE(table) (sizeof(table)/sizeof(table[0]))

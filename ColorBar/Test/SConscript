@@ -1,14 +1,19 @@
+import os
 
-Import('env')
-env = env.Create("qttoolbox.twoknobstest", tools = ['default', 'qt'])
-env.Require(Split("""
-PKG_QTTOOLBOX_COLORBAR
-"""))
+env = Environment(tools=['default', 'qt4']) 
+env.EnableQt4Modules(['QtCore','QtGui',])
+env['QWTDIR'] = os.environ.get('QWTDIR', None)
+env.AppendUnique(CPPPATH=['$QWTDIR/include', '..',])
 
-p = env.Program('colorbartest',Split("""
-  ColorBarTestBase.ui
-  ColorBarTest.cpp
-  main.cpp
-  """) )
+# uic colorbartest form
+env.Uic4('ColorBarTest.ui')
 
-Default(p)
+# build colorbartest
+colorbartest = env.Program(
+   'colorbartest',
+   ['main.cpp','ColorBarTest.cpp'],
+   LIBS=['QtCore','QtGui','colorbar'],
+   LIBPATH=['../','$QWTDIR/lib','$QTDIR/lib']
+)
+
+Default(colorbartest)

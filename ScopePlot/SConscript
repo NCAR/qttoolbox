@@ -1,42 +1,29 @@
 import os
 
-Import('env')
-env = env.Create("qttoolbox.scopeplot", tools = ['default', 'qt'])
-
-my_tools = env.Require(['PKG_QT','PKG_QWT'])
-
-mydir=Dir('.')
-
-def PKG_QTTOOLBOX_SCOPEPLOT(env):
-	env.Append(CPPPATH=[mydir,])
-	env.Append(LIBPATH=[mydir,])
-	env.Append(LIBS=['scopeplot',])
-	env.Append(QT_UICIMPLFLAGS=['-L', str(mydir)])
-	env.Apply(my_tools)
-
-Export('PKG_QTTOOLBOX_SCOPEPLOT')
-
-sharedlib = env.SharedLibrary('scopeplot', 
-Split("""
- ScopePlotBase.ui
- ScopePlot.cpp
- ScrollBar.cpp
- ScrollZoomer.cpp
- ScopePlotPlugin.cpp
-"""))
-
-staticlib = env.StaticLibrary('scopeplot', 
-Split("""
- ScopePlotBase.ui
- ScopePlot.cpp
- ScrollBar.cpp
- ScrollZoomer.cpp
- ScopePlotPlugin.cpp
-"""))
-
-Default(sharedlib)
-Default(staticlib)
-
-env.Install(os.path.join(env['QTDIR'],'plugins','designer'), sharedlib)
-
 SConscript('Test/SConscript')
+
+env = Environment(tools=['default', 'qt4'])
+env['QWTDIR'] = os.environ.get('QWTDIR', None)
+env.AppendUnique(CPPPATH=['$QWTDIR/include', '..', '$QTDIR/include/QtDesigner'])
+env.AppendUnique(QT4_MOCFROMHFLAGS=['-I', '$QTDIR/include/QtDesigner/'])
+env.EnableQt4Modules(['QtCore','QtGui',])
+
+# uic scopeplot form
+env.Uic4('ScopePlot.ui')
+
+# build knob shared library
+scopeplot = env.SharedLibrary(
+   'scopeplot',
+   ['ScopePlot.cpp','ScopePlotPlugin.cpp','ScrollBar.cpp','ScrollZoomer.cpp'],
+   LIBS=['qwt',],
+   LIBPATH=['$QWTDIR/lib',]
+)
+
+Default(scopeplot)
+
+installdir = os.path.join('$QTDIR','plugins','designer')
+env.Install(installdir, scopeplot)
+env.Alias('install', installdir)
+
+
+

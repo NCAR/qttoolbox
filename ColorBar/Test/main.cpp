@@ -6,8 +6,8 @@
 #include <iostream>
 #include <QRadioButton>
 #include <QGroupBox>
-#include <QVboxLayout>
-#include <ColorBarTest.h>
+#include <QVBoxLayout>
+#include "ColorBarTest.h"
 
 int
 main(int argc, char** argv)

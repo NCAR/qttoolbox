@@ -1,30 +1,23 @@
 import os
 
-Import('env')
-env = env.Create("qttoolbox.colorbar", tools = ['default', 'qt'])
-
-my_tools = env.Require(['PKG_QT'])
-
-mydir=Dir('.')
-
-def PKG_QTTOOLBOX_COLORBAR(env):
-        env.Append(CPPPATH=[mydir,])
-	env.Append(LIBPATH=[mydir,])
-	env.Append(LIBS=['colorbar',])
-	env.Append(QT_UICIMPLFLAGS=['-L', str(mydir)])
-	env.Apply(my_tools)
-
-Export('PKG_QTTOOLBOX_COLORBAR')
-
-lib = env.SharedLibrary('colorbar', 
-Split("""
- ColorBarBase.ui
- ColorBar.cpp
- ColorMap.cpp
- ColorBarPlugin.cpp
-"""))
-
 SConscript('Test/SConscript')
-Default(lib)
 
-env.Install(os.path.join(env['QTDIR'],'plugins','designer'), lib)
+env = Environment(tools=['default', 'qt4'])
+env.AppendUnique(CPPPATH=['..', '$QTDIR/include/QtDesigner'])
+env.AppendUnique(QT4_MOCFROMHFLAGS=['-I', '$QTDIR/include/QtDesigner/'])
+env.EnableQt4Modules(['QtCore','QtGui',])
+
+# build colorbar shared library
+colorbar = env.SharedLibrary(
+   'colorbar',
+   ['ColorBar.cpp','ColorBarPlugin.cpp','ColorMap.cpp']
+)
+
+Default(colorbar)
+
+installdir = os.path.join('$QTDIR','plugins','designer')
+env.Install(installdir, colorbar)
+env.Alias('install', installdir)
+
+
+

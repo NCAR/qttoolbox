@@ -1,30 +1,27 @@
 import os
 
-Import('env')
-env = env.Create("qttoolbox.twoknobs", tools = ['default', 'qt'])
-
-my_tools = env.Require(['PKG_QT','PKG_QWT','PKG_QTTOOLBOX_KNOB'])
-
-mydir=Dir('.')
-
-def PKG_QTTOOLBOX_TWOKNOBS(env):
-	env.Append(CPPPATH=[mydir,])
-	env.Append(LIBPATH=[mydir,])
-	env.Append(LIBS=['twoknobs',])
-	env.Append(QT_UICIMPLFLAGS=['-L', str(mydir)])
-	env.Apply(my_tools)
-
-Export('PKG_QTTOOLBOX_TWOKNOBS')
-
-lib = env.SharedLibrary('twoknobs', 
-Split("""
- TwoKnobsBase.ui
- TwoKnobs.cpp
- TwoKnobsPlugin.cpp
-"""))
-
-Default(lib)
-
-env.Install(os.path.join(env['QTDIR'],'plugins','designer'), lib)
-
 SConscript('Test/SConscript')
+
+env = Environment(tools=['default', 'qt4'])
+env['QWTDIR'] = os.environ.get('QWTDIR', None)
+env.AppendUnique(CPPPATH=['$QWTDIR/include', '..', '$QTDIR/include/QtDesigner'])
+env.AppendUnique(QT4_MOCFROMHFLAGS=['-I', '$QTDIR/include/QtDesigner/'])
+env.EnableQt4Modules(['QtCore','QtGui',])
+
+# uic knob form
+env.Uic4('TwoKnobs.ui')
+
+# build knob shared library
+twoknobs = env.SharedLibrary(
+   'twoknobs',
+   ['TwoKnobs.cpp','TwoKnobsPlugin.cpp',],
+   LIBS=['qwt',],
+   LIBPATH=['$QWTDIR/lib',]
+)
+
+Default(twoknobs)
+
+installdir = os.path.join('$QTDIR','plugins','designer')
+env.Install(installdir, twoknobs)
+env.Alias('install', installdir)
+

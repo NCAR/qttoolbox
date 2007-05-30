@@ -1,14 +1,12 @@
 #include "ScopePlotTest.h"
 #include "ScopePoke.h"
 
-#include <qapplication.h>
-#include <qdialog>
-#include <qstring.h>
+#include <QApplication>
+#include <QDialog>
+#include <QString>
 #include <iostream>
-#include <qtimer.h>
-#include <qcheckbox.h>
-#include <qcheckbox.h>
-
+#include <QTimer>
+#include <QCheckBox>
 
 int
 main(int argc, char** argv)

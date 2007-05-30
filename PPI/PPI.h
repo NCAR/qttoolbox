@@ -21,8 +21,8 @@
 #include <QImage>
 #include <QTimer>
 
-#include "ColorBar/ColorMap.h"
 #include "ScaledLabel.h"
+#include "ColorMap.h"
 
 /// A Qt plugin that will display a Plan Position Index (PPI)
 /// display. Of course the same display can provide 

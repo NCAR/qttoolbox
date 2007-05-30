@@ -74,9 +74,6 @@
    <header>TwoKnobs.h</header>
   </customwidget>
  </customwidgets>
- <includes>
-  <include location="local" >TwoKnobs/TwoKnobs.h</include>
- </includes>
  <resources/>
  <connections/>
 </ui>

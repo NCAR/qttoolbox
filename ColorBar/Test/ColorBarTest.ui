@@ -40,9 +40,6 @@
    <header>ColorBar.h</header>
   </customwidget>
  </customwidgets>
- <includes>
-  <include location="local" >ColorBar/ColorBar.h</include>
- </includes>
  <resources/>
  <connections/>
 </ui>

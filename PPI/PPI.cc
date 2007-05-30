@@ -79,6 +79,7 @@ PPI::beam::colors(int varN)
 }
 
 ////////////////////////////////////////////////////////////////
+static bool glutInitialized = false;
 
 PPI::PPI(QWidget* parent):
 QGLWidget(parent),
@@ -97,6 +98,15 @@ _configured(false)
 {
 	initializeGL();
 
+	if (!glutInitialized) {
+	  int argc = 1;
+	  char* argv[2];
+	  argv[0] = "dummy";
+	  argv[1] = 0;
+
+	  glutInit(&argc, argv);
+	  glutInitialized = true;
+	}
 	QGLFormat fmt = format();
 	fmt.setDoubleBuffer(false);
 	QGLFormat::setDefaultFormat(fmt);

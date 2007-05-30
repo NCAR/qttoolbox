@@ -1,15 +1,19 @@
+import os
 
-Import('env')
-env = env.Create("qttoolbox.scopeplottest", tools = ['default', 'qt'])
-env.Require(Split("""
-PKG_QTTOOLBOX_SCOPEPLOT
-"""))
+env = Environment(tools=['default', 'qt4']) 
+env.EnableQt4Modules(['QtCore','QtGui',])
+env['QWTDIR'] = os.environ.get('QWTDIR', None)
+env.AppendUnique(CPPPATH=['$QWTDIR/include', '..',])
 
-p = env.Program('scopeplottest',Split("""
-  ScopePlotTestBase.ui
-  ScopePlotTest.cpp
-  ScopePoke.cpp
-  main.cpp
-  """) )
+# uic ScopePlotTest form
+env.Uic4('ScopePlotTest.ui')
 
-Default(p)
+# build scopeplottest
+scopeplottest = env.Program(
+   'scopeplottest',
+   ['main.cpp','ScopePlotTest.cpp','ScopePoke.cpp'],
+   LIBS=['QtCore','QtGui','scopeplot','qwt'],
+   LIBPATH=['../','$QWTDIR/lib','$QTDIR/lib']
+)
+
+Default(scopeplottest)

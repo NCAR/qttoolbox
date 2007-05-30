@@ -170,8 +170,6 @@ def _detect(env):
 def generate(env):
 	"""Add Builders and construction variables for qt to an Environment."""
 
-	print "Loading qt4 tool..."
-
 	def locateQt4Command(env, command, qtdir) :
 		fullpath = env.Detect([command+'-qt4', command])
 		if not (fullpath is None) : return fullpath

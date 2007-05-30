@@ -1,9 +1,6 @@
 import os
 
-env = Environment(tools=['default', 'qt4']) 
-env.EnableQt4Modules(['QtCore','QtGui',])
-env['QWTDIR'] = os.environ.get('QWTDIR', None)
-env.AppendUnique(CPPPATH=['$QWTDIR/include', '..',])
+Import('env')
 
 # uic knobtest form
 env.Uic4('KnobTest.ui')

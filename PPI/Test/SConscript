@@ -9,8 +9,8 @@ env.Uic4('PPITest.ui')
 ppitest = env.Program(
    'ppitest',
    ['main.cpp','PPITest.cc'],
-   LIBS=['QtCore','QtGui','ppi','colorbar'],
-   LIBPATH=['../','../../ColorBar','$QWTDIR/lib','$QTDIR/lib']
+   LIBS=['QtCore','QtGui','QtOpenGL','ppi','colorbar','glut'],
+   LIBPATH=['../','../../ColorBar','$QWTDIR/lib','$QTDIR/lib','$GLUTDIR/lib']
 )
 
 Default(ppitest)

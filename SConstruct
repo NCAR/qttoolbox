@@ -3,9 +3,10 @@ sys.path.insert(0, os.path.join(os.getcwd(),'#./'))
 
 import SCons
 
-env = Environment(tools=['default', 'qt4'], toolpath=['#'])
+env = Environment(tools=['default', 'qt4'], toolpath=['#./'])
 env['QWTDIR'] = os.environ.get('QWTDIR', None)
-env.AppendUnique(CPPPATH=['$QWTDIR/include', '..', '$QTDIR/include/QtDesigner', '/usr/include/GL', '#/ColorBar'])
+env['GLUTDIR'] = os.environ.get('GLUTDIR', None)
+env.AppendUnique(CPPPATH=['../', '$QWTDIR/include', '$QTDIR/include/QtDesigner', '$GLUTDIR/include/GL', '/usr/include/GL', '#/ColorBar'])
 env.AppendUnique(QT4_MOCFROMHFLAGS=['-I', '$QTDIR/include/QtDesigner/'])
 env.EnableQt4Modules(['QtCore','QtGui','QtOpenGL'])
 

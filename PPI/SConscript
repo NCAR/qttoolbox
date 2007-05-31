@@ -9,7 +9,7 @@ ppi = env.SharedLibrary(
    'ppi',
    ['PPI.cc','PPIPlugin.cpp','ScaledLabel.cpp'],
    LIBS=['colorbar','glut', 'QtOpenGL'],
-   LIBPATH=['$QTDIR/lib','../ColorBar']
+   LIBPATH=['$QTDIR/lib','../ColorBar','$GLUTDIR/lib']
 )
 
 Default(ppi)

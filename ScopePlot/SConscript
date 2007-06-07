@@ -17,9 +17,7 @@ scopeplot = env.SharedLibrary(
 
 Default(scopeplot)
 
-installdir = os.path.join('$QTDIR','plugins','designer')
-env.Install(installdir, scopeplot)
-env.Alias('install', installdir)
+env.InstallLib(scopeplot)
 
 
 

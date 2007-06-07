@@ -12,9 +12,7 @@ colorbar = env.SharedLibrary(
 
 Default(colorbar)
 
-installdir = os.path.join('$QTDIR','plugins','designer')
-env.Install(installdir, colorbar)
-env.Alias('install', installdir)
+env.InstallLib(colorbar)
 
 
 

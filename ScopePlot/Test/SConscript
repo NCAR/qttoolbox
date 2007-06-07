@@ -14,3 +14,5 @@ scopeplottest = env.Program(
 )
 
 Default(scopeplottest)
+
+env.InstallBin(scopeplottest)

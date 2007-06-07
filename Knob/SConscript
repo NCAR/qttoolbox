@@ -17,9 +17,7 @@ knob = env.SharedLibrary(
 
 Default(knob)
 
-installdir = os.path.join('$QTDIR','plugins','designer')
-env.Install(installdir, knob)
-env.Alias('install', installdir)
+env.InstallLib(knob)
 
 
 

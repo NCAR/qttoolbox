@@ -14,9 +14,6 @@ ppi = env.SharedLibrary(
 
 Default(ppi)
 
-installdir = os.path.join('$QTDIR','plugins','designer')
-env.Install(installdir, ppi)
-env.Alias('install', installdir)
-
+env.InstallLib(ppi)
 
 

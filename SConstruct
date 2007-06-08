@@ -32,7 +32,7 @@ env.EnableQt4Modules(['QtCore','QtGui','QtOpenGL'])
 
 # add install library method
 def InstallLib(self, lib):
-	installdir = '#/lib'
+	installdir = '#/designer'
 	self.Install(installdir, lib)
 	self.Alias('install', installdir)
 

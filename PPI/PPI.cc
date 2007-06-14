@@ -107,10 +107,7 @@ _configured(false)
 	  glutInit(&argc, argv);
 	  glutInitialized = true;
 	}
-	QGLFormat fmt = format();
-	fmt.setDoubleBuffer(false);
-	QGLFormat::setDefaultFormat(fmt);
-	this->setFormat(fmt);
+
 	this->setAutoBufferSwap(false);
 
 	// connect the resize timer

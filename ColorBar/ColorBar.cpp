@@ -1,81 +1,90 @@
 #include "ColorBar.h"
 
-#include <qlabel.h>
-#include <qframe.h>
+#include <QWidget>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QPainter>
+#include <QRectF>
+#include <QPaintEvent>
 
-ColorBar::ColorBar(QWidget* parent, const char* name, WFlags fl):
-ColorBarBase( parent, name, fl ),
-_defaultMap(0.0, 10.0)
+ColorBar::ColorBar(QWidget* parent):
+QWidget(parent),
+_colorMap(0.0, 10.0, "default")
 {
-	_vLayout = new QVBoxLayout(_frame);
-   configure(_defaultMap);
+	setMinimumSize(30, 100);
+	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+	configure(_colorMap);
 }
 
 /******************************************************************/
-
 ColorBar::~ColorBar()
 {
-	for (size_t i = 0; i < _widgets.size(); i++)
-		delete _widgets[i];
-	_widgets.clear();
-   delete _vLayout;
 }
 
 /******************************************************************/
 void
 ColorBar::configure(ColorMap& map) {
-	makeSwatches(map, map.rangeMin(), map.rangeMax());
+	_colorMap = map;
+	this->update();
 }
 
 /******************************************************************/
-
 void
-ColorBar::makeSwatches (ColorMap& map, double min, double max) 
-{
-	// get rid of the existing swatches and labels
-	for (size_t i = 0; i < _widgets.size(); i++)
-		delete _widgets[i];
-	_widgets.clear();
+ColorBar::paintEvent(QPaintEvent* e) {
+	
+	if (_colorMap.size() == 0)
+		return;
+	
+	int h = e->rect().height();
+	int w = e->rect().width();
 
-	QFont fn("Helvetica",7);
-	QLabel* l;
+	h = height();
+	w = width();
 
-	// create a blank swatch to indicate the maximum of the scale
-	// and label it
-	l = new QLabel(" ", _frame);
-	_widgets.push_back(l);
-	l->setFont(fn);
-	l->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-	l->setText(QString("%1").arg(max,0,'f',1));
-
-	// now do the swatches
-	for (int i = map.size()-1; i >= 0 ; i--) {
-
-		QColor color(map.red()[i], map.green()[i], map.blue()[i]);
-
-		// label with the midpoint of the swatch
-		l = new QLabel(" ", _frame);
-		_widgets.push_back(l);
-		l->setFont(fn);
-		l->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-		double val = min + (i+0.5)*((max-min)/map.size());
-		l->setText(QString(" %1").arg(val,0,'f',1));
-		l->setBackgroundColor(color);	
-		l->setPaletteForegroundColor(QColor(0,0,0));
+	double deltaVal = (_colorMap.rangeMax() - _colorMap.rangeMin())/_colorMap.size();
+	double deltaY = (double)(height())/_colorMap.size();
+	QRectF r(0, 0, w, deltaY);
+	QPainter p;
+	p.setPen(Qt::SolidLine);
+	p.begin(this);
+	for (int i = 0; i < _colorMap.size(); i++) {
+		QColor color(_colorMap.red()[i], _colorMap.green()[i], _colorMap.blue()[i]);
+        p.setBrush(color);
+		double topY = h-(i+1)*deltaY;
+		QRectF r(0, topY, w, deltaY);
+		// fill the swatch with the color
+		p.fillRect(r, color);
+		// add the label
+		double midValue = _colorMap.rangeMin()
+			+ deltaVal*(i+0.5);
+		QString label = QString("%1").arg(midValue,0,'f',1);
+		p.drawText(0, topY, w, deltaY, 
+			Qt::AlignVCenter | Qt::AlignHCenter, 
+			label);
 	}
+	p.end();
 
-	// create a blank swatch to indicate the minimum of the scale
-	// and label it
-	l = new QLabel(" ", _frame);
-	_widgets.push_back(l);
-	l->setFont(fn);
-	l->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-	l->setText(QString("%1").arg(min,0,'f',1));
-
-   for (size_t i = 0; i < _widgets.size(); i++) {
-      _vLayout->addWidget(_widgets[i]);
-		_widgets[i]->show();
-   }
 }
 
 /******************************************************************/
+void
+ColorBar::mouseReleaseEvent(QMouseEvent *e) {
+	emit released();
+}
+
+/******************************************************************/
+QImage*
+ColorBar::getImage()
+{	
+	QPixmap pixmap = QPixmap::grabWidget(this);
+	QImage* image = new QImage(pixmap.toImage());
+	return image;
+}
+
+/******************************************************************/
+QPixmap*
+ColorBar::getPixmap()
+{	
+	QPixmap* pixmap = new QPixmap(QPixmap::grabWidget(this));
+	return pixmap;
+}

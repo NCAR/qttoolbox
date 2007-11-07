@@ -1,51 +1,47 @@
 #include "ScopePlotTest.h"
 #include "ScopePoke.h"
 
-#include <qapplication.h>
-#include <qstring.h>
+#include <QApplication>
+#include <QDialog>
+#include <QString>
 #include <iostream>
-#include <qtimer.h>
-#include <qcheckbox.h>
-#include <qcheckbox.h>
-
+#include <QTimer>
+#include <QCheckBox>
 
 int
 main(int argc, char** argv)
 {
 
    QApplication app(argc, argv);
-
+   QDialog* dialog = new QDialog;
+   
    // create our test dialog. It will contain a ScopePlot and 
    // other buttons etc.
-   ScopePlotTest scopeTestDialog;
+   ScopePlotTest t(dialog);
 
    // Create the test data generator, telling it
    // what ScopePlot to send data to. ScopePoke has
    // a timer which peridically sends synthesized data
    // to the ScopePlot.
-   ScopePoke scopePoke(scopeTestDialog._scopePlot);
+   ScopePoke scopePoke(t._scopePlot);
 
-   // Tell our tesst dialog about scopePoke, so that it
+   // Tell our test dialog about scopePoke, so that it
    // can call scopePoke in order to change the type of 
    // plot data being generated and sent to the ScopePlot
-   scopeTestDialog.setScopePoke(&scopePoke);
+   t.setScopePoke(&scopePoke);
 
    // connect the grid select and pause buttons
-   QObject::connect(scopeTestDialog.xGrid, SIGNAL(toggled(bool)),
-        scopeTestDialog._scopePlot, SLOT(enableXgrid(bool)));
-   QObject::connect(scopeTestDialog.yGrid, SIGNAL(toggled(bool)),
-        scopeTestDialog._scopePlot, SLOT(enableYgrid(bool)));
-   QObject::connect(scopeTestDialog.pauseButton, SIGNAL(toggled(bool)),
-        scopeTestDialog._scopePlot, SLOT(pause(bool)));
+ //  QObject::connect(t.xGrid, SIGNAL(toggled(bool)),
+   //     t._scopePlot, SLOT(enableXgrid(bool)));
+   //QObject::connect(t.yGrid, SIGNAL(toggled(bool)),
+     //   t._scopePlot, SLOT(enableYgrid(bool)));
+   //QObject::connect(t.pauseButton, SIGNAL(toggled(bool)),
+    //    t._scopePlot, SLOT(pause(bool)));
 
    // if we don't show() the test dialog, nothing appears!
-   scopeTestDialog.show();
+   dialog->show();
 
-   // This tells qt to stop running when scopeTestDialog
-   // closes.
-   app.setMainWidget(&scopeTestDialog);
-
-   // run the whole thing
+  // run the whole thing
    app.exec();
 
    return 0;

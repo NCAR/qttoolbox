@@ -1,13 +1,18 @@
+import os
 
 Import('env')
-env = env.Create("qttoolbox.twoknobstest", tools = ['default', 'qt'])
-env.Require(Split("""
-PKG_QTTOOLBOX_TWOKNOBS
-"""))
 
-p = env.Program('twoknobstest',Split("""
-  TwoKnobsTest.ui
-  main.cpp
-  """) )
+# uic knobtest form
+env.Uic4('TwoKnobsTest.ui')
 
-Default(p)
+# build knobtest
+twoknobstest = env.Program(
+   'twoknobstest',
+   'main.cpp',
+   LIBS=['QtCore','QtGui','twoknobs','qwt'],
+   LIBPATH=['../','$QWTDIR/lib','$QTDIR/lib']
+)
+
+Default(twoknobstest)
+ 
+env.InstallBin(twoknobstest)

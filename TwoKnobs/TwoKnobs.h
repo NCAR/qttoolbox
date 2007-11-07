@@ -1,17 +1,29 @@
 #ifndef TWOKNOBS_H
 #define TWOKNOBS_H
 
-#include "TwoKnobsBase.h"
+#include "ui_TwoKnobs.h"
 #include <string>
+
+#ifndef DLL_EXPORT
+#ifdef WIN32
+#ifdef QT_PLUGIN
+#define DLL_EXPORT __declspec(dllexport)
+#else
+#define DLL_EXPORT __declspec(dllimport)
+#endif
+#else
+#define DLL_EXPORT
+#endif
+#endif
 
 /// A plugin widget which combines two Knob plugins. Signals
 /// are generated when the knob values change.
-class QT_WIDGET_PLUGIN_EXPORT TwoKnobs : public TwoKnobsBase
+class DLL_EXPORT TwoKnobs : public QWidget, public Ui::TwoKnobsBase
 {
     Q_OBJECT
 
 public:
-    TwoKnobs( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    TwoKnobs( QWidget* parent = 0);
     ~TwoKnobs();
 
     void setTitles(std::string titleKnobOne, std::string titleKnobTwo);

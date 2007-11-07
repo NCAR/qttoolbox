@@ -1,4 +1,6 @@
 #include "ScopePoke.h"
+//Added by qt3to4:
+#include <QTimerEvent>
 
 ScopePoke::ScopePoke(ScopePlot* scope) {
    _scope = scope;
@@ -57,6 +59,7 @@ ScopePoke::timerEvent(QTimerEvent *e) {
             _scope->Spectrum(_y1, 
                1.0e-70, 1.0e-30, 
                1000.0,
+			   true,
                "Frequency (Hz)", "Power (dB)");
             break;
 

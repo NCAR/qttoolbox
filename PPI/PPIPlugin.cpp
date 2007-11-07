@@ -1,93 +1,93 @@
 #include "PPIPlugin.h"
 #include "PPI.h"
 
-#include <qstring.h>
-
-static const char *filechooser_pixmap[] = {
-  "22 22 3 1",
-  "       c #FFFF00000000",
-  ".      c #0000FFFF0000",
-  "X      c #00000000FFFF",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX"
-};
-
-PPIPlugin::PPIPlugin()
+PPIPlugin::PPIPlugin(QObject *parent)
 {
+	initialized = false;
 }
 
-QStringList PPIPlugin::keys() const
+void
+PPIPlugin::initialize(QDesignerFormEditorInterface *core)
 {
-  QStringList list;
-  list << "PPI";
-  return list;
+	if (initialized)
+		return;
+
+	initialized = true;
 }
 
-QWidget* PPIPlugin::create( const QString &key, QWidget* parent,
-			      const char* name )
+bool 
+PPIPlugin::isInitialized() const
 {
-  if ( key == "PPI" )
-    return new PPI( parent );
-  return 0;
+	return initialized;
 }
 
-QString PPIPlugin::group( const QString& feature ) const
+QWidget*
+PPIPlugin::createWidget(QWidget *parent)
 {
-  if ( feature == "PPI" )
-    return "Display";
-  return QString::null;
+	return new PPI(parent);
 }
 
-QIconSet PPIPlugin::iconSet( const QString& ) const
+QString 
+PPIPlugin::name() const
 {
-  return QIconSet( QPixmap( filechooser_pixmap ) );
+	return "PPI";
 }
 
-QString PPIPlugin::includeFile( const QString& feature ) const
+QString 
+PPIPlugin::group() const
 {
-  if ( feature == "PPI" )
-    return "PPI/PPI.h";
-  return QString::null;
+	return "QtToolbox";
 }
 
-QString PPIPlugin::toolTip( const QString& feature ) const
+QIcon 
+PPIPlugin::icon() const
 {
-  if ( feature == "PPI" )
-    return "PPI Widget";
-  return QString::null;
+	return QIcon();
 }
 
-QString PPIPlugin::whatsThis( const QString& feature ) const
+QString 
+PPIPlugin::toolTip() const
 {
-  if ( feature == "PPI" )
-    return "A widget with two knobs with lcd readouts";
-  return QString::null;
+	return "A PPI";
 }
 
-bool PPIPlugin::isContainer( const QString& ) const
+QString PPIPlugin::whatsThis() const
 {
-  return FALSE;
+	return "A PPI";
+}
+
+bool PPIPlugin::isContainer() const
+{
+	return false;
 }
 
 
-Q_EXPORT_PLUGIN( PPIPlugin )
+QString 
+PPIPlugin::domXml() const
+{
+	return "<widget class=\"PPI\" name=\"knob\">\n"
+		" <property name=\"geometry\">\n"
+		"  <rect>\n"
+		"   <x>0</x>\n"
+		"   <y>0</y>\n"
+		"   <width>100</width>\n"
+		"   <height>100</height>\n"
+		"  </rect>\n"
+		" </property>\n"
+		" <property name=\"toolTip\" >\n"
+		"  <string>knob</string>\n"
+		" </property>\n"
+		" <property name=\"whatsThis\" >\n"
+		"  <string>A knob that you can turn.</string>\n"
+		" </property>\n"
+		"</widget>\n";
+}
+
+QString 
+PPIPlugin::includeFile() const
+{
+	return "PPI.h";
+}
+
+Q_EXPORT_PLUGIN2(QtToolbox, PPIPlugin)
+

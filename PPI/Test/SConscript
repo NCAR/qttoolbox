@@ -1,15 +1,18 @@
+import os
 
 Import('env')
-env = env.Create("qttoolbox.ppitest", tools = ['default', 'qt'])
-env.Require(Split("""
-PKG_QTTOOLBOX_PPI
-PKG_QTTOOLBOX_COLORBAR
-"""))
 
-p = env.Program('ppitest',Split("""
-  PPITestBase.ui
-  PPITest.cc
-  main.cpp
-  """) )
+# uic ppitest form
+env.Uic4('PPITest.ui')
 
-Default(p)
+# build ppitest
+ppitest = env.Program(
+   'ppitest',
+   ['main.cpp','PPITest.cc'],
+   LIBS=['QtCore','QtGui','QtOpenGL','ppi','colorbar','glut'],
+   LIBPATH=['../','../../ColorBar','$QWTDIR/lib','$QTDIR/lib','$GLUTDIR/lib']
+)
+
+Default(ppitest)
+
+env.InstallBin(ppitest)

@@ -1,7 +1,7 @@
 #include "TwoKnobs.h"
-#include "TwoKnobsTest.h"
-
+#include "ui_TwoKnobsTest.h"
 #include <qapplication.h>
+
 #include <qstring.h>
 #include <iostream>
 #include <qlabel.h>
@@ -11,8 +11,12 @@ main(int argc, char** argv)
 {
 
   QApplication app(argc, argv);
+  QDialog* dialog = new QDialog;
 
-  TwoKnobsTest t;
+
+  Ui::TwoKnobsTest t;
+  t.setupUi(dialog);
+
   t.myTwoKnobs->setTitles("Gain", "Offset");
   t.myTwoKnobs->setRanges(-10000, 10000, 0, 50);
 
@@ -22,9 +26,7 @@ main(int argc, char** argv)
   QObject::connect(t.myTwoKnobs, SIGNAL(knobTwoChanged(double)),
      t._numTwo, SLOT(setNum(double))); 
 
-  app.setMainWidget(&t);
-
-  t.show();
+  dialog->show();
 
   app.exec();
 

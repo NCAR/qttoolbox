@@ -1,93 +1,95 @@
-#include "ColorBar/ColorBarPlugin.h"
+#include "ColorBarPlugin.h"
 #include "ColorBar.h"
 
-#include <qstring.h>
-
-static const char *filechooser_pixmap[] = {
-  "22 22 3 1",
-  "       c #FFFF00000000",
-  ".      c #0000FFFF0000",
-  "X      c #00000000FFFF",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "                      ",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "......................",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX",
-  "XXXXXXXXXXXXXXXXXXXXXX"
-};
-
-ColorBarPlugin::ColorBarPlugin()
+ColorBarPlugin::ColorBarPlugin(QObject *parent):
+QObject(parent)
 {
+	initialized = false;
 }
 
-QStringList ColorBarPlugin::keys() const
+void
+ColorBarPlugin::initialize(QDesignerFormEditorInterface *core)
 {
-  QStringList list;
-  list << "ColorBar";
-  return list;
+	if (initialized)
+		return;
+
+	initialized = true;
 }
 
-QWidget* ColorBarPlugin::create( const QString &key, QWidget* parent,
-			      const char* name )
+bool 
+ColorBarPlugin::isInitialized() const
 {
-  if ( key == "ColorBar" )
-    return new ColorBar( parent );
-  return 0;
+	return initialized;
 }
 
-QString ColorBarPlugin::group( const QString& feature ) const
+QWidget*
+ColorBarPlugin::createWidget(QWidget *parent)
 {
-  if ( feature == "ColorBar" )
-    return "Display";
-  return QString::null;
+	ColorBar* p = new ColorBar(parent);
+	return p;
 }
 
-QIconSet ColorBarPlugin::iconSet( const QString& ) const
+QString 
+ColorBarPlugin::name() const
 {
-  return QIconSet( QPixmap( filechooser_pixmap ) );
+	return "ColorBar";
 }
 
-QString ColorBarPlugin::includeFile( const QString& feature ) const
+QString 
+ColorBarPlugin::codeTemplate() const
 {
-  if ( feature == "ColorBar" )
-    return "ColorBar/ColorBar.h";
-  return QString::null;
+	return "";
 }
 
-QString ColorBarPlugin::toolTip( const QString& feature ) const
+QString 
+ColorBarPlugin::group() const
 {
-  if ( feature == "ColorBar" )
-    return "ColorBar Widget";
-  return QString::null;
+	return "QtToolbox";
 }
 
-QString ColorBarPlugin::whatsThis( const QString& feature ) const
+QIcon 
+ColorBarPlugin::icon() const
 {
-  if ( feature == "ColorBar" )
-    return "A widget with two knobs with lcd readouts";
-  return QString::null;
+	return QIcon();
 }
 
-bool ColorBarPlugin::isContainer( const QString& ) const
+QString 
+ColorBarPlugin::toolTip() const
 {
-  return FALSE;
+	return "";
+}
+
+QString ColorBarPlugin::whatsThis() const
+{
+	return "";
+}
+
+bool ColorBarPlugin::isContainer() const
+{
+	return false;
 }
 
 
-Q_EXPORT_PLUGIN( ColorBarPlugin )
+QString 
+ColorBarPlugin::domXml() const
+{
+	return "<widget class=\"ColorBar\" name=\"colorbar\">\n"
+		" <property name=\"geometry\">\n"
+		"  <rect>\n"
+		"   <x>0</x>\n"
+		"   <y>0</y>\n"
+		"   <width>50</width>\n"
+		"   <height>300</height>\n"
+		"  </rect>\n"
+		" </property>\n"
+		"</widget>\n";
+}
+
+QString 
+ColorBarPlugin::includeFile() const
+{
+	return "ColorBar.h";
+}
+
+Q_EXPORT_PLUGIN2(colorbarplugin, ColorBarPlugin)
+

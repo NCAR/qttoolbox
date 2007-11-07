@@ -4,11 +4,13 @@
 #include <fstream>
 
 #include <qtimer.h>
+#include <QResizeEvent>
+#include "glut.h"
 
 //
 //
 // Any drawing action must insure that the GL context is current. paintGL() and
-//resize can be called by QGLWidget, and it will make sure that the context
+// resize can be called by QGLWidget, and it will make sure that the context
 // is current. However, external calls to zoom, pan, draw a new beam,
 // and so forth will not have come through QGLWidget's GL code, and so we need
 // to explicitly make sure that the context is current in these cases.
@@ -28,7 +30,6 @@ _nVars(nVars)
 	float cos2 = cos(3.14159*stopAngle/180.0)/nGates;
 	float sin2 = sin(3.14159*stopAngle/180.0)/nGates;
 
-	_varColors.resize(nVars);
 
 	// now calculate the vertex values, to be used for all variables
 	for (int j = 0; j < _nGates; j++) {
@@ -37,9 +38,10 @@ _nVars(nVars)
 		_triStripVertices.push_back(j*cos2);
 		_triStripVertices.push_back(j*sin2);
 	}
-   // Allocate space for the colors. Each vertex has an red, green and
-   // blue component, and there are 2 vertices per gate.
-   for (int v = 0; v < nVars; v++) {
+	// Allocate space for the colors. Each vertex has an red, green and
+	// blue component, and there are 2 vertices per gate.
+	_varColors.resize(nVars);
+	for (int v = 0; v < nVars; v++) {
 		_varColors[v].resize(_nGates*6);
 	}
 	// there will be one display list id for each variable
@@ -55,6 +57,10 @@ PPI::beam::~beam()
 {
 	for (unsigned int i = 0; i < _glListId.size(); i++)
 		glDeleteLists(_glListId[i], 1);
+
+	_glListId.clear();
+	_varColors.clear();
+	_triStripVertices.clear();
 }
 
 
@@ -73,63 +79,78 @@ PPI::beam::colors(int varN)
 }
 
 ////////////////////////////////////////////////////////////////
+static bool glutInitialized = false;
 
-PPI::PPI(QWidget* parent, 
-						   const char * name, 
-						   const QGLWidget * shareWidget, 
-						   WFlags f):
-QGLWidget(parent, name, shareWidget, f),
+PPI::PPI(QWidget* parent):
+QGLWidget(parent),
 _selectedVar(0),
 _zoomFactor(1.0),
-_panHoriz(0.0),
-_panVert(0.0),
-_clearRed(0.6f),
-_clearGreen(0.6f),
-_clearBlue(0.9f),
-_gridRingsRed(0.0f),
-_gridRingsGreen(0.0f),
-_gridRingsBlue(0.0),
+_currentX(0.0),
+_currentY(0.0),
+_backgroundColor("lightblue"),
+_gridRingsColor("black"),
 _ringsEnabled(true),
-_gridsEnabled(true),
-_resizing(false)
+_gridsEnabled(false),
+_resizing(false),
+_scaledLabel(ScaledLabel::DistanceEng),
+_decimationFactor(1),
+_configured(false)
 {
 	initializeGL();
 
-	QGLFormat fmt = format();
-	fmt.setDoubleBuffer(false);
-	QGLFormat::setDefaultFormat(fmt);
-	this->setFormat(fmt);
+	if (!glutInitialized) {
+	  int argc = 1;
+	  char* argv[2];
+	  argv[0] = "dummy";
+	  argv[1] = 0;
+
+	  glutInit(&argc, argv);
+	  glutInitialized = true;
+	}
+
 	this->setAutoBufferSwap(false);
 
-   // connect thre resize timer
-   connect(&_resizeTimer, SIGNAL(timeout()), this, SLOT(resizeTimerTimeout()));
+	// connect the resize timer
+	_resizeTimer.setSingleShot(true);
+	connect(&_resizeTimer, SIGNAL(timeout()), this, SLOT(resizeTimerTimeout()));
 }
 ////////////////////////////////////////////////////////////////
 
 void
 PPI::configure(int nVars,
-						int maxGates) 
+			   int maxGates, 
+			   double distanceSpanKm,
+			   int decimationFactor) 
 {
 	// Configure for dynamically allocated beams
 	_nVars = nVars;
-	_maxGates = maxGates;
+	_maxGates = maxGates/decimationFactor;
 	_preAllocate = false;
+	_distanceSpanKm = distanceSpanKm;
+	_decimationFactor = decimationFactor;
+	_configured = true;
 }
 ////////////////////////////////////////////////////////////////
 
 void
 PPI::configure(int nVars,
-						int maxGates,
-						int nBeams) 
+			   int maxGates,
+			   int nBeams, 
+			   double distanceSpanKm,
+			   int decimationFactor) 
 {
 	// Configure for preallocated beamd
 	_nVars = nVars;
-	_maxGates = maxGates;
+	_maxGates = maxGates/decimationFactor;
 	_preAllocate = true;
+	_distanceSpanKm = distanceSpanKm;
+	_decimationFactor = decimationFactor;
+	_configured = true;
 
-   for (int i = 0; i < _beams.size(); i++)
-      delete _beams[i];
-   _beams.clear();
+
+	for (int i = 0; i < _beams.size(); i++)
+		delete _beams[i];
+	_beams.clear();
 
 	makeCurrent();
 	// This constructor is called when we are preallocating beams.
@@ -153,12 +174,14 @@ PPI::~PPI() {
 void 
 PPI::initializeGL()
 {
+	glClearColor(_backgroundColor.red()/255.0,
+		_backgroundColor.green()/255.0,
+		_backgroundColor.blue()/255.0,
+		0.0f);
 
-	//	makeCurrent();
-
-	glClearColor(_clearRed, _clearGreen, _clearBlue, 0.0f);
-
+	glDrawBuffer(GL_FRONT);
 	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_FILL);
 
 	glShadeModel(GL_FLAT);
 
@@ -170,25 +193,30 @@ PPI::initializeGL()
 	glDisable(GL_POLYGON_SMOOTH);
 	glDisable(GL_DITHER);
 	glDisable(GL_BLEND);
-
-	glEnable(GL_COLOR_ARRAY);
-	glEnable(GL_VERTEX_ARRAY);
+	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_INDEX_ARRAY);
 	glDisable(GL_EDGE_FLAG_ARRAY);
 	glDisable(GL_TEXTURE_COORD_ARRAY);
 	glDisable(GL_NORMAL_ARRAY);
-
-	glEnableClientState(GL_COLOR_ARRAY);
-	glEnableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_INDEX_ARRAY);
 	glDisableClientState(GL_EDGE_FLAG_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 
-	// set the stencil buffer clear value.
-   glClearStencil(0.0f);
-   // allow stencil tests to occur.
+	glEnable(GL_COLOR_ARRAY);
+	glEnable(GL_VERTEX_ARRAY);
 	glEnable(GL_STENCIL_TEST);
+
+	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	// set the stencil buffer clear value.
+	glClearStencil(0.0f);
+
+	// get a display list id for the rings
+	_ringsListId = glGenLists(1);
+	// get a display list id for the grid
+	_gridListId = glGenLists(1);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -206,9 +234,48 @@ PPI::resizeGL( int w, int h )
 }
 
 ////////////////////////////////////////////////////////////////
+
+void
+PPI::paintGL()
+{
+	if(_resizing) {
+		// clear the image
+		glClear(GL_COLOR_BUFFER_BIT);
+		return;
+	}
+
+	// draw into the back buffer
+	glDrawBuffer(GL_BACK);
+
+	// clear the display
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	// redraw the beams
+	for (unsigned int i = 0; i < _beams.size(); i++) {
+		glCallList(_beams[i]->_glListId[_selectedVar]);
+	}
+
+	// draw rings/grid
+	if (_ringsEnabled || _gridsEnabled) {
+		//createStencil();
+		makeRingsAndGrids();
+		if (_ringsEnabled)
+			glCallList(_ringsListId);
+		if (_gridsEnabled)
+			glCallList(_gridListId);
+	} 
+
+	// display the back buffer
+	swapBuffers();
+
+	// and resume drawing to the front buffer.
+	glDrawBuffer(GL_FRONT);
+}
+
+////////////////////////////////////////////////////////////////
 void
 PPI::rings(bool enabled) {
-   _ringsEnabled = enabled;
+	_ringsEnabled = enabled;
 
 	//redraw
 	makeCurrent();
@@ -218,7 +285,7 @@ PPI::rings(bool enabled) {
 ////////////////////////////////////////////////////////////////
 void
 PPI::grids(bool enabled) {
-   _gridsEnabled = enabled;
+	_gridsEnabled = enabled;
 
 	//redraw
 	makeCurrent();
@@ -227,53 +294,22 @@ PPI::grids(bool enabled) {
 ////////////////////////////////////////////////////////////////
 
 void 
-PPI::paintGL()
-{
-  if (_ringsEnabled) {
-     createStencil();
-  } else {
-     clearStencil();
-  }
-
-  glClear(GL_COLOR_BUFFER_BIT);
-	for (unsigned int i = 0; i < _beams.size(); i++) {
-		glCallList(_beams[i]->_glListId[_selectedVar]);
-	}
-}
-
-////////////////////////////////////////////////////////////////
-
-void 
 PPI::setZoom(double factor)
 {
 
 	makeCurrent();
-	_zoomFactor *= factor;
+	_zoomFactor = factor;
 	// if the zoom request is to go smaller than 1:1, 
 	// restore to centered normal display
-	if (_zoomFactor < 1.0) {
+	if (_zoomFactor <= 1.0) {
 		_zoomFactor = 1.0;
-		_panHoriz = 0.0;
-		_panVert = 0.0;
-		factor = 1.0;
-		glLoadIdentity();
+		_currentX = 0.0;
+		_currentY = 0.0;
 	}
 
-	// first translate back to zero, so that our zoom doesn't
-	// effect an offset
-	glTranslatef(-_panHoriz, -_panVert, 0.0);
-
-	// now use the projection matrix to zoom
-	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(-1.0/_zoomFactor, 1.0/_zoomFactor, -1.0/_zoomFactor, 1.0/_zoomFactor);
-
-	// now translate back to where we were panning to
-	glMatrixMode(GL_MODELVIEW);
-	_panHoriz /= factor;
-	_panVert /= factor;
-	glTranslatef(_panHoriz, _panVert, 0.0);
-
+	glScalef(_zoomFactor, _zoomFactor, 1.0);
+	glTranslatef(_currentX, _currentY, 0.0);
 	// redraw
 	paintGL();
 }
@@ -291,6 +327,8 @@ PPI::getZoom()
 void
 PPI::refresh()
 {
+	if(_resizing)
+		return;
 	//redraw
 	makeCurrent();
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -299,14 +337,37 @@ PPI::refresh()
 ////////////////////////////////////////////////////////////////
 
 void
-PPI::pan(double horizFrac, double vertFrac) 
+PPI::pan(double x, double y) 
 {
-	// pan, by setting up a translation
-	glTranslatef(horizFrac/_zoomFactor, vertFrac/_zoomFactor, 0.0);
-	_panHoriz += horizFrac/_zoomFactor;
-	_panVert += vertFrac/_zoomFactor;
+	makeCurrent();
 
-   refresh();
+	glTranslatef(x-_currentX, y-_currentY, 0.0);
+
+	_currentX = x;
+	_currentY = y;
+
+	// redraw
+	paintGL();
+	return;
+}
+
+////////////////////////////////////////////////////////////////
+
+void
+PPI::resetView() 
+{
+	makeCurrent();
+
+	_currentX = 0.0;
+	_currentY = 0.0;
+	_zoomFactor = 1.0;
+
+	glLoadIdentity();
+	glScalef(_zoomFactor, _zoomFactor, 1.0);
+	glTranslatef(_currentX, _currentY, 0.0);
+	// redraw
+	paintGL();
+	return;
 }
 
 
@@ -314,8 +375,45 @@ PPI::pan(double horizFrac, double vertFrac)
 void 
 PPI::resizeEvent( QResizeEvent * e )
 {
-   _resizing = true;
-   _resizeTimer.start(200, true);
+
+	if(_resizing) {
+		makeCurrent();
+		glClear(GL_COLOR_BUFFER_BIT);
+		return;
+	}
+
+	_resizing = true;
+
+	_resizeTimer.start(500);
+}
+
+////////////////////////////////////////////////////////////////
+void 
+PPI::mousePressEvent( QMouseEvent * e )
+{
+	_oldMouseX = e->x();
+	_oldMouseY = e->y();
+}
+
+////////////////////////////////////////////////////////////////
+void 
+PPI::mouseMoveEvent( QMouseEvent * e )
+{
+	makeCurrent();
+
+	int x = e->x();
+	int y = e->y();
+
+	double deltaX = (x - _oldMouseX) / (double)width() / _zoomFactor / 2.0;
+	double deltaY = (_oldMouseY - y) / (double)height()/ _zoomFactor / 2.0;
+
+	glTranslatef(deltaX/2.0, deltaY/2.0, 0.0);
+
+	_currentX += deltaX;
+	_currentY += deltaY;
+
+	// redraw
+	updateGL();
 }
 
 ////////////////////////////////////////////////////////////////
@@ -323,9 +421,9 @@ void
 PPI::resizeTimerTimeout()
 {
 	makeCurrent();
-   resizeGL(this->width(), this->height());
-   _resizing = false;
-   refresh();
+	resizeGL(this->width(), this->height());
+	_resizing = false;
+	refresh();
 }
 
 ////////////////////////////////////////////////////////////////
@@ -342,14 +440,8 @@ void
 PPI::selectVar(int index) 
 {
 	_selectedVar = index;
-	makeCurrent();
-	glClear(GL_COLOR_BUFFER_BIT);
-	for (unsigned int i = 0; i < _beams.size(); i++) {
-		makeDisplayList(_beams[i],_selectedVar);
-		// draw it
-		glCallList(_beams[i]->_glListId[_selectedVar]);
-	}
-	glFlush();
+	updateGL();
+	return;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -360,17 +452,22 @@ PPI::clearVar(int index)
 	if (index >= _nVars)
 		return;
 
-	// calling makeDisplayList with data == 0 casues the display list to be drawn completely with the background color.
+	// calling makeDisplayList with data == 0 causes the display list to 
+	// be drawn completely with the background color.
+	float r = _backgroundColor.red()/255.0;
+	float g = _backgroundColor.green()/255.0;
+	float b = _backgroundColor.blue()/255.0;
+
 	for (unsigned int i = 0; i < _beams.size(); i++) {
 		int cIndex = 0;
 		GLfloat* colors = _beams[i]->colors(index);
 		for (int g = 0; g < _maxGates; g++) {
-			colors[cIndex++] = _clearRed;
-			colors[cIndex++] = _clearGreen;
-			colors[cIndex++] = _clearBlue;
-			colors[cIndex++] = _clearRed;
-			colors[cIndex++] = _clearGreen;
-			colors[cIndex++] = _clearBlue;
+			colors[cIndex++] = r;
+			colors[cIndex++] = g;
+			colors[cIndex++] = b;
+			colors[cIndex++] = r;
+			colors[cIndex++] = g;
+			colors[cIndex++] = b;
 		}
 	}
 
@@ -384,11 +481,11 @@ PPI::clearVar(int index)
 
 void 
 PPI::addBeam(float startAngle, 
-					  float stopAngle, 
-					  int gates, 
-					  std::vector<std::vector<double> >& _beamData, 
-					  int stride, 
-					  std::vector<ColorMap*>& maps)
+			 float stopAngle, 
+			 int gates, 
+			 std::vector<std::vector<double> >& _beamData, 
+			 int stride, 
+			 std::vector<ColorMap*>& maps)
 {
 
 	makeCurrent();
@@ -458,30 +555,40 @@ PPI::addBeam(float startAngle,
 		b = newBeams[i];
 		fillColors(b, _beamData, gates, stride, maps);
 
-		makeDisplayList(b,_selectedVar);
-
-		// draw it
-         glCallList(b->_glListId[_selectedVar]);
+		for (int v = 0; v < _nVars; v++) {
+			makeDisplayList(b, v);
+			// draw it
+			if(!_resizing)
+				glCallList(b->_glListId[_selectedVar]);
+		}
 	}
 
+	// draw the rings and grid if they are enabled. Don't worry,
+	// it is only two display list calls. They are relative short
+	// lists compared to the beam drawing, and done on the graphics card anyway.
+	if (_ringsEnabled)
+		glCallList(_ringsListId);
+
+	if (_gridsEnabled)
+		glCallList(_gridListId);
+
 	if (!_resizing)
-	   glFlush();
+		glFlush();
 
 	if (!_preAllocate) {
 		// in dynamic mode, cull hidden beams
 		cullBeamList();
 	}
+
 }
-
-
 ////////////////////////////////////////////////////////////////
 
 void
 PPI::fillColors(beam* beam, 
-						 std::vector<std::vector<double> >& _beamData, 
-						 int gates, 
-						 int stride,
-						 std::vector<ColorMap*>& maps) 
+				std::vector<std::vector<double> >& _beamData, 
+				int gates, 
+				int stride,
+				std::vector<ColorMap*>& maps) 
 {
 
 	double red, green, blue;
@@ -491,7 +598,7 @@ PPI::fillColors(beam* beam,
 		GLfloat* colors = beam->colors(v);
 		int cIndex = 0;
 		std::vector<double>& varData = _beamData[v];
-		for (int g = 0; g < gates; g++) {
+		for (int g = 0; g < gates; g += _decimationFactor) {
 			double data = varData[g];
 			map->dataColor(data, red, green, blue);
 			colors[cIndex++] = red/255.0;
@@ -501,13 +608,17 @@ PPI::fillColors(beam* beam,
 			colors[cIndex++] = green/255.0;
 			colors[cIndex++] = blue/255.0;
 		}
+		float r = _backgroundColor.red()/255.0;
+		float g = _backgroundColor.green()/255.0;
+		float b = _backgroundColor.blue()/255.0;
+
 		for (int g = gates; g < _maxGates; g++) {
-			colors[cIndex++] = _clearRed;
-			colors[cIndex++] = _clearGreen;
-			colors[cIndex++] = _clearBlue;
-			colors[cIndex++] = _clearRed;
-			colors[cIndex++] = _clearGreen;
-			colors[cIndex++] = _clearBlue;
+			colors[cIndex++] = r;
+			colors[cIndex++] = g;
+			colors[cIndex++] = b;
+			colors[cIndex++] = r;
+			colors[cIndex++] = g;
+			colors[cIndex++] = b;
 		}
 	} 
 }
@@ -524,10 +635,10 @@ PPI::makeDisplayList(beam* b, int v)
 	// set the vertex pointer
 	glVertexPointer(2, GL_FLOAT, 0, b->vertices());
 
-   // set the colors pointer
+	// set the colors pointer
 	glColorPointer(3, GL_FLOAT, 0, b->colors(v));
 
-   // draw a triangle strip
+	// draw a triangle strip. 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 2*_maxGates);
 
 	// end the display list
@@ -692,121 +803,195 @@ PPI::cullBeamList()
 int
 PPI::beamIndex(double startAngle, double stopAngle)
 {
-    int i = _beams.size()*(startAngle + (stopAngle-startAngle)/2)/360.0;
-    if (i<0)
-        i = 0;
-    if (i>(int)_beams.size()-1)
-        i = _beams.size()-1;
+	int i = _beams.size()*(startAngle + (stopAngle-startAngle)/2)/360.0;
+	if (i<0)
+		i = 0;
+	if (i>(int)_beams.size()-1)
+		i = _beams.size()-1;
 
-    return i;
+	return i;
 }
 
 ////////////////////////////////////////////////////////////////////////
-
 void
 PPI::backgroundColor(QColor color)
 {
-   _clearRed   = color.red()/255.0;
-   _clearGreen = color.green()/255.0;
-   _clearBlue  = color.blue()/255.0;
-   
-   makeCurrent();
+	_backgroundColor = color;
+	glClearColor(_backgroundColor.red()/255.0,
+		_backgroundColor.green()/255.0,
+		_backgroundColor.blue()/255.0,
+		0.0f);
 
-   // set the background color
-   glClearColor(_clearRed, _clearGreen, _clearBlue, 0.0f);
+	makeCurrent();
+	updateGL();
+}
+////////////////////////////////////////////////////////////////////////
+void
+PPI::gridRingsColor(QColor color)
+{
+	_gridRingsColor   = color;
 
+	makeCurrent();
+	updateGL();
 }
 
 ////////////////////////////////////////////////////////////////////////
-
 void
-PPI::gridRingColor(QColor color)
-{
-   _gridRingsRed   = color.red()  /255.0;
-   _gridRingsGreen = color.green()/255.0;
-   _gridRingsBlue  = color.blue() /255.0;
+PPI::makeRingsAndGrids() {
+
+	// don't try to draw rings if we haven't been configured yet
+	if (!_configured)
+		return;
+	
+	// or if the rings or grids aren't enabled
+	if (!_ringsEnabled && !_gridsEnabled)
+		return;
+
+	double ringDelta = ringSpacing();
+	double ringLabelIncrement = ringDelta;
+	double ringLabelOffset = 0.02/_zoomFactor;  // used to move some of the labelling so that it does not overlap the rings.
+	double lineWidth = 0.004/ _zoomFactor;
+
+	// Do range rings?
+	if (ringDelta > 0 && _ringsEnabled) {
+
+		// create a display list to hold the gl commands
+		glNewList(_ringsListId, GL_COMPILE);
+
+		// set the color
+		glColor3f(_gridRingsColor.red()/255.0, 
+			_gridRingsColor.green()/255.0,
+			_gridRingsColor.blue()/255.0);
+
+		// Get a new quadric object.
+		GLUquadricObj *quadObject = gluNewQuadric();
+
+		GLdouble radius = ringDelta;
+
+		// Draw our range rings.
+		while (radius <= 1.0) {
+			gluDisk(quadObject,radius-lineWidth/2,radius+lineWidth/2,100,1);
+			radius += ringDelta;
+		}
+
+		// label the rings
+		if (ringLabelIncrement > 0.0) {
+			std::vector<std::string> ringLabels;
+			// creat the labels. Note that we are not creating a lable at zero
+			for (int i = 0; i < 1/ringLabelIncrement; i++) {
+				double value = (i+1)*ringLabelIncrement*_distanceSpanKm / 2.0;
+				ringLabels.push_back(_scaledLabel.scale(value));
+			}
+
+			for (unsigned int j = 0 ; j < ringLabels.size(); j++) {
+				double d = 0.707*(j+1)*ringDelta;
+				const char* cStart = ringLabels[j].c_str();
+				const char* c;
+
+				// upper right qudrant lables
+				glRasterPos2d( d,  d); c = cStart;
+				while (*c) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,*c++);
+
+				// lower left quadrant labels
+				glRasterPos2d(-d, -d); c = cStart;
+				while (*c) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,*c++);
+
+				// lower right quadrant labels
+				glRasterPos2d( d+ringLabelOffset, -d-ringLabelOffset); c = cStart;
+				while (*c) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,*c++);
+
+				// upper left qudrant labels
+				glRasterPos2d(-d+ringLabelOffset,  d-ringLabelOffset); c = cStart;
+				while (*c) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,*c++);
+
+			}
+		}
+		// get rid of quad object
+		gluDeleteQuadric(quadObject);
+
+		glEndList();
+
+	}
+
+	// do the grid
+	if (ringDelta > 0 && _gridsEnabled) {
+
+		// create a display list to hold the gl commands
+		glNewList(_gridListId, GL_COMPILE);
+
+		// set the color
+		glColor3f(_gridRingsColor.red()/255.0, 
+			_gridRingsColor.green()/255.0,
+			_gridRingsColor.blue()/255.0);
+
+		glLineWidth(2);
+
+		glBegin(GL_LINES);
+		// First the vertical lines.
+		// set the first x value
+		GLdouble x = (-(int)((1.0/ringDelta)/2)) * ringDelta;
+		while (x <= 1.0) {
+			glVertex2d(x, -1.0); 
+			glVertex2d(x,  1.0); 
+			x += ringDelta;
+		}
+		// Now horizontial lines
+		// set the first y value to an even increment of the grid spacing.
+		GLdouble y = (-(int)((1.0/ringDelta)/2)) * ringDelta;;
+		while (y <= 1.0) {
+			glVertex2d(-1.0, y); 
+			glVertex2d( 1.0, y); 
+			y += ringDelta;
+		}
+		glEnd();
+
+		glEndList();
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////
+double
+PPI::ringSpacing() {
 
-void
-PPI::createStencil()
-{
-	// The stencil buffer is a funny beast.  
-   //
-   // It can mask out display of the color buffers.
-   // If a color buffer is masked out, the color
-   // buffer clear value is displayed instead.
-   // The stencil buffer is filled with values
-   // to affect the areas that you want masked.
-   // A stencil operation is specified, which can
-   // compare the color buffer, the stencil buffer
-   // and a reference value to determine if the color 
-   // should be displayed.
-   //
-   // The stencil buffer can also be directed to be 
-   // modified as a result of the test.
-   //
-   // Oddly, there isn't a direct call to write 
-   // into the stencil buffer. Instead, you do the
-   // following to get your pattern into the stencil 
-   // buffer:
-   // 1. clear the stencil buffer
-   // 2. set the comparrison function to always fail; i.e. all
-   //    drawing commands will fail and no actual rendering
-   //    from the color buffers will occur.
-   // 3. set the stencil buffer operation to increment the
-   //    stencil buffer when drawing to an area occurs.
-   // 4. Draw you pattern. After drawing, the stencil buffer 
-   //    will have one values set for your pattern.
-   //
-   // Okay, once the stencil buffer has one values in the 
-   // area of your pattern, we need to use it as a mask.
-   // We do this by setting the comparison function to
-   // say that drawing is allowed anywhere the stencil
-   // pattern is not equal to the reference value of 1.
-   // We also say that the stencil buffer operation is
-   // to keep the current stencil value; i.e. don't change it.
-   
-   // So, let's get going. Create the stencil pattern:
-   
-   // don't allow any drawing of the color buffer
-   glStencilFunc(GL_NEVER, 0x0, 0x0);
-	// clear the stencil buffer (to 0.0f, set in initializeGL())
-	glClear(GL_STENCIL_BUFFER_BIT);
-   // on any drawing operation, increment the stencil.
-   glStencilOp(GL_INCR, GL_INCR, GL_INCR);
+	// R is the visible distance from center to edge
+	double R = (_distanceSpanKm / _zoomFactor);
+	double e = (int)floor(log10(R));
+	double Rn = R / pow(10.0, e);
 
- 	// draw range rings
-   GLUquadricObj* o = gluNewQuadric();
+	double delta = 2.0;
+	if (Rn <= 5.0) {
+		delta = 1.0;
+	}
+	if (Rn <= 3.0) {
+		delta = 0.5;
+	} 
+	if (Rn <= 1.0) {
+		delta = 0.2;
+	} 
+	if (Rn <= 0.5) {
+		delta = 0.1;
+	} 
 
-   for (double x = 0.1; x <=1.0; x += 0.1) {
-	  gluDisk(o, x, x+0.004, 100, 1);
-   }
+	delta = delta * pow(10.0, e);
 
-   // now set up to use stencil in future drawing.
+	delta = delta/_distanceSpanKm;
 
-   // allow color buffer rendering wherever the stencil buffer
-   // is not equal to 1.
-   glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
-   // Keep (i.e. do not modify) the stencil buffer 
-   // when the stencil test passes.
-	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+	return delta;
 
-   //glColor3f(_gridRingsRed, _gridRingsGreen, _gridRingsBlue);
-
+}
+////////////////////////////////////////////////////////////////////////
+QImage*
+PPI::getImage() {
+	makeCurrent();
+	updateGL();
+	glReadBuffer(GL_FRONT);
+	QImage* pImage = new QImage(grabFrameBuffer(true));
+	return pImage;
 }
 
 ////////////////////////////////////////////////////////////////////////
-
-void
-PPI::clearStencil()
-{
-   // Clear the stencil buffer. 
-   // The glClear causes the stencil clear vaule
-   // set by glStencilClear() in initializeGL(),
-   // to be filled into the stencil buffer
-   glClear(GL_STENCIL_BUFFER_BIT);  
+QPixmap*
+PPI::getPixmap() {
+	QPixmap* pImage = new QPixmap(renderPixmap());
+	return pImage;
 }
-
-

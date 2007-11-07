@@ -1,21 +1,24 @@
 #include <qapplication.h>
 #include "PPITest.h"
 #include <stdlib.h>
-
+#include "qdialog.h"
 
 int main( int argc, char** argv )
 {
 	QApplication app( argc, argv );
 
-  int nVars = 6;
+	int nVars = 6;
 
-  if (argc > 1)
-    nVars = atoi(argv[1]);
+	if (argc > 1)
+		nVars = atoi(argv[1]);
 
-	PPITest dialog(nVars, 0, 0, TRUE );
-	app.setMainWidget(&dialog);
+	QDialog* dialog = new QDialog;
 
-	dialog.exec();
+	PPITest t(nVars, dialog);
+
+	dialog->show();
+
+	app.exec();
 
 	return 0;
 }

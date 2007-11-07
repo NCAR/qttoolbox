@@ -7,23 +7,28 @@
 #include <qlayout.h>
 #include <qcheckbox.h>
 #include <qcolordialog.h>
+#include <QVBoxLayout>
+#include <QImage>
+#include <QDateTime>
+#include <QFileDialog>
+#include <QStringList>
 
 #include <iostream>
 
 PPITest::PPITest( int nVars,
-				 QWidget* parent, 
-				 const char* name, 
-				 bool modal, 
-				 WFlags fl):
-PPITestBase(parent,
-			name,
-			modal,
-			fl),
-			_angle(0.0),
-			_nVars(nVars),
-			_angleInc(1.0),
-			_gates(1000)
+				 QWidget* parent):
+QObject(parent),
+_angle(0.0),
+_nVars(nVars),
+_angleInc(1.0),
+_gates(1000),
+_currentX(0.0),
+_currentY(0.0),
+_decimation(1)
 {
+	setupUi(parent);
+
+	_decimation = _decimationSpin->value();
 
 	// create the color maps
 	for (int i = 0; i < _nVars; i++) {
@@ -31,38 +36,33 @@ PPITestBase(parent,
 		_maps2.push_back(new ColorMap(0.0, 100.0/((i+1)/0.8)));
 	}
 
-	QVBoxLayout* colorBarLayout1 = new QVBoxLayout(frameColorBar1);
-	QVBoxLayout* colorBarLayout2 = new QVBoxLayout(frameColorBar2);
-	_colorBar1 = new ColorBar(frameColorBar1);
-	_colorBar2 = new ColorBar(frameColorBar2);
 	_colorBar1->configure(*_maps1[0]);
 	_colorBar2->configure(*_maps2[0]);
-	colorBarLayout1->addWidget(_colorBar1);
-	colorBarLayout2->addWidget(_colorBar2);
 	////////////////////////////////////////////////////////////////////////
 	//
 	// Create radio buttons for selecting the variable to display
 	//
 
-	// configure policy for the button group
-	btnGroupVarSelect1->setColumnLayout(0, Qt::Vertical );
-	btnGroupVarSelect2->setColumnLayout(0, Qt::Vertical );
-	btnGroupVarSelect1->layout()->setSpacing( 6 );
-	btnGroupVarSelect2->layout()->setSpacing( 6 );
-
-	// create a layout manager for the button group
-	QVBoxLayout* btnGroupVarSelectLayout1 = new QVBoxLayout( btnGroupVarSelect1->layout());
-	btnGroupVarSelectLayout1->setAlignment( Qt::AlignTop );
-	QVBoxLayout* btnGroupVarSelectLayout2 = new QVBoxLayout( btnGroupVarSelect2->layout());
-	btnGroupVarSelectLayout2->setAlignment( Qt::AlignTop );
+	// create a layout manager for the button groups
+	QVBoxLayout* buttonLayout1 = new QVBoxLayout;
+	QVBoxLayout* buttonLayout2 = new QVBoxLayout;
+	// create button groups to manage the buttons as collections
+	// These are different from the button group boxes, which just
+	// hold the buttons on the form
+	QButtonGroup* buttonGroup1 = new QButtonGroup;
+	QButtonGroup* buttonGroup2 = new QButtonGroup;
 
 	// create the buttons
 	for (int r = 0; r < _nVars; r++) {
-		QRadioButton* rb1 = new QRadioButton(btnGroupVarSelect1);
-		QRadioButton* rb2 = new QRadioButton(btnGroupVarSelect2);
-		// add button to the group layou
-		btnGroupVarSelectLayout1->addWidget(rb1);
-		btnGroupVarSelectLayout2->addWidget(rb2);
+		// make buttons
+		QRadioButton* rb1 = new QRadioButton;
+		QRadioButton* rb2 = new QRadioButton;
+		// add them to the groups
+		buttonGroup1->addButton(rb1, r);
+		buttonGroup2->addButton(rb2, r);
+		// add buttons to the group layout
+		buttonLayout1->addWidget(rb1);
+		buttonLayout2->addWidget(rb2);
 		QString s = QString("%1").arg(r);
 		rb1->setText(s);
 		rb2->setText(s);
@@ -71,27 +71,42 @@ PPITestBase(parent,
 			rb2->setChecked(true);
 		}
 	}
+	// connect the button pressed signal to the var changed slot
+	connect( buttonGroup1, SIGNAL( buttonReleased(int) ), this, SLOT( varSelectSlot1(int) ));
+	connect( buttonGroup2, SIGNAL( buttonReleased(int) ), this, SLOT( varSelectSlot2(int) ));
+	// assign the layout to the group boxes on the form
+	_buttonGroupBox1->setLayout(buttonLayout1);
+	_buttonGroupBox2->setLayout(buttonLayout2);
 
 	// Note that the following call determines whether PPI will 
 	// use preallocated or dynamically allocated beams. If a third
 	// parameter is specifiec, it will set the number of preallocated
 	// beams.
-	_ppi1->configure(_nVars, _gates, 360);
-	_ppi2->configure(_nVars, _gates, 360);
+	_ppi1->configure(_nVars, _gates, 360, 117.0, _decimation);
+	_ppi2->configure(_nVars, _gates, 360, 223.0, _decimation);
 
-   // set the rings to the current state of the check box
-   _ppi1->rings(ringsCheckBox->state());
-   _ppi1->rings(ringsCheckBox->state());
+	// set the rings to the current state of the check box
+	_ppi1->rings(_ringsCheck->isChecked());
+	_ppi2->rings(_ringsCheck->isChecked());
 
-	// connect the button pressed signal to the var changed slot
-	connect( btnGroupVarSelect1, SIGNAL( clicked(int) ), this, SLOT( varSelectSlot1(int) ));
-	connect( btnGroupVarSelect2, SIGNAL( clicked(int) ), this, SLOT( varSelectSlot2(int) ));
 
-	////////////////////////////////////////////////////////////////////////
-	//
-	//  
-	//
-	connect(&_timer, SIGNAL(timeout()), this, SLOT(addBeam()));
+	connect(_startButton,   SIGNAL(released()),        this, SLOT(startSlot()));
+	connect(_stopButton,    SIGNAL(released()),        this, SLOT(stopSlot()));
+	connect(_gridCheck,     SIGNAL(clicked(bool)),     this, SLOT(gridSlot(bool)));
+	connect(_ringsCheck,    SIGNAL(clicked(bool)),     this, SLOT(ringsSlot(bool)));
+	connect(_reverseButton, SIGNAL(released()),        this, SLOT(changeDir()));
+	connect(_zoomIn,        SIGNAL(released()),        this, SLOT(zoomInSlot()));
+	connect(_zoomOut,       SIGNAL(released()),        this, SLOT(zoomOutSlot()));
+	connect(&_timer,        SIGNAL(timeout()),         this, SLOT(addBeam()));
+	connect(_backgroundButton, SIGNAL(released()),     this, SLOT(backgroundColorSlot()));
+	connect(_ringColorButton,  SIGNAL(released()),     this, SLOT(ringColorSlot()));
+	connect(_panUp,         SIGNAL(released()),        this, SLOT(panUpSlot()));
+	connect(_panDown,       SIGNAL(released()),        this, SLOT(panDownSlot()));
+	connect(_panLeft,       SIGNAL(released()),        this, SLOT(panLeftSlot()));
+	connect(_panRight,      SIGNAL(released()),        this, SLOT(panRightSlot()));
+	connect(_viewReset,     SIGNAL(released()),        this, SLOT(resetViewSlot()));
+	connect(_saveImage,     SIGNAL(released()),        this, SLOT(saveImageSlot()));
+	connect(_decimationSpin,SIGNAL(valueChanged(int)), this, SLOT(decimationSlot(int)));
 
 	_beamData.resize(_nVars);
 }
@@ -124,6 +139,15 @@ PPITest::stopSlot() {
 	_timer.stop();
 
 }
+///////////////////////////////////////////////////////////////////////
+
+void
+PPITest::decimationSlot(int) {
+	_decimation = _decimationSpin->value();
+	_ppi1->configure(_nVars, _gates, 360, 117.0, _decimation);
+	_ppi2->configure(_nVars, _gates, 360, 223.0, _decimation);
+}
+
 ///////////////////////////////////////////////////////////////////////
 
 void
@@ -162,9 +186,9 @@ PPITest::addBeam()
 			_beamData[v].resize(_gates);
 			for (int g = 0; g < _gates; g++) {
 				if (v == 0)
-               _beamData[v][g] = 100.0*((double)rand())/RAND_MAX;
-            else
-				   _beamData[v][g] = 50.0*(angle/360.0);
+					_beamData[v][g] = 100.0*((double)rand())/RAND_MAX;
+				else
+					_beamData[v][g] = 50.0*(angle/360.0)+10.0*((double)rand())/RAND_MAX;
 			}
 		}
 
@@ -191,16 +215,16 @@ PPITest::addBeam()
 
 void PPITest::zoomInSlot()
 {
-	_ppi1->setZoom(2.0);
-	_ppi2->setZoom(2.0);
+	_ppi1->setZoom(_ppi1->getZoom()*2.0);
+	_ppi2->setZoom(_ppi2->getZoom()*2.0);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void PPITest::zoomOutSlot()
 {
-	_ppi1->setZoom(0.5);
-	_ppi2->setZoom(0.5);
+	_ppi1->setZoom(_ppi1->getZoom()*0.5);
+	_ppi2->setZoom(_ppi2->getZoom()*0.5);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -220,6 +244,52 @@ void PPITest::varSelectSlot2(int index)
 }
 
 ///////////////////////////////////////////////////////////////////////
+void PPITest::saveImageSlot()
+{
+	QString f;
+	QString d = QDateTime::currentDateTime().toString("yyyy-MM-dd-hh-mm-ss");
+	QImage* ppi1Image = _ppi1->getImage();
+	QImage* ppi2Image = _ppi2->getImage();
+	
+	QFileDialog d1(0, tr("Save PPI1 Image"),
+		"c:/tmp", tr("PNG files (*.png);;All files (*.*)"));
+	d1.setFileMode(QFileDialog::AnyFile);
+	d1.setViewMode(QFileDialog::Detail);
+	d1.setAcceptMode(QFileDialog::AcceptSave);
+	d1.setConfirmOverwrite(true);
+	d1.setDefaultSuffix("png");
+	d1.setDirectory(f);
+	f = "CP2PPI1-";
+	f += d;
+	f += ".png";
+	d1.selectFile(f);
+	if (d1.exec()) {
+		QStringList saveNames = d1.selectedFiles();
+		ppi1Image->save(saveNames[0], "PNG", 100);
+	}
+ 
+ 	QFileDialog d2(0, tr("Save PPI1 Image"),
+		"c:/tmp", tr("PNG files (*.png);;All files (*.*)"));
+	d2.setFileMode(QFileDialog::AnyFile);
+	d2.setViewMode(QFileDialog::Detail);
+	d2.setAcceptMode(QFileDialog::AcceptSave);
+	d2.setConfirmOverwrite(true);
+	d2.setDefaultSuffix("png");
+	d2.setDirectory(f);
+	f = "CP2PPI2-";
+	f += d;
+	f += ".png";
+	d2.selectFile(f);
+	if (d2.exec()) {
+		QStringList saveNames = d2.selectedFiles();
+		ppi2Image->save(saveNames[0], "PNG", 100);
+	}
+
+	delete ppi1Image;
+	delete ppi2Image;
+
+}
+///////////////////////////////////////////////////////////////////////
 
 void PPITest::changeDir() 
 {
@@ -238,83 +308,83 @@ void PPITest::clearVarSlot(int index)
 
 void PPITest::ringsSlot(bool enabled)
 {
-   _ppi1->rings(enabled);
-   _ppi2->rings(enabled);
+	_ppi1->rings(enabled);
+	_ppi2->rings(enabled);
 }
 ///////////////////////////////////////////////////////////////////////
 
 void PPITest::gridSlot(bool enabled)
 {
-   _ppi1->grids(enabled);
-   _ppi2->grids(enabled);
+	_ppi1->grids(enabled);
+	_ppi2->grids(enabled);
 }
 ///////////////////////////////////////////////////////////////////////
 void
 PPITest::backgroundColorSlot() 
 {
-   QColor color = QColorDialog::getColor("white",this,"Colourtable");
+	QColor color = QColorDialog::getColor("blue");
 
-   _ppi1->backgroundColor(color);
-   _ppi1->refresh();
-   _ppi2->backgroundColor(color);
-   _ppi2->refresh();
+	_ppi1->backgroundColor(color);
+	_ppi2->backgroundColor(color);
 }
 
 ///////////////////////////////////////////////////////////////////////
 void
-PPITest::gridRingColorSlot() 
+PPITest::ringColorSlot() 
 {
-   QColor color = QColorDialog::getColor("white",this,"Colourtable");
+	QColor color = QColorDialog::getColor("black");
 
-   _ppi1->gridRingColor(color);
-   _ppi1->refresh();
-   _ppi2->gridRingColor(color);
-   _ppi2->refresh();
+	_ppi1->gridRingsColor(color);
+	_ppi2->gridRingsColor(color);
+}
+
+///////////////////////////////////////////////////////////////////////
+void
+PPITest::pan(double x, double y)
+{
+		_ppi1->pan(x, y);
+		_ppi2->pan(x, y);
+		_currentX = x;
+		_currentY = y;
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-void PPITest::panSlot(int panIndex)
+void 
+PPITest::panUpSlot()
 {
-	switch (panIndex) {
-	case 0:
-		_ppi1->setZoom(0.0);
-		_ppi2->setZoom(0.0);
-		break;
-	case 1:
-		_ppi1->pan(0.0, 0.10);
-		_ppi2->pan(0.0, 0.10);
-		break;
-	case 2:
-		_ppi1->pan(-0.10, 0.10);
-		_ppi2->pan(-0.10, 0.10);
-		break;
-	case 3:
-		_ppi1->pan(-0.10, 0.0);
-		_ppi2->pan(-0.10, 0.0);
-		break;
-	case 4:
-		_ppi1->pan(-0.10, -0.10);
-		_ppi2->pan(-0.10, -0.10);
-		break;
-	case 5:
-		_ppi1->pan(00, -0.10);
-		_ppi2->pan(00, -0.10);
-		break;
-	case 6:
-		_ppi1->pan(0.10, -0.10);
-		_ppi2->pan(0.10, -0.10);
-		break;
-	case 7:
-		_ppi1->pan(0.10, 0.0);
-		_ppi2->pan(0.10, 0.0);
-		break;
-	case 8:
-		_ppi1->pan(0.10, 0.10);
-		_ppi2->pan(0.10, 0.10);
-		break;
-	default:
-		break;
-	}
+	pan(_currentX, _currentY + 0.1/_ppi1->getZoom());
+	_currentY += 0.1/_ppi1->getZoom();
+}
+///////////////////////////////////////////////////////////////////////
+
+void 
+PPITest::panDownSlot()
+{
+	pan(_currentX, _currentY - 0.1/_ppi1->getZoom());
+	_currentY -= 0.1/_ppi1->getZoom();
+}
+///////////////////////////////////////////////////////////////////////
+
+void 
+PPITest::panLeftSlot()
+{
+	pan(_currentX - 0.1/_ppi1->getZoom(), _currentY);
+	_currentX -= 0.1/_ppi1->getZoom();
+}
+///////////////////////////////////////////////////////////////////////
+
+void 
+PPITest::panRightSlot()
+{
+	pan(_currentX + 0.1/_ppi1->getZoom(), _currentY );
+	_currentX += 0.1/_ppi1->getZoom();
+}
+///////////////////////////////////////////////////////////////////////
+void
+PPITest::resetViewSlot()
+{
+	_ppi1->resetView();
+	_ppi2->resetView();
 }
 

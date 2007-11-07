@@ -1,98 +1,129 @@
-Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Knob", "Knob\Knob.vcproj", "{B263550E-8C07-3907-B588-925CAE68B00F}"
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ColorBarTest", "ColorBar\Test\ColorBarTest.vcproj", "{CBE519A0-B026-343E-9C35-19F3FE9A2B39}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 	ProjectSection(ProjectDependencies) = postProject
+		{85599015-083E-3672-B9EE-71498D034D3B} = {85599015-083E-3672-B9EE-71498D034D3B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TwoKnobs", "TwoKnobs\TwoKnobs.vcproj", "{B198799B-6B05-353A-AE9A-72E5F19E4AD1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ColorBard", "ColorBar\ColorBard.vcproj", "{85599015-083E-3672-B9EE-71498D034D3B}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TwoKnobsd", "TwoKnobs\TwoKnobsd.vcproj", "{FDBF7F4E-0DCA-313B-B0D5-741D6E62230F}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TwoKnobsTest", "TwoKnobs\Test\TwoKnobsTest.vcproj", "{23DA7E25-5651-3CE1-924C-BE5A696368DF}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 	ProjectSection(ProjectDependencies) = postProject
-		{B263550E-8C07-3907-B588-925CAE68B00F} = {B263550E-8C07-3907-B588-925CAE68B00F}
+		{FDBF7F4E-0DCA-313B-B0D5-741D6E62230F} = {FDBF7F4E-0DCA-313B-B0D5-741D6E62230F}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TwoKnobsTest", "TwoKnobs\Test\TwoKnobsTest.vcproj", "{484E182E-64D2-358A-AE79-C0A9849783BB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Knobd", "Knob\Knobd.vcproj", "{8939E6EC-06C4-319C-AEA6-59E3638594B7}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KnobTest", "Knob\Test\KnobTest.vcproj", "{6ED30BE5-0AFE-317E-AAF6-2C4C4E47649C}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 	ProjectSection(ProjectDependencies) = postProject
-		{B263550E-8C07-3907-B588-925CAE68B00F} = {B263550E-8C07-3907-B588-925CAE68B00F}
-		{B198799B-6B05-353A-AE9A-72E5F19E4AD1} = {B198799B-6B05-353A-AE9A-72E5F19E4AD1}
+		{8939E6EC-06C4-319C-AEA6-59E3638594B7} = {8939E6EC-06C4-319C-AEA6-59E3638594B7}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScopePlot", "ScopePlot\ScopePlot.vcproj", "{F48980FC-3982-3B03-8B9A-6D6CD96AF509}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScopePlotd", "ScopePlot\scopePlotd.vcproj", "{79E391FA-A330-344D-8325-DDDD7F40F77C}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScopePlotTest", "ScopePlot\Test\ScopePlotTest.vcproj", "{584CB3D8-6D6E-3708-9D76-5F8EF5FA56A9}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 	ProjectSection(ProjectDependencies) = postProject
+		{79E391FA-A330-344D-8325-DDDD7F40F77C} = {79E391FA-A330-344D-8325-DDDD7F40F77C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScopePlotTest", "ScopePlot\Test\ScopePlotTest.vcproj", "{56424E18-DF37-37FA-9EB0-9611764B9AA4}"
-	ProjectSection(ProjectDependencies) = postProject
-		{F48980FC-3982-3B03-8B9A-6D6CD96AF509} = {F48980FC-3982-3B03-8B9A-6D6CD96AF509}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PPId", "PPI\PPId.vcproj", "{3AA8A8A8-D800-3058-9BB3-EADC6A8BFB15}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ColorBar", "ColorBar\ColorBar.vcproj", "{42019193-2424-31CD-A12F-881526B511B2}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "QtToolboxTest", "QtToolboxTest\QtToolboxTest.vdproj", "{28930F0A-47F6-4E3D-97CB-B385A8558CC7}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ColorBarTest", "ColorBar\Test\ColorBarTest.vcproj", "{57D196B6-E53A-3196-8BCD-FE662A9FA9B4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PPITest", "PPI\Test\PPITest.vcproj", "{086796B9-9E97-3EE3-B723-D14909D60409}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 	ProjectSection(ProjectDependencies) = postProject
-		{42019193-2424-31CD-A12F-881526B511B2} = {42019193-2424-31CD-A12F-881526B511B2}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PPI", "PPI\PPI.vcproj", "{0D9743D3-2F6A-3871-A8C1-61DA73BA53EF}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PPITest", "PPI\Test\PPITest.vcproj", "{B3892DC5-741C-3A58-B9CB-E206DB913CC8}"
-	ProjectSection(ProjectDependencies) = postProject
-		{0D9743D3-2F6A-3871-A8C1-61DA73BA53EF} = {0D9743D3-2F6A-3871-A8C1-61DA73BA53EF}
-	EndProjectSection
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "QtToolbox Installer", "Installer\Installer.vdproj", "{FAEAA6E7-7C7A-4668-93BF-5149D4A536B2}"
-	ProjectSection(ProjectDependencies) = postProject
+		{3AA8A8A8-D800-3058-9BB3-EADC6A8BFB15} = {3AA8A8A8-D800-3058-9BB3-EADC6A8BFB15}
+		{85599015-083E-3672-B9EE-71498D034D3B} = {85599015-083E-3672-B9EE-71498D034D3B}
 	EndProjectSection
 EndProject
 Global
-	GlobalSection(SolutionConfiguration) = preSolution
-		Debug = Debug
-		Release = Release
+	GlobalSection(Qt) = preSolution
+		Integration = True
 	EndGlobalSection
-	GlobalSection(ProjectConfiguration) = postSolution
-		{B263550E-8C07-3907-B588-925CAE68B00F}.Debug.ActiveCfg = Debug|Win32
-		{B263550E-8C07-3907-B588-925CAE68B00F}.Debug.Build.0 = Debug|Win32
-		{B263550E-8C07-3907-B588-925CAE68B00F}.Release.ActiveCfg = Release|Win32
-		{B263550E-8C07-3907-B588-925CAE68B00F}.Release.Build.0 = Release|Win32
-		{B198799B-6B05-353A-AE9A-72E5F19E4AD1}.Debug.ActiveCfg = Debug|Win32
-		{B198799B-6B05-353A-AE9A-72E5F19E4AD1}.Debug.Build.0 = Debug|Win32
-		{B198799B-6B05-353A-AE9A-72E5F19E4AD1}.Release.ActiveCfg = Release|Win32
-		{B198799B-6B05-353A-AE9A-72E5F19E4AD1}.Release.Build.0 = Release|Win32
-		{484E182E-64D2-358A-AE79-C0A9849783BB}.Debug.ActiveCfg = Debug|Win32
-		{484E182E-64D2-358A-AE79-C0A9849783BB}.Debug.Build.0 = Debug|Win32
-		{484E182E-64D2-358A-AE79-C0A9849783BB}.Release.ActiveCfg = Release|Win32
-		{484E182E-64D2-358A-AE79-C0A9849783BB}.Release.Build.0 = Release|Win32
-		{F48980FC-3982-3B03-8B9A-6D6CD96AF509}.Debug.ActiveCfg = Debug|Win32
-		{F48980FC-3982-3B03-8B9A-6D6CD96AF509}.Debug.Build.0 = Debug|Win32
-		{F48980FC-3982-3B03-8B9A-6D6CD96AF509}.Release.ActiveCfg = Release|Win32
-		{F48980FC-3982-3B03-8B9A-6D6CD96AF509}.Release.Build.0 = Release|Win32
-		{56424E18-DF37-37FA-9EB0-9611764B9AA4}.Debug.ActiveCfg = Debug|Win32
-		{56424E18-DF37-37FA-9EB0-9611764B9AA4}.Debug.Build.0 = Debug|Win32
-		{56424E18-DF37-37FA-9EB0-9611764B9AA4}.Release.ActiveCfg = Release|Win32
-		{56424E18-DF37-37FA-9EB0-9611764B9AA4}.Release.Build.0 = Release|Win32
-		{42019193-2424-31CD-A12F-881526B511B2}.Debug.ActiveCfg = Debug|Win32
-		{42019193-2424-31CD-A12F-881526B511B2}.Debug.Build.0 = Debug|Win32
-		{42019193-2424-31CD-A12F-881526B511B2}.Release.ActiveCfg = Release|Win32
-		{42019193-2424-31CD-A12F-881526B511B2}.Release.Build.0 = Release|Win32
-		{57D196B6-E53A-3196-8BCD-FE662A9FA9B4}.Debug.ActiveCfg = Debug|Win32
-		{57D196B6-E53A-3196-8BCD-FE662A9FA9B4}.Debug.Build.0 = Debug|Win32
-		{57D196B6-E53A-3196-8BCD-FE662A9FA9B4}.Release.ActiveCfg = Release|Win32
-		{57D196B6-E53A-3196-8BCD-FE662A9FA9B4}.Release.Build.0 = Release|Win32
-		{0D9743D3-2F6A-3871-A8C1-61DA73BA53EF}.Debug.ActiveCfg = Debug|Win32
-		{0D9743D3-2F6A-3871-A8C1-61DA73BA53EF}.Debug.Build.0 = Debug|Win32
-		{0D9743D3-2F6A-3871-A8C1-61DA73BA53EF}.Release.ActiveCfg = Release|Win32
-		{0D9743D3-2F6A-3871-A8C1-61DA73BA53EF}.Release.Build.0 = Release|Win32
-		{B3892DC5-741C-3A58-B9CB-E206DB913CC8}.Debug.ActiveCfg = Debug|Win32
-		{B3892DC5-741C-3A58-B9CB-E206DB913CC8}.Debug.Build.0 = Debug|Win32
-		{B3892DC5-741C-3A58-B9CB-E206DB913CC8}.Release.ActiveCfg = Release|Win32
-		{B3892DC5-741C-3A58-B9CB-E206DB913CC8}.Release.Build.0 = Release|Win32
-		{FAEAA6E7-7C7A-4668-93BF-5149D4A536B2}.Debug.ActiveCfg = Debug
-		{FAEAA6E7-7C7A-4668-93BF-5149D4A536B2}.Release.ActiveCfg = Release
-		{FAEAA6E7-7C7A-4668-93BF-5149D4A536B2}.Release.Build.0 = Release
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CBE519A0-B026-343E-9C35-19F3FE9A2B39}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CBE519A0-B026-343E-9C35-19F3FE9A2B39}.Debug|Win32.Build.0 = Debug|Win32
+		{CBE519A0-B026-343E-9C35-19F3FE9A2B39}.Release|Win32.ActiveCfg = Release|Win32
+		{CBE519A0-B026-343E-9C35-19F3FE9A2B39}.Release|Win32.Build.0 = Release|Win32
+		{85599015-083E-3672-B9EE-71498D034D3B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{85599015-083E-3672-B9EE-71498D034D3B}.Debug|Win32.Build.0 = Debug|Win32
+		{85599015-083E-3672-B9EE-71498D034D3B}.Release|Win32.ActiveCfg = Release|Win32
+		{85599015-083E-3672-B9EE-71498D034D3B}.Release|Win32.Build.0 = Release|Win32
+		{FDBF7F4E-0DCA-313B-B0D5-741D6E62230F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FDBF7F4E-0DCA-313B-B0D5-741D6E62230F}.Debug|Win32.Build.0 = Debug|Win32
+		{FDBF7F4E-0DCA-313B-B0D5-741D6E62230F}.Release|Win32.ActiveCfg = Release|Win32
+		{FDBF7F4E-0DCA-313B-B0D5-741D6E62230F}.Release|Win32.Build.0 = Release|Win32
+		{23DA7E25-5651-3CE1-924C-BE5A696368DF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{23DA7E25-5651-3CE1-924C-BE5A696368DF}.Debug|Win32.Build.0 = Debug|Win32
+		{23DA7E25-5651-3CE1-924C-BE5A696368DF}.Release|Win32.ActiveCfg = Release|Win32
+		{23DA7E25-5651-3CE1-924C-BE5A696368DF}.Release|Win32.Build.0 = Release|Win32
+		{8939E6EC-06C4-319C-AEA6-59E3638594B7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8939E6EC-06C4-319C-AEA6-59E3638594B7}.Debug|Win32.Build.0 = Debug|Win32
+		{8939E6EC-06C4-319C-AEA6-59E3638594B7}.Release|Win32.ActiveCfg = Release|Win32
+		{8939E6EC-06C4-319C-AEA6-59E3638594B7}.Release|Win32.Build.0 = Release|Win32
+		{6ED30BE5-0AFE-317E-AAF6-2C4C4E47649C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6ED30BE5-0AFE-317E-AAF6-2C4C4E47649C}.Debug|Win32.Build.0 = Debug|Win32
+		{6ED30BE5-0AFE-317E-AAF6-2C4C4E47649C}.Release|Win32.ActiveCfg = Release|Win32
+		{6ED30BE5-0AFE-317E-AAF6-2C4C4E47649C}.Release|Win32.Build.0 = Release|Win32
+		{79E391FA-A330-344D-8325-DDDD7F40F77C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{79E391FA-A330-344D-8325-DDDD7F40F77C}.Debug|Win32.Build.0 = Debug|Win32
+		{79E391FA-A330-344D-8325-DDDD7F40F77C}.Release|Win32.ActiveCfg = Release|Win32
+		{79E391FA-A330-344D-8325-DDDD7F40F77C}.Release|Win32.Build.0 = Release|Win32
+		{584CB3D8-6D6E-3708-9D76-5F8EF5FA56A9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{584CB3D8-6D6E-3708-9D76-5F8EF5FA56A9}.Debug|Win32.Build.0 = Debug|Win32
+		{584CB3D8-6D6E-3708-9D76-5F8EF5FA56A9}.Release|Win32.ActiveCfg = Release|Win32
+		{584CB3D8-6D6E-3708-9D76-5F8EF5FA56A9}.Release|Win32.Build.0 = Release|Win32
+		{3AA8A8A8-D800-3058-9BB3-EADC6A8BFB15}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3AA8A8A8-D800-3058-9BB3-EADC6A8BFB15}.Debug|Win32.Build.0 = Debug|Win32
+		{3AA8A8A8-D800-3058-9BB3-EADC6A8BFB15}.Release|Win32.ActiveCfg = Release|Win32
+		{3AA8A8A8-D800-3058-9BB3-EADC6A8BFB15}.Release|Win32.Build.0 = Release|Win32
+		{28930F0A-47F6-4E3D-97CB-B385A8558CC7}.Debug|Win32.ActiveCfg = Debug
+		{28930F0A-47F6-4E3D-97CB-B385A8558CC7}.Release|Win32.ActiveCfg = Release
+		{086796B9-9E97-3EE3-B723-D14909D60409}.Debug|Win32.ActiveCfg = Debug|Win32
+		{086796B9-9E97-3EE3-B723-D14909D60409}.Debug|Win32.Build.0 = Debug|Win32
+		{086796B9-9E97-3EE3-B723-D14909D60409}.Release|Win32.ActiveCfg = Release|Win32
+		{086796B9-9E97-3EE3-B723-D14909D60409}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
-	GlobalSection(ExtensibilityAddIns) = postSolution
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

@@ -1,18 +1,20 @@
 #ifndef SCOPEPLOTTEST_H
 #define SCOPEPLOTTEST_H
 
-#include "ScopePlotTestBase.h"
 #include "ScopePoke.h"
+#include "ui_ScopePlotTest.h"
 
-class ScopePlotTest: public ScopePlotTestBase {
-
+class ScopePlotTest: public QObject, public Ui::ScopePlotTest
+{
+	Q_OBJECT
 public:
-   ScopePlotTest();
+   ScopePlotTest(QWidget* parent);
    ~ScopePlotTest();
    void setScopePoke(ScopePoke* scopePoke);
 
 public slots:
-    virtual void plotTypeSlot(bool);
+    void plotType(int);
+	void saveImageSlot();
 
 protected:
    ScopePoke* _scopePoke;

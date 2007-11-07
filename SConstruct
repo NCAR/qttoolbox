@@ -1,28 +1,52 @@
-import os,os.path, sys
-sys.path.insert(0, os.path.join(os.getcwd(),'config'))
+# The following environment variables are expected:
+# QTDIR        - The location of Qt4
+# QWTDIR       - The location of the qwt installation
+# GLUTDIR      - The location of glut.
+#
+# if not specified by QWTDIR and GLUTDIR, then qwt and glut 
+# will be assumed to be located in standard install locations. 
 
-import atd_scons
+import os,os.path, sys
+sys.path.insert(0, os.path.join(os.getcwd(),'#./'))
+
 import SCons
 
-atd_scons.SConsignFile()
+# Create our environment. We are expecting to find 
+# qt4.py in the top level directory.
+env = Environment(tools=['default', 'qt4'], toolpath=['#./'])
 
-def QtToolboxSetup(env):
+# add qwt and glut to the paths
+env['QWTDIR'] = os.environ.get('QWTDIR', None)
+env['GLUTDIR'] = os.environ.get('GLUTDIR', None)
+env.AppendUnique(CPPPATH=['../', '$QWTDIR/include', 
+	'$QTDIR/include/QtDesigner', '$GLUTDIR/include/GL', 
+	'/usr/include/GL', '#/ColorBar'])
 
-    env.Require(['QTDIR'])
-    # TAO IDL-generated code triggers the char subscript warning, so
-    # disable it.  Likewise g++ 4.0 warns on lots of 
-    # non-virtual destructors
-    # in Xerces and ACE, so disable that warning.
-    env.AppendUnique (CCFLAGS=['-Wall','-Wno-char-subscripts'])
-    env.AppendUnique (CXXFLAGS=['-Wno-non-virtual-dtor'])
-    env.Apply ([atd_scons.DebugSetup])
-    atd_scons.OptPrefixSetup (env)
-    return env
 
-options = atd_scons.Pkg_Options()
+# Fix moc needs
+env.AppendUnique(QT4_MOCFROMHFLAGS=['-I', '$QTDIR/include/QtDesigner/'])
 
-env = atd_scons.Pkg_Environment()
-env.GlobalSetup ([QtToolboxSetup])
+
+# enable the qt4 modules
+env.EnableQt4Modules(['QtCore','QtGui','QtOpenGL'])
+
+# add install library method
+def InstallLib(self, lib):
+	installdir = '#/designer'
+	self.Install(installdir, lib)
+	self.Alias('install', installdir)
+
+Environment.InstallLib = InstallLib
+
+# add install binary method
+def InstallBin(self, bin):
+	installdir = '#/bin'
+	self.Install(installdir, bin)
+	self.Alias('install', installdir)
+
+Environment.InstallBin = InstallBin
+
+# export this environment
 Export('env')
 
 SConscript('Knob/SConscript')
@@ -31,8 +55,3 @@ SConscript('ScopePlot/SConscript')
 SConscript('ColorBar/SConscript')
 SConscript('PPI/SConscript')
 
-options.Update(env)
-
-options = atd_scons.Pkg_Options()
-options.Update(env)
-Help(options.GenerateHelpText(env))

@@ -1,28 +1,31 @@
 TEMPLATE	= vclib
 LANGUAGE	= C++
 
-CONFIG	+= debug
+CONFIG += designer
+CONFIG += plugin
+CONFIG += thread
+CONFIG += warn_on 
+CONFIG += exceptions
 
-INCLUDEPATH	+= ../
+win32 {
+  CONFIG(debug, debug|release) {
+    TARGET = ColorBard
+    DLLDESTDIR += $(QTDIR)/lib
+  } else {
+    TARGET = ColorBar
+    DLLDESTDIR += $(QTDIR)/lib
+    DLLDESTDIR += $(QTDIR)/Plugins/Designer
+  }
+}
+
+INCLUDEPATH += ../
+
 
 HEADERS += ColorBar.h
 HEADERS += ColorMap.h
-HEADERS	+= ColorBarPlugin.h
+HEADERS += ColorBarPlugin.h
 
-SOURCES	+= ColorBar.cpp
+SOURCES += ColorBar.cpp
 SOURCES += ColorMap.cpp
-SOURCES	+= ColorBarPlugin.cpp
+SOURCES += ColorBarPlugin.cpp
 
-FORMS	= ColorBarBase.ui
-
-DESTDIR = Debug
-DLLDESTDIR += c:/Windows/System32
-DLLDESTDIR += $(QTDIR)/Plugins/Designer
-
-
-
-CONFIG += qt 
-CONFIG += thread
-CONFIG += plugin
-CONFIG += warn_on 
-CONFIG += exceptions

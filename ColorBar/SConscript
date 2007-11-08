@@ -1,18 +1,17 @@
 import os
 
-Import('env')
+Import('pluginenv')
 
 SConscript('Test/SConscript')
 
-# build colorbar shared library
-colorbar = env.SharedLibrary(
+# build the custom widget and plugin
+
+colorbar = pluginenv.SharedLibrary(
    'colorbar',
-   ['ColorBar.cpp','ColorBarPlugin.cpp','ColorMap.cpp']
+   ['ColorBar.cpp', 'ColorMap.cpp', 'ColorBarPlugin.cpp']
 )
 
 Default(colorbar)
 
-env.InstallLib(colorbar)
-
-
+pluginenv.InstallLib(colorbar)
 

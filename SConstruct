@@ -22,13 +22,41 @@ env.AppendUnique(CPPPATH=['../', '$QWTDIR/include',
 	'$QTDIR/include/QtDesigner', '$GLUTDIR/include/GL', 
 	'/usr/include/GL', '#/ColorBar'])
 
+env.AppendUnique(CPPFLAGS=['-O2',])
 
 # Fix moc needs
 env.AppendUnique(QT4_MOCFROMHFLAGS=['-I', '$QTDIR/include/QtDesigner/'])
 
 
 # enable the qt4 modules
-env.EnableQt4Modules(['QtCore','QtGui','QtOpenGL'])
+env.EnableQt4Modules(['QtCore','QtGui','QtOpenGL', 'QtXml',])
+
+# create an environment for building the plugins
+# The cxx and moc flags must match EXACTLY the
+# qt system build flags, or designer will silently 
+# reject your plugin. How the heck are you supposed to know
+# what these flags are? I sleuthed them out by creating
+# a Linux .pro file and using qmake to generate a makefile,
+# then running the makefile to see how it built the plugin,
+# then verifying that designer could see the plugin generated
+# in this fashion. Geez, there has to be a better way.
+
+pluginenv = env.Clone()
+
+flags=[
+'-D_REENTRANT',
+'-DQT_NO_DEBUG',
+'-DQT_PLUGIN',
+'-DQT_XML_LIB',
+'-DQT_GUI_LIB',
+'-DQT_CORE_LIB',
+'-DQDESIGNER_EXPORT_WIDGETS',
+'-DQT_SHARED',
+]
+
+pluginenv.AppendUnique(CPPFLAGS=flags)
+pluginenv.AppendUnique(QT4_MOCFROMHFLAGS=flags)
+
 
 # add install library method
 def InstallLib(self, lib):
@@ -46,8 +74,9 @@ def InstallBin(self, bin):
 
 Environment.InstallBin = InstallBin
 
-# export this environment
+# export the environments
 Export('env')
+Export('pluginenv')
 
 SConscript('Knob/SConscript')
 SConscript('TwoKnobs/SConscript')
@@ -55,3 +84,6 @@ SConscript('ScopePlot/SConscript')
 SConscript('ColorBar/SConscript')
 SConscript('PPI/SConscript')
 
+#env.Append(CPPFLAGS=[
+#	'-DQT_PLUGIN',
+#	'-DQDESIGNER_EXPORT_WIDGETS'])

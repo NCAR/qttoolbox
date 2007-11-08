@@ -1,14 +1,14 @@
 import os
 
-Import('env')
+Import('pluginenv')
 
 SConscript('Test/SConscript')
 
 # uic knob form
-env.Uic4('Knob.ui')
+pluginenv.Uic4('Knob.ui')
 
 # build knob shared library
-knob = env.SharedLibrary(
+knob = pluginenv.SharedLibrary(
    'knob',
    ['Knob.cpp','KnobPlugin.cpp',],
    LIBS=['qwt',],
@@ -17,7 +17,7 @@ knob = env.SharedLibrary(
 
 Default(knob)
 
-env.InstallLib(knob)
+pluginenv.InstallLib(knob)
 
 
 

@@ -1,11 +1,11 @@
 import os
 
-Import('env')
+Import('pluginenv')
 
 SConscript('Test/SConscript')
 
 # build ppi shared library
-ppi = env.SharedLibrary(
+ppi = pluginenv.SharedLibrary(
    'ppi',
    ['PPI.cc','PPIPlugin.cpp','ScaledLabel.cpp'],
    LIBS=['colorbar','glut', 'QtOpenGL'],
@@ -14,6 +14,6 @@ ppi = env.SharedLibrary(
 
 Default(ppi)
 
-env.InstallLib(ppi)
+pluginenv.InstallLib(ppi)
 
 

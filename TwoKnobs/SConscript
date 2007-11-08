@@ -1,14 +1,14 @@
 import os
 
-Import('env')
+Import('pluginenv')
 
 SConscript('Test/SConscript')
 
 # uic knob form
-env.Uic4('TwoKnobs.ui')
+pluginenv.Uic4('TwoKnobs.ui')
 
 # build knob shared library
-twoknobs = env.SharedLibrary(
+twoknobs = pluginenv.SharedLibrary(
    'twoknobs',
    ['TwoKnobs.cpp','TwoKnobsPlugin.cpp',],
    LIBS=['qwt',],
@@ -17,4 +17,4 @@ twoknobs = env.SharedLibrary(
 
 Default(twoknobs)
 
-env.InstallLib(twoknobs)
+pluginenv.InstallLib(twoknobs)

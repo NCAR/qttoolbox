@@ -1,14 +1,14 @@
 import os
 
-Import('env')
+Import('pluginenv')
 
 SConscript('Test/SConscript')
 
 # uic scopeplot form
-env.Uic4('ScopePlot.ui')
+pluginenv.Uic4('ScopePlot.ui')
 
 # build knob shared library
-scopeplot = env.SharedLibrary(
+scopeplot = pluginenv.SharedLibrary(
    'scopeplot',
    ['ScopePlot.cpp','ScopePlotPlugin.cpp','ScrollBar.cpp','ScrollZoomer.cpp'],
    LIBS=['qwt',],
@@ -17,7 +17,7 @@ scopeplot = env.SharedLibrary(
 
 Default(scopeplot)
 
-env.InstallLib(scopeplot)
+pluginenv.InstallLib(scopeplot)
 
 
 

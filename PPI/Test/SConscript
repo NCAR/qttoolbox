@@ -2,6 +2,8 @@ import os
 
 Import('env')
 
+env.AppendUnique(CPPPATH=['../../ColorBar'])
+
 # uic ppitest form
 env.Uic4('PPITest.ui')
 

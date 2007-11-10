@@ -2,6 +2,8 @@ import os
 
 Import('pluginenv')
 
+pluginenv.AppendUnique(CPPPATH=['../ColorBar'])
+
 SConscript('Test/SConscript')
 
 # build ppi shared library

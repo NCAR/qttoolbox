@@ -16,4 +16,5 @@ ppi = pluginenv.SharedLibrary(
 
 pluginenv.InstallLib(ppi)
 
+Default(ppi)
 

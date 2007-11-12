@@ -13,3 +13,4 @@ colorbar = pluginenv.SharedLibrary(
 
 pluginenv.InstallLib(colorbar)
 
+Default(colorbar)

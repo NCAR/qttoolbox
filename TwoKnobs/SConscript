@@ -16,3 +16,6 @@ twoknobs = pluginenv.SharedLibrary(
 )
 
 pluginenv.InstallLib(twoknobs)
+
+Default(twoknobs)
+

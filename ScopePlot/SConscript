@@ -17,5 +17,6 @@ scopeplot = pluginenv.SharedLibrary(
 
 pluginenv.InstallLib(scopeplot)
 
+Default(scopeplot)
 
 

@@ -17,5 +17,6 @@ knob = pluginenv.SharedLibrary(
 
 pluginenv.InstallLib(knob)
 
+Default(knob)
 
 

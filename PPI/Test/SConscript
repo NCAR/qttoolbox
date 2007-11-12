@@ -16,3 +16,5 @@ ppitest = qttbenv.Program(
 )
 
 qttbenv.InstallBin(ppitest)
+
+Default(ppitest)

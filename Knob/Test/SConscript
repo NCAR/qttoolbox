@@ -14,3 +14,5 @@ knobtest = qttbenv.Program(
 )
 
 qttbenv.InstallBin(knobtest)
+
+Default(knobtest)

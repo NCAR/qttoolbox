@@ -15,8 +15,6 @@ scopeplot = pluginenv.SharedLibrary(
    LIBPATH=['$QWTDIR/lib',]
 )
 
-Default(scopeplot)
-
 pluginenv.InstallLib(scopeplot)
 
 

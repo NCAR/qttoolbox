@@ -15,8 +15,6 @@ knob = pluginenv.SharedLibrary(
    LIBPATH=['$QWTDIR/lib',]
 )
 
-Default(knob)
-
 pluginenv.InstallLib(knob)
 
 

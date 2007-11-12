@@ -11,7 +11,5 @@ colorbar = pluginenv.SharedLibrary(
    ['ColorBar.cpp', 'ColorMap.cpp', 'ColorBarPlugin.cpp']
 )
 
-Default(colorbar)
-
 pluginenv.InstallLib(colorbar)
 

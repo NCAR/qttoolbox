@@ -1,18 +1,16 @@
 import os
 
-Import('env')
+Import('qttbenv')
 
 # uic knobtest form
-env.Uic4('TwoKnobsTest.ui')
+qttbenv.Uic4('TwoKnobsTest.ui')
 
 # build knobtest
-twoknobstest = env.Program(
+twoknobstest = qttbenv.Program(
    'twoknobstest',
    'main.cpp',
    LIBS=['QtCore','QtGui','twoknobs','qwt'],
    LIBPATH=['../','$QWTDIR/lib','$QTDIR/lib']
 )
 
-Default(twoknobstest)
- 
-env.InstallBin(twoknobstest)
+qttbenv.InstallBin(twoknobstest)

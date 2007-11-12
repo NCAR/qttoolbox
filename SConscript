@@ -8,15 +8,18 @@
 
 import os
 
-# Create our environment. We are expecting to find 
-# qt4.py in the top level directory.
-env = Environment(tools=['default', 'qt4'], ENV=os.environ)
+# Create our environment. 
+qttbenv = Environment(tools=['default', 'qt4'],
+	toolpath=['.',],  ENV=os.environ)
+
+# Export the qttoolbox aplication environment
+Export('qttbenv')
 
 # add qwt and glut to the paths
-env['QTDIR'] = os.environ.get('QTDIR', None)
-env['QWTDIR'] = os.environ.get('QWTDIR', None)
-env['GLUTDIR'] = os.environ.get('GLUTDIR', None)
-env.AppendUnique(CPPPATH=[
+qttbenv['QTDIR'] = os.environ.get('QTDIR', None)
+qttbenv['QWTDIR'] = os.environ.get('QWTDIR', None)
+qttbenv['GLUTDIR'] = os.environ.get('GLUTDIR', None)
+qttbenv.AppendUnique(CPPPATH=[
 	'../', 
 	'$QWTDIR/include', 
 	'$QTDIR/include/QtDesigner', 
@@ -24,14 +27,13 @@ env.AppendUnique(CPPPATH=[
 	'/usr/include/GL',
 	])
 
-env.AppendUnique(CPPFLAGS=['-O2', ])
+qttbenv.AppendUnique(CPPFLAGS=['-O2', ])
 
 # Fix moc needs
-env.AppendUnique(QT4_MOCFROMHFLAGS=['-I', '$QTDIR/include/QtDesigner/'])
-
+qttbenv.AppendUnique(QT4_MOCFROMHFLAGS=['-I', '$QTDIR/include/QtDesigner/'])
 
 # enable the qt4 modules
-env.EnableQt4Modules(['QtCore', 'QtGui', 'QtOpenGL', 'QtXml', ])
+qttbenv.EnableQt4Modules(['QtCore', 'QtGui', 'QtOpenGL', 'QtXml', ])
 
 # create an environment for building the plugins
 # The cxx and moc flags must match EXACTLY the
@@ -43,7 +45,7 @@ env.EnableQt4Modules(['QtCore', 'QtGui', 'QtOpenGL', 'QtXml', ])
 # then verifying that designer could see the plugin generated
 # in this fashion. Geez, there has to be a better way.
 
-pluginenv = env.Clone()
+pluginenv = qttbenv.Clone()
 
 flags=[
 '-D_REENTRANT', 
@@ -55,10 +57,6 @@ flags=[
 '-DQDESIGNER_EXPORT_WIDGETS', 
 '-DQT_SHARED', 
 ]
-
-pluginenv.AppendUnique(CPPFLAGS=flags)
-pluginenv.AppendUnique(QT4_MOCFROMHFLAGS=flags)
-
 
 # add install library method
 def InstallLib(self, lib):
@@ -76,8 +74,7 @@ def InstallBin(self, bin):
 
 Environment.InstallBin = InstallBin
 
-# export the environments
-Export('env')
+# Export the QtToolbox plugin environment.
 Export('pluginenv')
 
 SConscript('Knob/SConscript')

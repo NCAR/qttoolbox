@@ -14,8 +14,6 @@ ppi = pluginenv.SharedLibrary(
    LIBPATH=['$QTDIR/lib','../ColorBar','$GLUTDIR/lib']
 )
 
-Default(ppi)
-
 pluginenv.InstallLib(ppi)
 
 

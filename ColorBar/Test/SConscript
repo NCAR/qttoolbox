@@ -1,18 +1,16 @@
 import os
 
-Import('env')
+Import('qttbenv')
 
 # uic colorbartest form
-env.Uic4('ColorBarTest.ui')
+qttbenv.Uic4('ColorBarTest.ui')
 
 # build colorbartest
-colorbartest = env.Program(
+colorbartest = qttbenv.Program(
    'colorbartest',
    ['main.cpp','ColorBarTest.cpp'],
    LIBS=['QtCore','QtGui','colorbar'],
    LIBPATH=['../','$QWTDIR/lib','$QTDIR/lib']
 )
 
-Default(colorbartest)
-
-env.InstallBin(colorbartest)
+qttbenv.InstallBin(colorbartest)

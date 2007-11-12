@@ -1,18 +1,16 @@
 import os
 
-Import('env')
+Import('qttbenv')
 
 # uic ScopePlotTest form
-env.Uic4('ScopePlotTest.ui')
+qttbenv.Uic4('ScopePlotTest.ui')
 
 # build scopeplottest
-scopeplottest = env.Program(
+scopeplottest = qttbenv.Program(
    'scopeplottest',
    ['main.cpp','ScopePlotTest.cpp','ScopePoke.cpp'],
    LIBS=['QtCore','QtGui','scopeplot','qwt'],
    LIBPATH=['../','$QWTDIR/lib','$QTDIR/lib']
 )
 
-Default(scopeplottest)
-
-env.InstallBin(scopeplottest)
+qttbenv.InstallBin(scopeplottest)

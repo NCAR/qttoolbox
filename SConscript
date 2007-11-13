@@ -27,7 +27,7 @@ qttbenv.AppendUnique(CPPPATH=[
 	'/usr/include/GL',
 	])
 
-qttbenv.AppendUnique(CPPFLAGS=['-O2', ])
+qttbenv.AppendUnique(CPPFLAGS=['-O2','-g', ])
 
 # Fix moc needs
 qttbenv.AppendUnique(QT4_MOCFROMHFLAGS=['-I', '$QTDIR/include/QtDesigner/'])

@@ -47,7 +47,7 @@ qttbenv.EnableQt4Modules(['QtCore', 'QtGui', 'QtOpenGL', 'QtXml', ])
 
 pluginenv = qttbenv.Clone()
 
-flags=[
+pluginflags=[
 '-D_REENTRANT', 
 '-DQT_NO_DEBUG', 
 '-DQT_PLUGIN', 
@@ -57,6 +57,8 @@ flags=[
 '-DQDESIGNER_EXPORT_WIDGETS', 
 '-DQT_SHARED', 
 ]
+
+pluginenv.AppendUnique(CPPFLAGS=pluginflags)
 
 # add install library method
 def InstallLib(self, lib):

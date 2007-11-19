@@ -1,0 +1,12 @@
+import os
+
+Import('qttbenv')
+
+# build the config library
+
+qtconfig = qttbenv.Library(
+   'qtconfig',
+   ['QtConfig.cpp',]
+)
+
+Default(qtconfig)

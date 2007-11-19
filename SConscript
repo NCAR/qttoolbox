@@ -79,6 +79,7 @@ Environment.InstallBin = InstallBin
 # Export the QtToolbox plugin environment.
 Export('pluginenv')
 
+SConscript('QtConfig/SConscript')
 SConscript('Knob/SConscript')
 SConscript('TwoKnobs/SConscript')
 SConscript('ScopePlot/SConscript')

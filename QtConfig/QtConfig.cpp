@@ -108,7 +108,7 @@ void QtConfig::setInt(
 int QtConfig::getInt(
         std::string key,
             int defaultValue) {
-    int i = _settings.value(key.c_str(), defaultValue).toDouble();
+    int i = (int)_settings.value(key.c_str(), defaultValue).toDouble();
     _settings.setValue(key.c_str(), i);
     sync();
     return i;
@@ -172,7 +172,7 @@ std::vector<std::vector<int> > QtConfig::getArray(
     std::vector<std::vector<int> > result;
 
     // Find out if the array exists, and its size
-    int arraySize = _settings.beginReadArray(key.c_str());
+    unsigned int arraySize = _settings.beginReadArray(key.c_str());
     _settings.endArray();
 
     if (arraySize == 0) {

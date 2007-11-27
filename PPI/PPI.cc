@@ -5,7 +5,8 @@
 
 #include <qtimer.h>
 #include <QResizeEvent>
-#include "glut.h"
+
+#include <GL/glut.h>
 
 //
 //

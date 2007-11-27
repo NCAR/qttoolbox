@@ -1,20 +1,3 @@
-import os
-
-Import('pluginenv')
-
-pluginenv.AppendUnique(CPPPATH=['../ColorBar'])
-
+# All the important stuff is in tool_qtt_ppi.py, which gets loaded
+# when someone asks for the 'qtt_ppi' tool (and Test/SConscript does...)
 SConscript('Test/SConscript')
-
-# build ppi shared library
-ppi = pluginenv.SharedLibrary(
-   'ppi',
-   ['PPI.cc','PPIPlugin.cpp','ScaledLabel.cpp'],
-   LIBS=['colorbar','glut', 'QtOpenGL'],
-   LIBPATH=['$QTDIR/lib','../ColorBar','$GLUTDIR/lib']
-)
-
-pluginenv.InstallLib(ppi)
-
-Default(ppi)
-

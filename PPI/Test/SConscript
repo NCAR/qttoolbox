@@ -1,20 +1,12 @@
-import os
-
-Import('qttbenv')
-
-qttbenv.AppendUnique(CPPPATH=['../../ColorBar'])
+tools = ['qtt_ppi']
+env = Environment(tools = ['default'] + tools)
 
 # uic ppitest form
-qttbenv.Uic4('PPITest.ui')
+env.Uic4('PPITest.ui')
 
 # build ppitest
-ppitest = qttbenv.Program(
-   'ppitest',
-   ['main.cpp','PPITest.cc'],
-   LIBS=['QtCore','QtGui','QtOpenGL','ppi','colorbar','glut'],
-   LIBPATH=['../','../../ColorBar','$QWTDIR/lib','$QTDIR/lib','$GLUTDIR/lib']
-)
+ppitest = env.Program('ppitest', ['main.cpp','PPITest.cc'])
 
-qttbenv.InstallBin(ppitest)
+env.InstallBin(ppitest)
 
 Default(ppitest)

@@ -22,8 +22,8 @@
 PPI::beam::beam(double startAngle, double stopAngle, int nGates, int nVars):
 _startAngle(startAngle),
 _stopAngle(stopAngle),
-_nGates(nGates),
-_nVars(nVars)
+_nVars(nVars),
+_nGates(nGates)
 {
 
 	float cos1 = cos(3.14159*startAngle/180.0)/nGates;
@@ -84,17 +84,17 @@ static bool glutInitialized = false;
 
 PPI::PPI(QWidget* parent):
 QGLWidget(parent),
+_decimationFactor(1),
 _selectedVar(0),
 _zoomFactor(1.0),
 _currentX(0.0),
 _currentY(0.0),
-_backgroundColor("lightblue"),
 _gridRingsColor("black"),
+_backgroundColor("lightblue"),
 _ringsEnabled(true),
 _gridsEnabled(false),
 _resizing(false),
 _scaledLabel(ScaledLabel::DistanceEng),
-_decimationFactor(1),
 _configured(false)
 {
 	initializeGL();
@@ -149,7 +149,7 @@ PPI::configure(int nVars,
 	_configured = true;
 
 
-	for (int i = 0; i < _beams.size(); i++)
+	for (unsigned int i = 0; i < _beams.size(); i++)
 		delete _beams[i];
 	_beams.clear();
 
@@ -212,7 +212,7 @@ PPI::initializeGL()
 	glEnableClientState(GL_VERTEX_ARRAY);
 
 	// set the stencil buffer clear value.
-	glClearStencil(0.0f);
+	glClearStencil((GLint)0);
 
 	// get a display list id for the rings
 	_ringsListId = glGenLists(1);
@@ -462,7 +462,7 @@ PPI::clearVar(int index)
 	for (unsigned int i = 0; i < _beams.size(); i++) {
 		int cIndex = 0;
 		GLfloat* colors = _beams[i]->colors(index);
-		for (int g = 0; g < _maxGates; g++) {
+		for (int gate = 0; gate < _maxGates; gate++) {
 			colors[cIndex++] = r;
 			colors[cIndex++] = g;
 			colors[cIndex++] = b;
@@ -599,8 +599,8 @@ PPI::fillColors(beam* beam,
 		GLfloat* colors = beam->colors(v);
 		int cIndex = 0;
 		std::vector<double>& varData = _beamData[v];
-		for (int g = 0; g < gates; g += _decimationFactor) {
-			double data = varData[g];
+		for (int gate = 0; gate < gates; gate += _decimationFactor) {
+			double data = varData[gate];
 			map->dataColor(data, red, green, blue);
 			colors[cIndex++] = red/255.0;
 			colors[cIndex++] = green/255.0;
@@ -613,7 +613,7 @@ PPI::fillColors(beam* beam,
 		float g = _backgroundColor.green()/255.0;
 		float b = _backgroundColor.blue()/255.0;
 
-		for (int g = gates; g < _maxGates; g++) {
+		for (int gate = gates; gate < _maxGates; gate++) {
 			colors[cIndex++] = r;
 			colors[cIndex++] = g;
 			colors[cIndex++] = b;
@@ -804,7 +804,7 @@ PPI::cullBeamList()
 int
 PPI::beamIndex(double startAngle, double stopAngle)
 {
-	int i = _beams.size()*(startAngle + (stopAngle-startAngle)/2)/360.0;
+	int i = (int)(_beams.size()*(startAngle + (stopAngle-startAngle)/2)/360.0);
 	if (i<0)
 		i = 0;
 	if (i>(int)_beams.size()-1)

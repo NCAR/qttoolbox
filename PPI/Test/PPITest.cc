@@ -19,8 +19,8 @@ PPITest::PPITest( int nVars,
 				 QWidget* parent):
 QObject(parent),
 _angle(0.0),
-_nVars(nVars),
 _angleInc(1.0),
+_nVars(nVars),
 _gates(1000),
 _currentX(0.0),
 _currentY(0.0),
@@ -118,9 +118,9 @@ PPITest::~PPITest()
 {
 	delete _colorBar1;
 	delete _colorBar2;
-	for (int i = 0; i < _maps1.size(); i++)
+	for (unsigned int i = 0; i < _maps1.size(); i++)
 		delete _maps1[i];
-	for (int i = 0; i < _maps2.size(); i++)
+	for (unsigned int i = 0; i < _maps2.size(); i++)
 		delete _maps2[i];
 }
 ///////////////////////////////////////////////////////////////////////

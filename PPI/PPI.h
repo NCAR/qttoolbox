@@ -119,6 +119,7 @@ class DLL_EXPORT PPI: public QGLWidget//, public Ui::PPI
 
 
 public:
+    /// Constructor
 	PPI(
 		QWidget* parent = 0               ///< parent widget
 		);
@@ -143,21 +144,26 @@ public:
 	/// Clear the specified variable.
 	void clearVar(int index    ///< Index of the variable to be cleared, zero based
 		);
-	///
+	/// Apply data and color maps to an existing beam. See addBeam().
 	void fillColors(
-		beam* beam, 
-		std::vector<std::vector<double> >& _beamData, 
-		int gates, 
-		int stride,
-		std::vector<ColorMap*>& maps);
-	///
+		beam* beam, ///< The beam.
+		std::vector<std::vector<double> >& beamData, ///< Vectors of data, one for each variable
+		int gates,       ///< The number of gates (must match beamData vector sizes).
+		int stride,      ///< The stride of the data in each vector.
+		std::vector<ColorMap*>& maps   ///< Colormaps, one for each variable.
+	);
+	/// Add a new beam to the display. Data for all variables and all gates are provided,
+	/// as well as color maps for all variables. addBeam() will map the variable values to 
+	/// the correct color, and create a wedge of triangle strips, one for each variable.
+	/// The existing wedge for this beam will be discarded.
 	void addBeam(
-		float startAngle, 
-		float stopAngle, 
-		int gates, 
-		std::vector<std::vector<double> >& _beamData, 
-		int stride, 
-		std::vector<ColorMap*>& maps);
+		float startAngle, ///< The starting angle for the beam.
+		float stopAngle,  ///< The ending angle for the beam.
+		int gates,        ///< The number of gates (must match beamData vector sizes). 
+		std::vector<std::vector<double> >& beamData, ///< Vectors of data, one for each variable
+		int stride, ///< The stride of the data in each vector.
+		std::vector<ColorMap*>& maps ///< Colormaps, one for each variable.
+	);
 	/// Specify the background color
 	void backgroundColor(QColor color  ///< The background color.
 		);

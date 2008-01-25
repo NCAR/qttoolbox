@@ -270,13 +270,6 @@ ColorMap::~ColorMap()
 }
 
 /**********************************************************/
-int 
-ColorMap::size()
-{
-	return _red.size();
-}
-
-/**********************************************************/
 std::vector<int>&
 ColorMap::red()
 {
@@ -295,50 +288,6 @@ std::vector<int>&
 ColorMap::blue()
 {
 	return _blue;
-}
-
-/**********************************************************/
-void
-ColorMap::dataColor(double data, 
-					int& red,
-					int& green,
-					int& blue) const
-{
-
-
-	int index = (int)(_tableSize* (data - _minRange)/(_range));
-
-	if (index < 0) 
-		index = 0;
-	else
-		if (index > _tableSize-1)
-			index = _tableSize - 1;
-
-	red = _red[index];
-	blue = _blue[index];
-	green = _green[index];
-}
-
-/**********************************************************/
-void
-ColorMap::dataColor(
-					double data, 
-					double& red,
-					double& green,
-					double& blue) const
-{
-
-	int index = (int)(_tableSize* (data - _minRange)/_range);
-
-	if (index < 0) 
-		index = 0;
-	else
-		if (index > _tableSize-1)
-			index = _tableSize - 1;
-
-	red = _red[index];
-	blue = _blue[index];
-	green = _green[index];
 }
 
 /**********************************************************/

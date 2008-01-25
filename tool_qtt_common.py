@@ -19,6 +19,8 @@ def qtt_common(env):
     env.InstallLib = new.instancemethod(_InstallLib, env, type(env))
     env.InstallBin = new.instancemethod(_InstallBin, env, type(env))
     env.AppendUnique(CPPDEFINES = plugindefs)
+    env.Append(CCFLAGS='-g')
+    env.Append(CCFLAGS='-O2')
     
 Export('qtt_common')
     

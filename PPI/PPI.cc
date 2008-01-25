@@ -598,7 +598,8 @@ PPI::fillColors(beam* beam,
 		ColorMap* map = maps[v];
 		GLfloat* colors = beam->colors(v);
 		int cIndex = 0;
-		std::vector<double>& varData = _beamData[v];
+//        std::vector<double>& varData = _beamData[v];
+        double* varData = &(_beamData[v][0]);
 		for (int gate = 0; gate < gates; gate += _decimationFactor) {
 			double data = varData[gate];
 			map->dataColor(data, red, green, blue);

@@ -47,7 +47,7 @@ ColorBar::paintEvent(QPaintEvent* e) {
 	QPainter p;
 	p.setPen(Qt::SolidLine);
 	p.begin(this);
-	for (int i = 0; i < _colorMap.size(); i++) {
+	for (unsigned int i = 0; i < _colorMap.size(); i++) {
 		QColor color(_colorMap.red()[i], _colorMap.green()[i], _colorMap.blue()[i]);
         p.setBrush(color);
 		double topY = h-(i+1)*deltaY;
@@ -58,7 +58,7 @@ ColorBar::paintEvent(QPaintEvent* e) {
 		double midValue = _colorMap.rangeMin()
 			+ deltaVal*(i+0.5);
 		QString label = QString("%1").arg(midValue,0,'f',1);
-		p.drawText(0, topY, w, deltaY, 
+		p.drawText(0, (int)topY, w, (int)deltaY, 
 			Qt::AlignVCenter | Qt::AlignHCenter, 
 			label);
 	}

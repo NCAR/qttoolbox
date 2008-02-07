@@ -141,12 +141,12 @@ ColorMap::ColorMap(
 
 	// verify that the inner vectors are of length three. If
 	// not, then ignore the colors vector and use our default one.
-	for (int i = 0; i < colors.size(); i++) {
+	for (unsigned int i = 0; i < colors.size(); i++) {
 		if (colors[i].size() != 3) {
 			red.resize(_red.size());
 			green.resize(_red.size());
 			blue.resize(_red.size());
-			for (int j = 0; j < _red.size(); j++) {
+			for (unsigned int j = 0; j < _red.size(); j++) {
 				red[j]   = rainbowRGB[j].r;
 				green[j] = rainbowRGB[j].g;
 				blue[j]  = rainbowRGB[j].b;
@@ -160,7 +160,7 @@ ColorMap::ColorMap(
 		red.resize(colors.size());
 		green.resize(colors.size());
 		blue.resize(colors.size());
-		for (int i = 0; i < colors.size(); i++) {
+		for (unsigned int i = 0; i < colors.size(); i++) {
 			red[i]  = colors[i][0];
 			green[i] = colors[i][1];
 			blue[i]  = colors[i][2];
@@ -249,7 +249,7 @@ ColorMap::setMap(
 	_blue.clear();
 	_green.clear();
 
-	for (int i = 0; i < _tableSize; i++) {
+	for (unsigned int i = 0; i < _tableSize; i++) {
 		_red.push_back(red[i]);
 		_green.push_back(green[i]);
 		_blue.push_back(blue[i]);
@@ -308,7 +308,7 @@ ColorMap::rangeMax()
 std::vector<std::string>
 ColorMap::builtinMaps() {
 	std::vector<std::string> result;
-	for (int i = 0; i < sizeof(builtinNames)/sizeof(char*); i++) {
+	for (unsigned int i = 0; i < sizeof(builtinNames)/sizeof(char*); i++) {
 		result.push_back(std::string(builtinNames[i]));
 	}
 	return result;

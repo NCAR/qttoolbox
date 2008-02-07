@@ -102,7 +102,7 @@ class DLL_EXPORT ColorMap {
         /**
          * @returns The size of the color tables.
          */
-        int size() {
+        unsigned int size() {
             return _red.size();
         }
         ;
@@ -123,7 +123,7 @@ class DLL_EXPORT ColorMap {
 
             if (index < 0)
                 index = 0;
-            else if (index > _tableSize-1)
+            else if (index > (int)(_tableSize-1))
                 index = _tableSize - 1;
 
             red = _red[index];
@@ -149,7 +149,7 @@ class DLL_EXPORT ColorMap {
 
             if (index < 0)
                 index = 0;
-            else if (index > _tableSize-1)
+            else if (index > (int)(_tableSize-1))
                 index = _tableSize - 1;
 
             red = _red[index];
@@ -171,7 +171,7 @@ class DLL_EXPORT ColorMap {
         double _minRange;
         double _maxRange;
         double _range;
-        int _tableSize;
+        unsigned int _tableSize;
         /// The red color table.
         std::vector<int> _red;
         /// The green color table.

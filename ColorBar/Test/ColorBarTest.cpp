@@ -13,7 +13,7 @@ ColorBarTest::ColorBarTest(QDialog* dialog)
 	_maps = ColorMap::builtinMaps();
 
 	QVBoxLayout* vbox = new QVBoxLayout;
-	for (int i = 0; i < _maps.size(); i++) {
+	for (unsigned int i = 0; i < _maps.size(); i++) {
 		QRadioButton* b = new QRadioButton(_maps[i].c_str());
 		_bgroup.addButton(b, i);
 		vbox->addWidget(b);

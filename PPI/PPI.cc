@@ -8,6 +8,10 @@
 
 #include <GL/glut.h>
 
+#include <GL/glext.h>
+
+#define GL_GLEXT_PROTOTYPES
+
 //
 //
 // Any drawing action must insure that the GL context is current. paintGL() and
@@ -558,10 +562,14 @@ PPI::addBeam(float startAngle,
 
 		for (int v = 0; v < _nVars; v++) {
 			makeDisplayList(b, v);
-			// draw it
-			if(!_resizing)
-				glCallList(b->_glListId[_selectedVar]);
 		}
+	}
+	
+	// draw it
+	for (unsigned int i = 0; i < newBeams.size(); i++) {
+		b = newBeams[i];
+		if(!_resizing)
+			glCallList(b->_glListId[_selectedVar]);
 	}
 
 	// draw the rings and grid if they are enabled. Don't worry,
@@ -592,23 +600,23 @@ PPI::fillColors(beam* beam,
 				std::vector<ColorMap*>& maps) 
 {
 
-	double red, green, blue;
+	float red, green, blue;
 	for (int v = 0; v < _nVars; v++) {
 
 		ColorMap* map = maps[v];
 		GLfloat* colors = beam->colors(v);
 		int cIndex = 0;
-//        std::vector<double>& varData = _beamData[v];
-        double* varData = &(_beamData[v][0]);
+
+		double* varData = &(_beamData[v][0]);
 		for (int gate = 0; gate < gates; gate += _decimationFactor) {
 			double data = varData[gate];
 			map->dataColor(data, red, green, blue);
-			colors[cIndex++] = red/255.0;
-			colors[cIndex++] = green/255.0;
-			colors[cIndex++] = blue/255.0;
-			colors[cIndex++] = red/255.0;
-			colors[cIndex++] = green/255.0;
-			colors[cIndex++] = blue/255.0;
+			colors[cIndex++] = red;
+			colors[cIndex++] = green;
+			colors[cIndex++] = blue;
+			colors[cIndex++] = red;
+			colors[cIndex++] = green;
+			colors[cIndex++] = blue;
 		}
 		float r = _backgroundColor.red()/255.0;
 		float g = _backgroundColor.green()/255.0;
@@ -630,7 +638,8 @@ PPI::fillColors(beam* beam,
 void
 PPI::makeDisplayList(beam* b, int v) 
 {
-
+//	glGenBuffers();
+	
 	// create a display list to hold the gl commands
 	glNewList(b->_glListId[v], GL_COMPILE);
 

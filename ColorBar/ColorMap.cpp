@@ -108,9 +108,9 @@ _range(maxRange-minRange)
 { 
 	int s = sizeof(rainbowRGB)/(sizeof(rainbowRGB[0])/sizeof(rainbowRGB[0].r));
 	for (int i = 0; i < s; i++) {
-		_red.push_back(rainbowRGB[i].r);
-		_green.push_back(rainbowRGB[i].g);
-		_blue.push_back(rainbowRGB[i].b);
+		_red.push_back(rainbowRGB[i].r/255.0);
+		_green.push_back(rainbowRGB[i].g/255.0);
+		_blue.push_back(rainbowRGB[i].b/255.0);
 	}
 
 	_tableSize = _red.size();
@@ -135,9 +135,51 @@ ColorMap::ColorMap(
 				   std::vector<std::vector<int> >colors
 				   )
 {
-	std::vector<int> red;
-	std::vector<int> green;
-	std::vector<int> blue;
+	std::vector<float> red;
+	std::vector<float> green;
+	std::vector<float> blue;
+
+	// verify that the inner vectors are of length three. If
+	// not, then ignore the colors vector and use our default one.
+	for (unsigned int i = 0; i < colors.size(); i++) {
+		if (colors[i].size() != 3) {
+			red.resize(_red.size());
+			green.resize(_red.size());
+			blue.resize(_red.size());
+			for (unsigned int j = 0; j < _red.size(); j++) {
+				red[j]   = rainbowRGB[j].r/255.0;
+				green[j] = rainbowRGB[j].g/255.0;
+				blue[j]  = rainbowRGB[j].b/255.0;
+				break;
+			}
+		}
+	}
+
+	// if the incoming colors passed the test, then create the rgb vectors
+	if (red.size() == 0) {
+		red.resize(colors.size());
+		green.resize(colors.size());
+		blue.resize(colors.size());
+		for (unsigned int i = 0; i < colors.size(); i++) {
+			red[i]  = colors[i][0]/255.0;
+			green[i] = colors[i][1]/255.0;
+			blue[i]  = colors[i][2]/255.0;
+		}
+	}
+
+	setMap(minRange, maxRange, red, green, blue);
+}
+
+/**********************************************************/
+ColorMap::ColorMap(
+				   double minRange,         ///< The minimum map range
+				   double maxRange,         ///< The maximum map range
+				   std::vector<std::vector<float> >colors
+				   )
+{
+	std::vector<float> red;
+	std::vector<float> green;
+	std::vector<float> blue;
 
 	// verify that the inner vectors are of length three. If
 	// not, then ignore the colors vector and use our default one.
@@ -161,9 +203,9 @@ ColorMap::ColorMap(
 		green.resize(colors.size());
 		blue.resize(colors.size());
 		for (unsigned int i = 0; i < colors.size(); i++) {
-			red[i]  = colors[i][0];
-			green[i] = colors[i][1];
-			blue[i]  = colors[i][2];
+			red[i]  = colors[i][0]/255.0;
+			green[i] = colors[i][1]/255.0;
+			blue[i]  = colors[i][2]/255.0;
 		}
 	}
 
@@ -212,17 +254,17 @@ ColorMap::ColorMap(
 		}
 	}
 
-	std::vector<int> red;
-	std::vector<int> green;
-	std::vector<int> blue;
+	std::vector<float> red;
+	std::vector<float> green;
+	std::vector<float> blue;
 	red.resize(tableSize);
 	green.resize(tableSize);
 	blue.resize(tableSize);
 
 	for (int i = 0; i < tableSize; i++) {
-		red[i]   = colors[i].r;
-		green[i] = colors[i].g;
-		blue[i]  = colors[i].b;
+		red[i]   = colors[i].r/255.0;
+		green[i] = colors[i].g/255.0;
+		blue[i]  = colors[i].b/255.0;
 	}
 
 	setMap(minRange, maxRange, red, green, blue);
@@ -235,6 +277,35 @@ ColorMap::setMap(
 				 std::vector<int> red,  ///< A vector of red hues, ranging between 0 and 255
 				 std::vector<int> green,///< A vector of green hues, ranging between 0 and 255
 				 std::vector<int> blue  ///< A vector of blue hues, ranging between 0 and 255
+				 )
+{
+	setRange(minRange, maxRange);
+
+	_tableSize = red.size();
+	if (_tableSize > green.size())
+		_tableSize = green.size();
+	if (_tableSize >  blue.size())
+		_tableSize = blue.size();
+
+	_red.clear();
+	_blue.clear();
+	_green.clear();
+
+	for (unsigned int i = 0; i < _tableSize; i++) {
+		_red.push_back(red[i]/255.0);
+		_green.push_back(green[i]/255.0);
+		_blue.push_back(blue[i]/255.0);
+	}
+}
+
+/**********************************************************/
+void
+ColorMap::setMap(
+				 double minRange,         ///< The minimum map range
+				 double maxRange,         ///< The maximum map range
+				 std::vector<float> red,  ///< A vector of red hues, ranging between 0 and 255
+				 std::vector<float> green,///< A vector of green hues, ranging between 0 and 255
+				 std::vector<float> blue  ///< A vector of blue hues, ranging between 0 and 255
 				 )
 {
 	setRange(minRange, maxRange);
@@ -270,24 +341,36 @@ ColorMap::~ColorMap()
 }
 
 /**********************************************************/
-std::vector<int>&
+std::vector<int>
 ColorMap::red()
 {
-	return _red;
+	std::vector<int> rd;
+	rd.resize(_red.size());
+	for (unsigned int i = 0; i < rd.size(); i++) 
+		rd[i] = (int)(_red[i]*255.0);
+	return rd;
 }
 
 /**********************************************************/
-std::vector<int>&
+std::vector<int>
 ColorMap::green()
 {
-	return _green;
+	std::vector<int> grn;
+	grn.resize(_green.size());
+	for (unsigned int i = 0; i < grn.size(); i++) 
+		grn[i] = (int)(_green[i]*255.0);
+	return grn;
 }
 
 /**********************************************************/
-std::vector<int>&
+std::vector<int>
 ColorMap::blue()
 {
-	return _blue;
+	std::vector<int> blu;
+	blu.resize(_blue.size());
+	for (unsigned int i = 0; i < blu.size(); i++) 
+		blu[i] = (int)(_blue[i]*255.0);
+	return blu;
 }
 
 /**********************************************************/
@@ -313,3 +396,49 @@ ColorMap::builtinMaps() {
 	}
 	return result;
 }
+/**********************************************************/
+void ColorMap::dataColor(
+        double data, int& red, int& green, int& blue) const {
+
+    int index = (int)(_tableSize* (data - _minRange)/(_range));
+
+    if (index < 0)
+        index = 0;
+    else if (index > (int)(_tableSize-1))
+        index = _tableSize - 1;
+
+    red = (int)(_red[index]*255);
+    blue = (int)(_blue[index]*255);
+    green = (int)(_green[index]*255);
+}
+/**********************************************************/
+void ColorMap::dataColor(
+        double data, float& red, float& green, float& blue) const {
+
+    int index = (int)(_tableSize* (data - _minRange)/_range);
+
+    if (index < 0)
+        index = 0;
+    else if (index > (int)(_tableSize-1))
+        index = _tableSize - 1;
+
+    red = _red[index];
+    blue = _blue[index];
+    green = _green[index];
+}
+/**********************************************************/
+void ColorMap::dataColor(
+        double data, double& red, double& green, double& blue) const {
+
+    int index = (int)(_tableSize* (data - _minRange)/_range);
+
+    if (index < 0)
+        index = 0;
+    else if (index > (int)(_tableSize-1))
+        index = _tableSize - 1;
+
+    red = _red[index];
+    blue = _blue[index];
+    green = _green[index];
+}
+

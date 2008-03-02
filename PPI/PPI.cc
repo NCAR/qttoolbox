@@ -8,10 +8,6 @@
 
 #include <GL/glut.h>
 
-#include <GL/glext.h>
-
-#define GL_GLEXT_PROTOTYPES
-
 //
 //
 // Any drawing action must insure that the GL context is current. paintGL() and

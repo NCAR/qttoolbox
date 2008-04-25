@@ -1,0 +1,11 @@
+tools = ['qtt_statusgauge']
+env = Environment(tools=['default'] + tools)
+
+# uic statusgaugetest form
+env.Uic4('StatusGaugeTest.ui')
+
+# build colorbartest
+statusgaugetest = env.Program('statusgaugetest', ['main.cpp', 'StatusGaugeTest.cpp'])
+env.InstallBin(statusgaugetest)
+
+Default(statusgaugetest)

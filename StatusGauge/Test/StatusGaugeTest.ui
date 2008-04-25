@@ -1,0 +1,28 @@
+<ui version="4.0" >
+ <class>StatusGaugeTest</class>
+ <widget class="QDialog" name="StatusGaugeTest" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>208</width>
+    <height>636</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>StatusGaugeTest</string>
+  </property>
+  <layout class="QHBoxLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <resources/>
+ <connections/>
+</ui>

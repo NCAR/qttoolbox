@@ -14,11 +14,13 @@ main(int argc, char** argv)
 {
 
 	QApplication app(argc, argv);
-	QDialog* dialog = new QDialog;
+	
+    QDialog* dialog = new QDialog;
 
-	// create our test dialog. It will contain a StatusGauge and 
+    // create our test dialog. It will contain a StatusGauge and 
 	// other buttons etc.
 	StatusGaugeTest t(dialog);
+	
 	// if we don't show() the test dialog, nothing appears!
 	dialog->show();
 

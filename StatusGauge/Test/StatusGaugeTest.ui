@@ -5,24 +5,109 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>208</width>
-    <height>636</height>
+    <width>338</width>
+    <height>602</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>StatusGaugeTest</string>
   </property>
-  <layout class="QHBoxLayout" >
+  <layout class="QVBoxLayout" >
    <property name="margin" >
     <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="StatusGauge" name="gauge" />
+     </item>
+     <item>
+      <widget class="StatusGauge" name="StatusGauge_4" />
+     </item>
+     <item>
+      <widget class="StatusGauge" name="StatusGauge_0" />
+     </item>
+     <item>
+      <widget class="StatusGauge" name="StatusGauge_5" />
+     </item>
+     <item>
+      <widget class="StatusGauge" name="StatusGauge_2" />
+     </item>
+     <item>
+      <widget class="StatusGauge" name="StatusGauge_3" />
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QGroupBox" name="groupBox1" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>3</hsizetype>
+         <vsizetype>3</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="title" >
+        <string>GroupBox</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QGroupBox" name="groupBox2" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>3</hsizetype>
+         <vsizetype>3</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="title" >
+        <string>GroupBox</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>StatusGauge</class>
+   <extends>QWidget</extends>
+   <header>StatusGauge.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

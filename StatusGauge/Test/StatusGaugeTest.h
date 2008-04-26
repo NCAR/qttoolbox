@@ -8,13 +8,14 @@
 #include <vector>
 #include <string>
 
-class StatusGaugeTest: public QWidget, public Ui::StatusGaugeTest {
+class StatusGaugeTest: public QDialog, public Ui::StatusGaugeTest {
 	Q_OBJECT
 public:
-	StatusGaugeTest(QDialog* dialog);
+	StatusGaugeTest(QDialog* parent);
 	virtual ~StatusGaugeTest();
+	
 	public slots:
-		void buttonSlot(int);
+		void releasedSlot();
 
 protected:
 };

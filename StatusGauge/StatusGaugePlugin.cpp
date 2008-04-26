@@ -73,13 +73,13 @@ bool StatusGaugePlugin::isContainer() const
 QString 
 StatusGaugePlugin::domXml() const
 {
-	return "<widget class=\"StatusGauge\" name=\"StatusGauge\">\n"
+	return "<widget class=\"StatusGauge\" name=\"statusGauge\">\n"
 		" <property name=\"geometry\">\n"
 		"  <rect>\n"
 		"   <x>0</x>\n"
 		"   <y>0</y>\n"
-		"   <width>50</width>\n"
-		"   <height>300</height>\n"
+		"   <width>20</width>\n"
+		"   <height>60</height>\n"
 		"  </rect>\n"
 		" </property>\n"
 		"</widget>\n";

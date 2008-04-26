@@ -13,7 +13,7 @@ def _InstallBin(self, bin):
     self.Alias('install', installdir)
 
 # preprocessor defs needed for Qt plugins
-plugindefs = ['REENTRANT']
+plugindefs = ['_REENTRANT', 'QT_PLUGIN', 'QDESIGNER_EXPORT_WIDGETS','QT_SHARED','QT_NO_DEBUG']
 
 def qtt_common(env):
     env.InstallLib = new.instancemethod(_InstallLib, env, type(env))

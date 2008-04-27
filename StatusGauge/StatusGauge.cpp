@@ -119,7 +119,7 @@ void StatusGauge::on(int index,
         return;
     _ison[index] = ison;
 
-    //redraw();
+    repaint();
 }
 /******************************************************************/
 int StatusGauge::size() {
@@ -141,6 +141,8 @@ void StatusGauge::reconfigure(std::vector<std::string> colors,
     _ison.resize(_colors.size());
     for (unsigned int i = 0; i < _ison.size(); i++)
         _ison[i] = false;
+    
+    repaint();
 
 }
 /******************************************************************/

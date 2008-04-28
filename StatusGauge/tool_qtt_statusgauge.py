@@ -13,7 +13,7 @@ StatusGaugePlugin.cpp
 """)
 
 statusgauge = env.SharedLibrary('statusgauge', sources)
-statusgauge = env.InstallLib(statusgauge)
+statusgauge_install = env.InstallLib(statusgauge)
 
 Default(statusgauge)
 

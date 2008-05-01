@@ -353,7 +353,10 @@ def enable_modules(self, modules, debug=False) :
                 hdir = hdir.strip()
                 
                 if (os.system('pkg-config --exists ' + module) == 0):
-                    self.ParseConfig('pkg-config --libs --cflags ' + module)
+                    # Don't try here to make things unique in LIBS and
+                    # CFLAGS; just do a simple append
+                    self.ParseConfig('pkg-config --libs --cflags ' + module,
+                                     unique = False)
                 else:
                     # warn if we haven't already
                     if not (module in no_pkgconfig_warned):

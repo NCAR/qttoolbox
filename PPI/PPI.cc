@@ -25,10 +25,10 @@ _stopAngle(stopAngle),
 _nVars(nVars),
 _nGates(nGates)
 {
-	float cos1 = cos(M_PI*angle1/180.0)/nGates;
-	float sin1 = sin(M_PI*angle1/180.0)/nGates;
-	float cos2 = cos(M_PI*angle0/180.0)/nGates;
-	float sin2 = sin(M_PI*angle0/180.0)/nGates;
+	float cos1 = cos(M_PI*startAngle/180.0)/nGates;
+	float sin1 = sin(M_PI*startAngle/180.0)/nGates;
+	float cos2 = cos(M_PI*stopAngle/180.0)/nGates;
+	float sin2 = sin(M_PI*stopAngle/180.0)/nGates;
 
 
 	// now calculate the vertex values, to be used for all variables

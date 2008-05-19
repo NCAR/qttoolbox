@@ -25,12 +25,6 @@ _stopAngle(stopAngle),
 _nVars(nVars),
 _nGates(nGates)
 {
-    // convert angles from radar azimuth (0 points up, angles increase 
-    // clockwise), to "standard" geometry (0 points right, angles increase
-    // counterclockwise) before doing the rest of the math
-    float angle0 = 90.0 - startAngle;
-    float angle1 = 90.0 - stopAngle;
-
 	float cos1 = cos(M_PI*angle1/180.0)/nGates;
 	float sin1 = sin(M_PI*angle1/180.0)/nGates;
 	float cos2 = cos(M_PI*angle0/180.0)/nGates;

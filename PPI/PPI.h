@@ -44,6 +44,18 @@
 /// are drawn. This allows or fairly quick (but not 
 /// blazing) switches between variables.
 ///
+/// The user specifies the number of gates along each beam, 
+/// and the distance span of each beam. The latter is used to 
+/// to create range rings in real world units.
+///
+/// By default, the PPI will display a full 360 degree sector. 
+/// This sector may be clipped by specifying the clipping plane
+/// locations as parameters to configure()
+/// 
+/// Internally (in the GL space), PPI uses a coordinate system
+/// which places the display in the region x,y between -1.0 and 1.0.
+/// As mentioned above, clipping planes can be specified to establish
+/// what part of this region is displayed in the window.
 ///
 /// The PPI can operate in a mode where the number of beams
 /// are specified, and are preallocated. Incoming data are sent to
@@ -121,7 +133,7 @@ class DLL_EXPORT PPI: public QGLWidget//, public Ui::PPI
 public:
     /// Constructor
 	PPI(
-		QWidget* parent = 0               ///< parent widget
+		QWidget* parent = 0   ///< parent widget
 		);
 	/// Destructor
 	virtual ~PPI();
@@ -130,13 +142,21 @@ public:
 		int maxGates,           ///< Max number of gates per beam
 		int nBeams,             ///< Number of beams
 		double distanceSpanKm=100.0,  ///< The distance spanned by the complete PPI.
-		int decimationFactor=1    ///< The incoming data will be decimated in gates by this factor
+		int decimationFactor=1,    ///< The incoming data will be decimated in gates by this factor
+        double left = -1.0,    ///< left clipping plane
+        double right = 1.0,    ///< right clipping plane
+        double bottom = -1.0,  ///< bottom clipping plane
+        double top = 1.0       ///< top clipping plane
 		); 
 	/// Configure the PPI for dynamically allocated beams. 
 	void configure(int nVars,  ///< Number of variables.
 		int maxGates,            ///< Maximum number of gates in a beam.
 		double distanceSpanKm=100.0,  ///< The distance spanned by the complete PPI.
-		int decimationFactor=1    ///< The incoming data will be decimated in gates by this factor
+		int decimationFactor=1,    ///< The incoming data will be decimated in gates by this factor
+        double left = -1.0,    ///< left clipping plane
+        double right = 1.0,    ///< right clipping plane
+        double bottom = -1.0,  ///< bottom clipping plane
+        double top = 1.0       ///< top clipping plane
 		); 
 	/// Select the variable to display.
 	void selectVar(int index   ///< Index of the variable to display, zero based.
@@ -285,6 +305,14 @@ protected:
 	int _oldMouseY;
 	/// Set false until we have been configured with some operating paramters.
 	bool _configured;
+    /// X coordinate for the left clipping plane. Recall that the full disk falls in +/- 1.0
+    double _left;
+    /// X coordinate for the left clipping plane. Recall that the full disk falls in +/- 1.0
+    double _right;
+    /// Y coordinate for the lower clipping plane. Recall that the full disk falls in +/- 1.0
+    double _bottom;
+    /// Y coordinate for the upper clipping plane. Recall that the full disk falls in +/- 1.0
+    double _top;
 };
 
 #endif

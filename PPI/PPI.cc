@@ -120,14 +120,23 @@ void
 PPI::configure(int nVars,
 			   int maxGates, 
 			   double distanceSpanKm,
-			   int decimationFactor) 
+			   int decimationFactor,
+               double left,
+               double right,
+               double bottom,
+               double top) 
 {
 	// Configure for dynamically allocated beams
 	_nVars = nVars;
 	_maxGates = maxGates/decimationFactor;
 	_preAllocate = false;
 	_distanceSpanKm = distanceSpanKm;
-	_decimationFactor = decimationFactor;
+	_decimationFactor = decimationFactor;  
+	_left = left;
+    _right = right;
+    _bottom = bottom;
+    _top = top;
+
 	_configured = true;
 }
 ////////////////////////////////////////////////////////////////
@@ -137,7 +146,11 @@ PPI::configure(int nVars,
 			   int maxGates,
 			   int nBeams, 
 			   double distanceSpanKm,
-			   int decimationFactor) 
+			   int decimationFactor,
+			   double left,
+			   double right,
+			   double bottom,
+			   double top) 
 {
 	// Configure for preallocated beamd
 	_nVars = nVars;
@@ -145,8 +158,12 @@ PPI::configure(int nVars,
 	_preAllocate = true;
 	_distanceSpanKm = distanceSpanKm;
 	_decimationFactor = decimationFactor;
-	_configured = true;
+	_left = left;
+	_right = right;
+	_bottom = bottom;
+    _top = top;
 
+    _configured = true;
 
 	for (unsigned int i = 0; i < _beams.size(); i++)
 		delete _beams[i];
@@ -229,7 +246,7 @@ PPI::resizeGL( int w, int h )
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(-1.0,1.0, -1.0, 1.0);
+    gluOrtho2D(_left, _right, _bottom, _top);
 	glMatrixMode(GL_MODELVIEW);
 }
 

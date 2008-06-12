@@ -375,7 +375,7 @@ PPI::refresh()
 void
 PPI::pan(double deltax, double deltay) 
 {
-	_currentX += deltay;
+	_currentX += deltax;
     _currentY += deltay;
 
     makeCurrent();
@@ -439,25 +439,42 @@ void PPI::mouseMoveEvent(QMouseEvent * e)
 {
 
     if (_cursorZoom) {
+    	int x = e->x();
+    	int y = e->y();
+    	double deltaX = x - _oldMouseX;
+    	double deltaY = y - _oldMouseY;
+    	double avgDelta = fmax(deltaX, deltaY);
+    	int newX = (int)(_oldMouseX+avgDelta+0.5);
+    	int newY = (int)(_oldMouseY+avgDelta+0.5);
+    	
         _rubberBand->setGeometry(QRect(QPoint(_oldMouseX, _oldMouseY), 
-                                       e->pos()).normalized());
+                                       QPoint(newX,newY)));
     } else {
 
         int x = e->x();
         int y = e->y();
 
-        makeCurrent();
+        double deltaX = -2.0*(x - _oldMouseX);
+        double deltaY = -2.0*(_oldMouseY - y);
+        
+        std::cout << "*** deltax:" << deltaX << "   deltay:" << deltaY << "\n";
 
-        double deltaX = (x - _oldMouseX) / (double)width() / _zoomFactor / 2.0;
-        double deltaY = (_oldMouseY - y) / (double)height()/ _zoomFactor / 2.0;
+        _oldMouseX = x;
+        _oldMouseY = y;
+        
+        // Convert delta distances to our model coordinates
+        // 0.0 to 1.0 of the window, across each axis
+        deltaX = deltaX/width()/2.0;      
+        deltaY = deltaY/height()/2.0;    
 
-        glTranslatef(deltaX/2.0, deltaY/2.0, 0.0);
-
-        _oldMouseX += deltaX;
-        _oldMouseY += deltaY;
-
-        // redraw
-        updateGL();
+        std::cout << "+++ deltax:" << deltaX << "   deltay:" << deltaY << "\n";
+        
+        // adjust for the zoom
+        deltaX /= _zoomFactor;
+        deltaY /= _zoomFactor;
+        
+        pan(deltaX, deltaY);
+        
     }
 }
 
@@ -468,37 +485,40 @@ void PPI::mouseReleaseEvent(QMouseEvent * e)
     int y = e->y();
 
     if (_cursorZoom) {
-        std::cout << width() << "  x: " << x << "  " << _oldMouseX << "\n";
-        std::cout << height() << " y: " << y << "  " << _oldMouseY << "\n";
+    	
+    	QRect g = _rubberBand->geometry();
+    	
+        //std::cout << width() << "  x: " << g.x() << "  " << g.width() << "\n";
+        //std::cout << height() << "  y: " << g.y() << "  " << g.height() << "\n";
         
-        double avgX = (x + _oldMouseX)/2.0;
-        double avgY = (y + _oldMouseY)/2.0;
+        double avgX = g.x() + g.width()/2.0;
+        double avgY = g.y() + g.height()/2.0;
         
         // find the center of the rubber band box in model coordinates
         // First, convert x and y pixel coordinates to our model coordinates
         // 0.0 to 1.0 of the window, across each axis
         double newX = avgX/width();      
         double newY = avgY/height();    
+        //std::cout << "newX:" << newX << "  newY:" << newY << "\n";
 
         // -1.0 to 1.0 of the window, across each axis
         newX = 2.0*newX - 1.0;        
         newY = 1.0 - 2.0*newY;       
-        
-        // adjust for the zoom
-        newX /= _zoomFactor;
-        newY /= _zoomFactor;
+        //std::cout << "newX:" << newX << "  newY:" << newY << "\n";
         
         // account for current translation in window
-        newX = newX + _currentX/_zoomFactor;;      
-        newY = newY + _currentY/_zoomFactor;      
+        newX = newX/_zoomFactor + _currentX;      
+        newY = newY/_zoomFactor + _currentY;      
         
+        //std::cout << "newX:" << newX << "  newY:" << newY << "\n";
+
         _currentX = newX;
         _currentY = newY;
         
         // calculate new zoom. Base it on the largest edge of 
         // the rubberband box
-        int deltaX = abs(x - _oldMouseX);
-        int deltaY = abs(x - _oldMouseX);
+        int deltaX = g.width();
+        int deltaY = g.height();
         if (deltaX > 0 || deltaY > 0) {
             double zoomX = deltaX / (double)width();
             double zoomY = deltaY / (double)height();
@@ -514,6 +534,7 @@ void PPI::mouseReleaseEvent(QMouseEvent * e)
         
         _rubberBand->hide();
     }
+    ///@todo add handling for mouse release when panning
 }
 
 ////////////////////////////////////////////////////////////////

@@ -20,6 +20,8 @@
 #include <QResizeEvent>
 #include <QImage>
 #include <QTimer>
+#include <QRubberBand>
+#include <QPoint>
 
 #include "ScaledLabel.h"
 #include "ColorMap.h"
@@ -221,12 +223,18 @@ public:
 	public slots:
 		///
 		void setZoom(double factor);
-		///
-		void pan(double x, double y);
+		/// Move the display by the specified amount
+        /// @param deltax The normalized delta x value 
+        /// @param deltay The normalized delta y value 
+		void pan(double deltax, double deltay);
 		///
 		void resizeTimerTimeout();
 		///
 		void resetView();
+		/// select zooming with the cursor
+		void cursorZoom();
+		/// select panning with the cursor
+		void cursorPan();
 
 protected:
 	///
@@ -245,16 +253,20 @@ protected:
 	/// Handle a resize event. A time is used to prevent refreshes until
 	/// the resize is finished.
 	virtual void resizeEvent( QResizeEvent * e );
-	/// capture mouse move event for panning
+	/// capture mouse move event for panning/zooming
 	virtual void mouseMoveEvent(QMouseEvent* event);
-	/// capture mouse press event which signals the start of panning
-	virtual void mousePressEvent(QMouseEvent* event);
+    /// capture mouse press event which signals the start of panning/zooming
+    virtual void mousePressEvent(QMouseEvent* event);
+    /// capture mouse release event which signals the start of panning/zooming
+    virtual void mouseReleaseEvent(QMouseEvent* event);
 	/// Create the display lists for the rings and grid. The current
 	/// value of _ringsGridColor will be used for the color.
 	void makeRingsAndGrids();
 	/// Dtermine a ring spacing which will give even distances,
 	/// and fit a reasonable number of rings in the display
 	double ringSpacing();
+	/// Navigate the model according to x,y location and zoom factor
+	void locateModel();
 	/// The incoming data will be decimated in gates by this factor
 	int _decimationFactor;   
 	/// Pointers to all of the active beams are saved here.
@@ -275,9 +287,9 @@ protected:
 	// The current zoom factor. as the zoom in increases, it will
 	// increase. At full zoom out, it is equal to 1.
 	double _zoomFactor;
-	///
+	/// The model x coordinate that will be at the center of the view
 	double _currentX;
-	///
+    /// The model y coordinate that will be at the center of the view
 	double _currentY;
 	/// The color for the grid and rings
 	QColor _gridRingsColor;
@@ -313,6 +325,12 @@ protected:
     double _bottom;
     /// Y coordinate for the upper clipping plane. Recall that the full disk falls in +/- 1.0
     double _top;
+    /// Rubber band for zooming
+    QRubberBand* _rubberBand;
+    /// The rubber band origin
+    QPoint _rubberBandOrigin;
+    /// Set true if the mouse motion effects zooming, otherwise it is used for panning
+    bool _cursorZoom;
 };
 
 #endif

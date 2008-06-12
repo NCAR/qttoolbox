@@ -5,6 +5,10 @@
 
 #include <qtimer.h>
 #include <QResizeEvent>
+#include <QPalette>
+#include <QPaintEngine>
+#include <QBrush>
+#include <QPen>
 
 #include <GL/glut.h>
 
@@ -94,7 +98,9 @@ _ringsEnabled(true),
 _gridsEnabled(false),
 _resizing(false),
 _scaledLabel(ScaledLabel::DistanceEng),
-_configured(false)
+_configured(false),
+_rubberBand(0),
+_cursorZoom(true)
 {
 	initializeGL();
 
@@ -109,6 +115,9 @@ _configured(false)
 	}
 
 	this->setAutoBufferSwap(false);
+	
+	// create the rubber band
+    _rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
 
 	// connect the resize timer
 	_resizeTimer.setSingleShot(true);
@@ -308,8 +317,19 @@ PPI::grids(bool enabled) {
 	makeCurrent();
 	paintGL();
 }
-////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////
+void
+PPI::locateModel() {
+    
+    //std::cout << "locating at " << _currentX << ",  " 
+    //    << _currentY << "  at zoom " << _zoomFactor << "\n";
+    glLoadIdentity();
+    glScalef(_zoomFactor, _zoomFactor, 1.0);
+    glTranslatef(-_currentX, -_currentY, 0.0);
+}
+
+////////////////////////////////////////////////////////////////
 void 
 PPI::setZoom(double factor)
 {
@@ -323,10 +343,9 @@ PPI::setZoom(double factor)
 		_currentX = 0.0;
 		_currentY = 0.0;
 	}
+	
+	locateModel();
 
-	glLoadIdentity();
-	glScalef(_zoomFactor, _zoomFactor, 1.0);
-	glTranslatef(_currentX, _currentY, 0.0);
 	// redraw
 	paintGL();
 }
@@ -354,22 +373,21 @@ PPI::refresh()
 ////////////////////////////////////////////////////////////////
 
 void
-PPI::pan(double x, double y) 
+PPI::pan(double deltax, double deltay) 
 {
-	makeCurrent();
+	_currentX += deltay;
+    _currentY += deltay;
 
-	glTranslatef(x-_currentX, y-_currentY, 0.0);
+    makeCurrent();
 
-	_currentX = x;
-	_currentY = y;
-
-	// redraw
+    locateModel();
+    
+    // redraw
 	paintGL();
 	return;
 }
 
 ////////////////////////////////////////////////////////////////
-
 void
 PPI::resetView() 
 {
@@ -379,9 +397,8 @@ PPI::resetView()
 	_currentY = 0.0;
 	_zoomFactor = 1.0;
 
-	glLoadIdentity();
-	glScalef(_zoomFactor, _zoomFactor, 1.0);
-	glTranslatef(_currentX, _currentY, 0.0);
+	locateModel();
+	
 	// redraw
 	paintGL();
 	return;
@@ -405,32 +422,98 @@ PPI::resizeEvent( QResizeEvent * e )
 }
 
 ////////////////////////////////////////////////////////////////
-void 
-PPI::mousePressEvent( QMouseEvent * e )
+void PPI::mousePressEvent(QMouseEvent * e)
 {
-	_oldMouseX = e->x();
-	_oldMouseY = e->y();
+    if (_cursorZoom) {
+        _rubberBand->setGeometry(QRect(e->pos(), QSize()));
+        _rubberBand->show();
+    } 
+    
+    _oldMouseX = e->x();
+    _oldMouseY = e->y();
+
 }
 
 ////////////////////////////////////////////////////////////////
-void 
-PPI::mouseMoveEvent( QMouseEvent * e )
+void PPI::mouseMoveEvent(QMouseEvent * e)
 {
-	makeCurrent();
 
-	int x = e->x();
-	int y = e->y();
+    if (_cursorZoom) {
+        _rubberBand->setGeometry(QRect(QPoint(_oldMouseX, _oldMouseY), 
+                                       e->pos()).normalized());
+    } else {
 
-	double deltaX = (x - _oldMouseX) / (double)width() / _zoomFactor / 2.0;
-	double deltaY = (_oldMouseY - y) / (double)height()/ _zoomFactor / 2.0;
+        int x = e->x();
+        int y = e->y();
 
-	glTranslatef(deltaX/2.0, deltaY/2.0, 0.0);
+        makeCurrent();
 
-	_currentX += deltaX;
-	_currentY += deltaY;
+        double deltaX = (x - _oldMouseX) / (double)width() / _zoomFactor / 2.0;
+        double deltaY = (_oldMouseY - y) / (double)height()/ _zoomFactor / 2.0;
 
-	// redraw
-	updateGL();
+        glTranslatef(deltaX/2.0, deltaY/2.0, 0.0);
+
+        _oldMouseX += deltaX;
+        _oldMouseY += deltaY;
+
+        // redraw
+        updateGL();
+    }
+}
+
+////////////////////////////////////////////////////////////////
+void PPI::mouseReleaseEvent(QMouseEvent * e)
+{
+    int x = e->x();
+    int y = e->y();
+
+    if (_cursorZoom) {
+        std::cout << width() << "  x: " << x << "  " << _oldMouseX << "\n";
+        std::cout << height() << " y: " << y << "  " << _oldMouseY << "\n";
+        
+        double avgX = (x + _oldMouseX)/2.0;
+        double avgY = (y + _oldMouseY)/2.0;
+        
+        // find the center of the rubber band box in model coordinates
+        // First, convert x and y pixel coordinates to our model coordinates
+        // 0.0 to 1.0 of the window, across each axis
+        double newX = avgX/width();      
+        double newY = avgY/height();    
+
+        // -1.0 to 1.0 of the window, across each axis
+        newX = 2.0*newX - 1.0;        
+        newY = 1.0 - 2.0*newY;       
+        
+        // adjust for the zoom
+        newX /= _zoomFactor;
+        newY /= _zoomFactor;
+        
+        // account for current translation in window
+        newX = newX + _currentX/_zoomFactor;;      
+        newY = newY + _currentY/_zoomFactor;      
+        
+        _currentX = newX;
+        _currentY = newY;
+        
+        // calculate new zoom. Base it on the largest edge of 
+        // the rubberband box
+        int deltaX = abs(x - _oldMouseX);
+        int deltaY = abs(x - _oldMouseX);
+        if (deltaX > 0 || deltaY > 0) {
+            double zoomX = deltaX / (double)width();
+            double zoomY = deltaY / (double)height();
+            if (zoomX >= zoomY)
+                _zoomFactor *= 1.0/zoomX;
+            else
+                _zoomFactor *= 1.0/zoomY;
+        }
+        
+        makeCurrent();
+        
+        locateModel();
+        
+        _rubberBand->hide();
+    }
 }
 
 ////////////////////////////////////////////////////////////////
@@ -1017,4 +1100,16 @@ QPixmap*
 PPI::getPixmap() {
 	QPixmap* pImage = new QPixmap(renderPixmap());
 	return pImage;
+}
+
+////////////////////////////////////////////////////////////////////////
+void
+PPI::cursorZoom() {
+    _cursorZoom = true;
+}
+
+////////////////////////////////////////////////////////////////////////
+void
+PPI::cursorPan() {
+    _cursorZoom = false;
 }

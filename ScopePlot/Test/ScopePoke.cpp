@@ -62,6 +62,10 @@ ScopePoke::timerEvent(QTimerEvent *e) {
 			   true,
                "Frequency (Hz)", "Power (dB)");
             break;
+            
+         case ScopePlot::PRODUCT: 
+            // empty implementation for now
+            break;
 
    }
 

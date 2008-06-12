@@ -1,4 +1,4 @@
-env = Environment(tools = ['default', 'qtt_knob'])
+env = Environment(tools = ['default', 'qtt_common', 'qtt_knob'])
 
 # uic knobtest form
 env.Uic4('KnobTest.ui')

@@ -1,4 +1,4 @@
-tools = ['qtt_ppi']
+tools = ['qtt_common', 'qtt_ppi']
 env = Environment(tools = ['default'] + tools)
 
 # uic ppitest form

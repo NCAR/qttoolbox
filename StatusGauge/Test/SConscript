@@ -1,4 +1,4 @@
-tools = ['qtt_statusgauge']
+tools = ['qtt_common', 'qtt_statusgauge']
 env = Environment(tools=['default'] + tools)
 
 # uic statusgaugetest form

@@ -1,4 +1,4 @@
-tools = ['qtt_colorbar']
+tools = ['qtt_common', 'qtt_colorbar']
 env = Environment(tools=['default'] + tools)
 
 # uic colorbartest form

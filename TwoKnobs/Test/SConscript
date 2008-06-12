@@ -1,4 +1,4 @@
-tools = ['qtt_twoknobs']
+tools = ['qtt_common', 'qtt_twoknobs']
 env = Environment(tools = ['default'] + tools)
 
 # uic knobtest form

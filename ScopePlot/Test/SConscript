@@ -1,4 +1,4 @@
-tools = ['qtt_scopeplot']
+tools = ['qtt_common', 'qtt_scopeplot']
 env = Environment(tools = ['default'] + tools)
 
 # uic ScopePlotTest form

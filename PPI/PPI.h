@@ -68,6 +68,30 @@
 /// and the constant generation of beam vertices, and so the
 /// performance is significantly slower than in the preallocated
 /// mode.
+///
+/// The graphics presentation is modeled as a 2D square box with the 
+/// X-Y extents of +/1 1.0. The beams are drawn from the center (0,0)
+/// of the box. Normalized beams have the OpenGL vertices (read "expensive
+/// trigonomtric calcuations") compute only once.
+///
+/// Zooming and panning are accomplished by changing the limits of
+/// the orthographic projection. To pan, the projection boundaries are 
+/// adjusted in the specified directions. To achieve a desired zoom
+/// factor, the extent of the boundaries are narrowed.
+/// The _centerX and _centerY variables track where the 
+/// center of the protetion is currently focused, in the coordinates
+/// of the modelview. Mouse selected zooming will move the center of the 
+/// rubberband box to the center of the display. This amounts to both a 
+/// pan and a zoom.
+///
+/// It took a lot of fooling around before finally settling on the 
+/// described method for panning and zooming. It turns out quite simple
+/// and works well. The model provides the description of the display,
+/// and the projection is used to visualize a desired region of the model.
+/// first attempts used scaling and translation to move the projection around, 
+/// but this was complicated since the scaling is always based on the 
+/// distance from the origin. Changing the projection boundaries was
+/// conceptually simpler.
 class DLL_EXPORT PPI: public QGLWidget//, public Ui::PPI 
 {
 
@@ -221,9 +245,16 @@ public:
 	QPixmap* getPixmap();
 
 	public slots:
-		///
+		/// Zoom the display to the specified zoom level.
+	    /// @param factor The desired final magnification 
+	    /// value. Note that this is the total maginification. 
+	/// Thus if the display were already zoomed at 8x maginification,
+	/// and factor were specifed as 16, then a 2x additional 
+	/// magnification would be performed.
 		void setZoom(double factor);
-		/// Move the display by the specified amount
+		/// Move the display by the specified amount.
+		/// The parameters specify the percentage of the
+		/// existing window that we wish to pan.
         /// @param deltax The normalized delta x value 
         /// @param deltay The normalized delta y value 
 		void pan(double deltax, double deltay);
@@ -257,6 +288,8 @@ protected:
 	virtual void mouseMoveEvent(QMouseEvent* event);
     /// capture mouse press event which signals the start of panning/zooming
     virtual void mousePressEvent(QMouseEvent* event);
+    /// Perform display panning in response to a mouse motion event.
+    void mousePan(QMouseEvent* event);
     /// capture mouse release event which signals the start of panning/zooming
     virtual void mouseReleaseEvent(QMouseEvent* event);
 	/// Create the display lists for the rings and grid. The current
@@ -265,8 +298,8 @@ protected:
 	/// Dtermine a ring spacing which will give even distances,
 	/// and fit a reasonable number of rings in the display
 	double ringSpacing();
-	/// Navigate the model according to x,y location and zoom factor
-	void locateModel();
+	/// Print the current display navigation factors.
+	void dump();
 	/// The incoming data will be decimated in gates by this factor
 	int _decimationFactor;   
 	/// Pointers to all of the active beams are saved here.
@@ -286,11 +319,11 @@ protected:
 	GLuint _gridListId;
 	// The current zoom factor. as the zoom in increases, it will
 	// increase. At full zoom out, it is equal to 1.
-	double _zoomFactor;
+	double _zoom;
 	/// The model x coordinate that will be at the center of the view
-	double _currentX;
+	double _centerX;
     /// The model y coordinate that will be at the center of the view
-	double _currentY;
+	double _centerY;
 	/// The color for the grid and rings
 	QColor _gridRingsColor;
 	/// The color for the back ground

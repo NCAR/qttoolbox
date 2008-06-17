@@ -137,6 +137,10 @@ void PPI::configure(int nVars,
     _zoom = 1.0;
 
     _configured = true;
+    
+    makeCurrent();
+    paintGL();
+
 }
 ////////////////////////////////////////////////////////////////
 
@@ -170,12 +174,14 @@ void PPI::configure(int nVars,
         delete _beams[i];
     _beams.clear();
 
-    makeCurrent();
     // This constructor is called when we are preallocating beams.
     double angleInc = 360.0/nBeams;
     for (int i = 0; i < nBeams; i++) {
         _beams.push_back(new beam(i*angleInc, (i+1)*angleInc, _maxGates, _nVars));
     }
+    
+    makeCurrent();
+    paintGL();
 }
 ////////////////////////////////////////////////////////////////
 

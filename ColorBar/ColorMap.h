@@ -2,6 +2,7 @@
 #define COLORMAP_H
 
 #include <vector>
+#include <string>
 
 #ifndef DLL_EXPORT
 #ifdef WIN32

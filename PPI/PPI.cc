@@ -95,7 +95,7 @@ PPI::PPI(QWidget* parent):
     if (!glutInitialized) {
         int argc = 1;
         char* argv[2];
-        argv[0] = "dummy";
+        argv[0] = (char*)("dummy");
         argv[1] = 0;
 
         glutInit(&argc, argv);

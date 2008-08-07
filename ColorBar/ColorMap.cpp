@@ -4,7 +4,7 @@
 typedef  struct {unsigned char r,g, b;} RGB;
 #define RGBSIZE(table) (sizeof(table)/sizeof(table[0]))
 
-char* builtinNames[] = {
+const char* builtinNames[] = {
 	"default",
 	"rainbow",
 	"eldoraDbz",

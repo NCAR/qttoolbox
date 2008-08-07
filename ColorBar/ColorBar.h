@@ -7,6 +7,7 @@
 #include <qlayout.h>
 #include <QVBoxLayout>
 #include <vector>
+#include <string>
 #include <QImage>
 #include <QPixmap>
 

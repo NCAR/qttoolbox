@@ -8,7 +8,7 @@ env = Environment(tools = ['default'] + tools + local_tools)
 qt4modules = ['QtCore']
 env.EnableQt4Modules(qt4modules)
 
-tooldir = env.Dir('.')
+tooldir = env.Dir('.').srcnode().abspath
 
 qtconfig = env.Library('qtconfig', ['QtConfig.cpp'])
 

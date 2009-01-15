@@ -9,7 +9,7 @@ env = Environment(tools=['default'] + tools + local_tools)
 qt4modules = ['QtCore', 'QtOpenGL']
 env.EnableQt4Modules(qt4modules)
 
-tooldir = env.Dir('.')
+tooldir = env.Dir('.').srcnode().abspath
 
 # build knob shared library
 sources = Split("""

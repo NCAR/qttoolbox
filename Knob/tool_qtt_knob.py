@@ -7,7 +7,7 @@ env = Environment(tools=['default'] + tools + local_tools)
 qt4modules = ['QtCore', 'QtGui', 'QtOpenGL', 'QtXml', 'QtDesigner']
 env.EnableQt4Modules(qt4modules)
 
-tooldir = env.Dir('.')
+tooldir = env.Dir('.').srcnode().abspath
 
 # uic knob form
 env.Uic4('Knob.ui')

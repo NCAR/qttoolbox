@@ -1,5 +1,5 @@
-#ifndef CP2CONFIGINC_
-#define CP2CONFIGINC_
+#ifndef QTCONFIGINC_
+#define QTCONFIGINC_
 
 #include <QSettings>
 #include <string>
@@ -17,9 +17,9 @@
 class QtConfig {
     public:
         /// Constructor. The organization and application keys provide for
-        /// categroization of the configuration set, as provided by the QSettings 
+        /// categorization of the configuration set, as provided by the QSettings 
         /// scheme.
-        /// @param organization The organzation.
+        /// @param organization The organization.
         /// @param application The application.
         QtConfig(
                 const std::string organization,

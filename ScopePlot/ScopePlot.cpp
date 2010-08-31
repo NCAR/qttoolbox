@@ -14,7 +14,6 @@
 #include <qwt_legend.h>
 #include <qwt_text.h>
 #include <qwt_scale_widget.h>
-#include <qwt_double_rect.h>
 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -124,8 +123,20 @@ ScopePlot::TimeSeries(std::vector<double>& I,
 
 	initCurve();
 
+// QwtCurve::setData() API changes a bit as of Qwt 5.3...
+#if QWT_VERSION < 0x050300
 	_curveId1->setData(&_xdata[0], &I[0], I.size());
 	_curveId2->setData(&_xdata[0], &Q[0], Q.size());
+#else
+    QVector<QPointF> ipoints;
+    QVector<QPointF> qpoints;
+    for (unsigned int p = 0; p < I.size(); p++) {
+        ipoints.push_back(QPointF(_xdata[p], I[p]));
+        qpoints.push_back(QPointF(_xdata[p], Q[p]));
+    }
+    _curveId1->setData(new QwtPointSeriesData(ipoints));
+    _curveId2->setData(new QwtPointSeriesData(qpoints));
+#endif
 
 	_qwtPlot->replot();
 }
@@ -158,7 +169,15 @@ ScopePlot::IvsQ(std::vector<double>& I,
 
 	initCurve();
 
+// QwtCurve::setData() API changes a bit as of Qwt 5.3...
+#if QWT_VERSION < 0x050300
 	_curveId1->setData(&I[0], &Q[0], I.size());
+#else
+    QVector<QPointF> points;
+    for (unsigned int p = 0; p < I.size(); p++)
+        points.push_back(QPointF(I[p], Q[p]));
+    _curveId1->setData(new QwtPointSeriesData(points));
+#endif
 
 	_qwtPlot->replot();
 }
@@ -192,7 +211,15 @@ ScopePlot::Spectrum(std::vector<double>& power,
 
 	initCurve();
 
+// QwtCurve::setData() API changes a bit as of Qwt 5.3...
+#if QWT_VERSION < 0x050300
 	_curveId1->setData(&_xdata[0], &power[0], power.size());
+#else
+    QVector<QPointF> points;
+    for (unsigned int p = 0; p < power.size(); p++)
+        points.push_back(QPointF(_xdata[p], power[p]));
+    _curveId1->setData(new QwtPointSeriesData(points));
+#endif
 
 	_qwtPlot->replot();
 }
@@ -228,7 +255,15 @@ ScopePlot::Product(std::vector<double>& productData,
 
 	initCurve();
 
+// QwtCurve::setData() API changes a bit as of Qwt 5.3...
+#if QWT_VERSION < 0x050300
 	_curveId1->setData(&_xdata[0], &productData[0], productData.size());
+#else
+    QVector<QPointF> points;
+    for (unsigned int p = 0; p < productData.size(); p++)
+        points.push_back(QPointF(_xdata[p], productData[p]));
+    _curveId1->setData(new QwtPointSeriesData(points));
+#endif
 
 	_qwtPlot->replot();
 }

@@ -2,7 +2,7 @@
 #define SCOPEPLOT_H_ 1
 
 #include "ui_ScopePlot.h"
-#include <qwt_array.h>
+#include <qwt.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
 #include <qwt_plot.h>

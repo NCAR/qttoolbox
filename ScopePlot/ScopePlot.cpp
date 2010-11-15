@@ -124,8 +124,7 @@ ScopePlot::TimeSeries(std::vector<double>& Y,
 
 // QwtCurve::setData() API changes a bit as of Qwt 5.3...
 #if QWT_VERSION < 0x050300
-	_curveId1->setData(&_xdata[0], &I[0], I.size());
-	_curveId2->setData(&_xdata[0], &Q[0], Q.size());
+	_curveId1->setData(&_xdata[0], &Y[0], Y.size());
 #else
     QVector<QPointF> ypoints;
     for (unsigned int p = 0; p < Y.size(); p++) {

@@ -31,7 +31,7 @@ ScopePoke::timerEvent(QTimerEvent *e) {
                _y1[i] = 30.0*(0.5-rand()/(RAND_MAX*1.0))+100.0*sin(2*3.14159*i/200);
                _y2[i] = 30.0*(0.5-rand()/(RAND_MAX*1.0))+90.0*cos(2*3.14159*i/200);
             }
-            _scope->TimeSeries(_y1, _y2, 
+            _scope->IandQ(_y1, _y2, 
                -120.0, 120.0, 
                1000.0, 
                "Time (s)", "Amplitude (counts)");

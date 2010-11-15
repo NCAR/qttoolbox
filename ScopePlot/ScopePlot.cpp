@@ -21,7 +21,7 @@ ScopePlot::ScopePlot(QWidget *parent):
 QWidget(parent),
 _curveId1(0),
 _curveId2(0),
-_plotType(TIMESERIES),
+_plotType(IANDQ),
 _scaleMin(0.0),
 _scaleMax(0.0),
 _paused(false)
@@ -84,8 +84,8 @@ ScopePlot::initCurve()
 	_curveId1->setStyle(QwtPlotCurve::Lines);
 	_curveId1->setPen(QPen(Qt::cyan));
 
-	// if we are doing timeseries, then make two curves
-	if (_plotType == TIMESERIES) {
+	// if we are doing I and Q, then make two curves
+	if (_plotType == IANDQ) {
 		_curveId2 = new QwtPlotCurve("Data2");
 		_curveId2->attach(_qwtPlot);
 		_curveId2->setStyle(QwtPlotCurve::Lines);
@@ -96,7 +96,51 @@ ScopePlot::initCurve()
 //////////////////////////////////////////////////////////////////////////////////
 
 void 
-ScopePlot::TimeSeries(std::vector<double>& I, 
+ScopePlot::TimeSeries(std::vector<double>& Y,
+					  double scaleMin,
+					  double scaleMax,
+					  double sampleRateHz,
+					  std::string xLabel,
+					  std::string yLabel)
+{
+	if (_paused)
+		return;
+
+	if (_plotType     != TIMESERIES ||
+		_xdata.size() != Y.size()   ||
+		scaleMin      != _scaleMin  ||
+		scaleMax      != _scaleMax  ||
+		sampleRateHz  != _sampleRateHz ||
+		xLabel        != _timeSeriesXlabel ||
+		yLabel        != _timeSeriesYlabel )
+	{
+		configureForTimeSeries(Y.size(), scaleMin, scaleMax, sampleRateHz);
+		_timeSeriesXlabel = xLabel;
+		_timeSeriesYlabel = yLabel;
+		labelAxes(_timeSeriesXlabel, _timeSeriesYlabel);
+	}
+
+	initCurve();
+
+// QwtCurve::setData() API changes a bit as of Qwt 5.3...
+#if QWT_VERSION < 0x050300
+	_curveId1->setData(&_xdata[0], &I[0], I.size());
+	_curveId2->setData(&_xdata[0], &Q[0], Q.size());
+#else
+    QVector<QPointF> ypoints;
+    for (unsigned int p = 0; p < Y.size(); p++) {
+        ypoints.push_back(QPointF(_xdata[p], Y[p]));
+    }
+    _curveId1->setData(new QwtPointSeriesData(ypoints));
+ #endif
+
+	_qwtPlot->replot();
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+void
+ScopePlot::IandQ(std::vector<double>& I, 
 					  std::vector<double>& Q,
 					  double scaleMin,
 					  double scaleMax,
@@ -107,7 +151,7 @@ ScopePlot::TimeSeries(std::vector<double>& I,
 	if (_paused)
 		return;
 
-	if (_plotType     != TIMESERIES || 
+	if (_plotType     != IANDQ ||
 		_xdata.size() != I.size()   || 
 		scaleMin      != _scaleMin  || 
 		scaleMax      != _scaleMax  ||
@@ -115,7 +159,7 @@ ScopePlot::TimeSeries(std::vector<double>& I,
 		xLabel        != _timeSeriesXlabel ||
 		yLabel        != _timeSeriesYlabel ) 
 	{
-		configureForTimeSeries(I.size(), scaleMin, scaleMax, sampleRateHz);
+		configureForIandQ(I.size(), scaleMin, scaleMax, sampleRateHz);
 		_timeSeriesXlabel = xLabel;
 		_timeSeriesYlabel = yLabel;
 		labelAxes(_timeSeriesXlabel, _timeSeriesYlabel);
@@ -272,14 +316,49 @@ ScopePlot::Product(std::vector<double>& productData,
 //////////////////////////////////////////////////////////////////////////////////
 
 void 
-ScopePlot::configureForTimeSeries(
+ScopePlot::configureForIandQ(
 								  int n, 
 								  double scaleMin, 
 								  double scaleMax, 
 								  double sampleRateHz)
 {
 	// we need to reset the zoom base when the plot type changes
-	bool reZoom = (_plotType != TIMESERIES);
+	bool reZoom = (_plotType != IANDQ);
+
+	_plotType = IANDQ;
+	_scaleMin = scaleMin;
+	_scaleMax = scaleMax;
+	_sampleRateHz = sampleRateHz;
+
+	_qwtPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
+
+	_qwtPlot->setAxisScale(QwtPlot::xBottom, 0, n/_sampleRateHz);
+	_qwtPlot->setAxisScale(QwtPlot::yLeft, _scaleMin, _scaleMax);
+
+	_xdata.resize(n);
+
+	for (int i = 0; i < n; i++)
+		_xdata[i] = i/_sampleRateHz;
+
+	initCurve();
+
+	_qwtPlot->replot();
+
+	if((_zoomer->zoomStack().size() == 1) || reZoom )
+		_zoomer->setZoomBase();
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+void 
+ScopePlot::configureForTimeSeries(
+								  int n,
+								  double scaleMin,
+								  double scaleMax,
+								  double sampleRateHz)
+{
+	// we need to reset the zoom base when the plot type changes
+	bool reZoom = (_plotType != IANDQ);
 
 	_plotType = TIMESERIES;
 	_scaleMin = scaleMin;
@@ -306,7 +385,7 @@ ScopePlot::configureForTimeSeries(
 
 //////////////////////////////////////////////////////////////////////////////////
 
-void 
+void
 ScopePlot::configureForIvsQ(double scaleMin, 
 							double scaleMax)
 {

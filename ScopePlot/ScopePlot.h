@@ -37,7 +37,7 @@ class DLL_EXPORT ScopePlot: public QWidget, private Ui::ScopePlot
 	Q_OBJECT
 public:
    /// Plot type
-   enum PLOTTYPE {TIMESERIES=0, IVSQ=1, SPECTRUM=2, PRODUCT=3};
+   enum PLOTTYPE {TIMESERIES=0, IANDQ=1, IVSQ=2, SPECTRUM=3, PRODUCT=4};
 
    ScopePlot(QWidget *parent);
 
@@ -46,7 +46,23 @@ public:
    /// The size hint.
    virtual QSize sizeHint() const;
 
-   /// Draw a time series plot. I and Q traces will be overlaid.
+   /// Draw a time series plot.
+   /// @param Y.
+   /// @param scaleMin The minimum value to set the y scale to.
+   /// @param scaleMax The maximum value to set the y scale to.
+   /// @param sampleRateHz The rate of the data samples, in Hz
+   /// @param xLabel The label for the x axis. Leave
+   /// empty if no label is required.
+   /// @param yLabel The label for the y axis. Leave
+   /// empty if no label is required.
+   void TimeSeries(std::vector<double>& Y,
+      double scaleMin,
+      double scaleMax,
+      double sampleRateHz,
+      std::string xLabel="",
+      std::string yLabel="");
+
+   /// Draw a time series plot  of I and Q traces.
    /// @param I The I data.
    /// @param Q The Q data
    /// @param scaleMin The minimum value to set the y scale to.
@@ -56,7 +72,7 @@ public:
    /// empty if no label is required.
    /// @param yLabel The label for the y axis. Leave 
    /// empty if no label is required.
-   void TimeSeries(std::vector<double>& I, 
+   void IandQ(std::vector<double>& I, 
       std::vector<double>& Q, 
       double scaleMin, 
       double scaleMax,
@@ -155,6 +171,16 @@ protected:
    /// @param sampeRateHz The sample rate in Hz
    void configureForTimeSeries(int n, 
       double scaleMin, 
+      double scaleMax,
+      double sampleRateHz);
+
+   /// Reconfigure plot to display I and Q plot.
+   /// @param n The number of points in the time series.
+   /// @param scaleMin The y scale minimum.
+   /// @param scaleMax The y scale maximum.
+   /// @param sampeRateHz The sample rate in Hz
+   void configureForIandQ(int n,
+      double scaleMin,
       double scaleMax,
       double sampleRateHz);
 

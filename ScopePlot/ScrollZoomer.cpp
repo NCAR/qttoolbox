@@ -482,9 +482,9 @@ void ScrollZoomer::layoutScrollBars(const QRect &rect)
 void ScrollZoomer::scrollBarMoved(Qt::Orientation o, double min, double)
 {
     if ( o == Qt::Horizontal )
-        move(min, zoomRect().top());
+        moveBy(min, zoomRect().top());
     else
-        move(zoomRect().left(), min);
+        moveBy(zoomRect().left(), min);
 
     emit zoomed(zoomRect());
 }

@@ -1,0 +1,98 @@
+# -*- python -*-
+
+import os
+import re
+import eol_scons
+
+def Bscan(env):
+    env['DOXYFILE_DICT'].update({ 'HTML_HEADER' : env.File("#header.html") })
+    env['DOXYGEN'] = '/usr/bin/doxygen'
+    env['TAGDIR'] = '#/doc/tags'
+    # add -DBSCAN_SHAREDIR=<share_dir> to compiles so that source knows where 
+    # to look for shared files (e.g., colortables)
+    env.AppendUnique(CPPDEFINES = ['BSCAN_SHAREDIR=\\"' + 
+                                   os.path.join(env['INSTALL_SHAREDIR'], 'bscan\\"')])
+    env.SetDoxref('QWT_DOXREF','$TAGDIR/qwt-5.2.x.tag',
+              'http://qwt.sourceforge.net')
+    env.SetDoxref('QT_DOXREF', '$TAGDIR/qt-4.4.3.tag',
+                  'http://doc.trolltech.com/4.4')
+    return env
+
+tools = Split("""
+qt4
+qtt_qtconfig
+hcrdds
+doxygen
+boost_program_options
+""")
+
+env = Environment(tools = ['default'] + tools,
+                  GLOBAL_TOOLS = ['svninfo', 'doxygen', Bscan])
+env.EnableQt4Modules(['QtCore', 'QtGui'])
+
+# Enable for profiling
+#env.Append(CCFLAGS = ['-pg'])
+#env.Append(LINKFLAGS = ['-pg'])
+
+# create or possibly update the svnInfo.h file
+svnInfo = env.SvnInfo('svnInfo.h', '#')
+svnversion = env['SVNREVISION']
+
+bscanSources = Split("""
+bscan.cpp
+BscanMainWindow.cpp
+BscanGraphicsScene.cpp
+BscanGraphicsView.cpp
+BscanWidget.cpp
+ColorTable.cpp
+DisplayLimitDialog.cpp
+GateLimitDialog.cpp
+RayGraphicsItem.cpp
+TimeSpanDialog.cpp
+""")
+
+bscanHeaders = Split("""
+BscanGraphicsScene.h
+BscanGraphicsView.h
+BscanMainWindow.h
+BscanWidget.h
+ColorTable.h
+DisplayLimitDialog.h
+FakeDataThread.h
+GateLimitDialog.h
+RayGraphicsItem.h
+TimeSpanDialog.h
+""")
+
+uifiles = Split("""
+Bscan.ui
+DisplayLimitDialog.ui
+GateLimitDialog.ui
+TimeSpanDialog.ui
+""")
+env.Uic4(uifiles)
+
+# Build a list of all colortables/*.ct files
+colortables = []
+for file in os.listdir('colortables'):
+    if (re.compile('.*\.ct').match(file)):
+        colortables.append(os.path.join('colortables', file))
+
+bscan = env.Program('bscan', bscanSources)
+env.InstallProgram(bscan)
+Default(bscan)
+
+# Make install targets to put our color table files into
+# INSTALL_DIR/share/bscan
+for file in colortables:
+    env.InstallShare('bscan', file)
+
+html = env.Apidocs(bscanSources + bscanHeaders, DOXYFILE_FILE = "Doxyfile")
+Default(html)
+
+options = env.GlobalOptions()
+options.Update(env)
+Help(options.GenerateHelpText(env))
+
+env.Alias('all', DEFAULT_TARGETS)
+

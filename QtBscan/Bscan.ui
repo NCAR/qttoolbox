@@ -1,0 +1,173 @@
+<ui version="4.0">
+ <class>Bscan</class>
+ <widget class="QMainWindow" name="Bscan">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>300</width>
+    <height>148</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>bscan</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QHBoxLayout">
+    <property name="spacing">
+     <number>6</number>
+    </property>
+    <property name="sizeConstraint">
+     <enum>QLayout::SetDefaultConstraint</enum>
+    </property>
+    <property name="margin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QFrame" name="frame">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>300</width>
+        <height>100</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>300</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionPrint"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionAddPlot"/>
+    <addaction name="actionRemovePlot"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionSetGateRange"/>
+    <addaction name="actionSetTimeSpan"/>
+    <addaction name="separator"/>
+    <addaction name="actionPause"/>
+    <addaction name="actionUnpause"/>
+    <addaction name="separator"/>
+    <addaction name="actionZoom_100"/>
+    <addaction name="actionZoom_150"/>
+    <addaction name="actionZoom_200"/>
+    <addaction name="actionZoom_300"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuView"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionPrint">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Print...</string>
+   </property>
+  </action>
+  <action name="actionAddPlot">
+   <property name="text">
+    <string>Add A New Plot</string>
+   </property>
+  </action>
+  <action name="actionRemovePlot">
+   <property name="text">
+    <string>Remove A Plot</string>
+   </property>
+  </action>
+  <action name="actionZoom_100">
+   <property name="text">
+    <string>Zoom 100%</string>
+   </property>
+  </action>
+  <action name="actionZoom_150">
+   <property name="text">
+    <string>Zoom 150%</string>
+   </property>
+  </action>
+  <action name="actionZoom_200">
+   <property name="text">
+    <string>Zoom 200%</string>
+   </property>
+  </action>
+  <action name="actionZoom_300">
+   <property name="text">
+    <string>Zoom 300%</string>
+   </property>
+  </action>
+  <action name="actionSetGateRange">
+   <property name="text">
+    <string>Set Gate Range...</string>
+   </property>
+  </action>
+  <action name="actionSetTimeSpan">
+   <property name="text">
+    <string>Set Time Span...</string>
+   </property>
+  </action>
+  <action name="actionPause">
+   <property name="text">
+    <string>Pause</string>
+   </property>
+  </action>
+  <action name="actionUnpause">
+   <property name="text">
+    <string>Unpause</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

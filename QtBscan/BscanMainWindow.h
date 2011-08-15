@@ -23,8 +23,8 @@ class QtProductReader;
 class BscanGraphicsScene;
 
 /**
- * Main window class for a bscan display.
- * Appropriate connections to the data thread are made automatically.
+ * @brief Main window class for a bscan display.
+ * Data are added to the display via signals to the addRay() slot.
  */
 class BscanMainWindow : public QMainWindow {
     Q_OBJECT
@@ -33,42 +33,42 @@ public:
     bool isPaused() const;
 public slots:
     /**
-     * Add a new plot to the model.  This creates a 
+     * @brief Add a new plot to the model.  This creates a 
      * BscanGraphicsView/BscanGraphicsScene pair and adds the view to 
      * the UI's plot frame.
      */
     void addNewPlot();
     /**
-     * Remove the last (bottom) plot from the model.
+     * @brief Remove the last (bottom) plot from the model.
      */
     void removePlot();
     /**
-     * Print the UI's plot frame, popping up a dialog for selecting the
+     * @brief Print the UI's plot frame, popping up a dialog for selecting the
      * print device.
      */
     void print();
     /**
-     * Set the paused state for the model.
+     * @brief Set the paused state for the model.
      * @param state the new paused state
      */
     void setPaused(bool state);
     /**
-     * Pause the display(s).
+     * @brief Pause the display(s).
      */
     void pause();
     /**
-     * Unpause the display(s).
+     * @brief Unpause the display(s).
      */
     void unpause();
     /**
-     * Set zoom level, where a zoom of 1 fits the entire scene on the display.
+     * @brief Set zoom level, where a zoom of 1 fits the entire scene on the display.
      * @param zoom the zoom factor
      */
     void setZoom(float zoom);
 protected slots:
     void _showLocAndData(double time, unsigned int gate, const QString &varName, 
             float value);
-    /**
+    /*
      * Slots which are automatically connected to actions in the UI
      */
     void on_actionPrint_triggered() { print(); }

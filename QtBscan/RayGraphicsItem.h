@@ -25,7 +25,6 @@ public:
      * Construct a RayGraphicsItem from a RadarDDS::ProductSet
      * @param ray a RadarDDS:ProductSet containing the data for this item
      * @param displayVar the name of the variable to be displayed
-     * @param colorTable the color table to use when displaying data
      */
     RayGraphicsItem(RadarDDS::ProductSet &ray, QString displayVar = "");
     RayGraphicsItem(const RayGraphicsItem &srcItem);

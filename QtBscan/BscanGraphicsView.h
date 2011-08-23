@@ -98,6 +98,10 @@ class BscanViewGroup : QObject {
     Q_OBJECT
 public:
     BscanViewGroup() {};
+    /**
+     * @brief Add a view to the group.
+     * @param view the BscanGraphicsView to be added
+     */
     void addView(BscanGraphicsView* view) {
         connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), 
                 this, SIGNAL(horizontalValueChanged(int)));
@@ -109,6 +113,17 @@ public:
                 view->verticalScrollBar(), SLOT(setValue(int)));
         connect(view, SIGNAL(zoomChanged(float)), this, SIGNAL(zoomChanged(float)));
         connect(this, SIGNAL(zoomChanged(float)), view, SLOT(setZoom(float)));
+    }
+    /**
+     * @brief Remove a view from the group. If the view specified is not in
+     * the group, this method has no effect.
+     * @param view the BscanGraphicsView to be removed. 
+     */
+    void removeView(BscanGraphicsView* view) {
+        // Just disconnect all signals in both directions between this and
+        // the specified view.
+        disconnect(this, 0, view, 0);
+        disconnect(view, 0, this, 0);
     }
 signals:
     void horizontalValueChanged(int);

@@ -53,7 +53,6 @@ BscanRay.h
 BscanWidget.h
 ColorTable.h
 DisplayLimitDialog.h
-FakeDataThread.h
 GateLimitDialog.h
 RayGraphicsItem.h
 TimeSpanDialog.h

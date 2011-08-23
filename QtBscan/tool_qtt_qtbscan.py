@@ -7,7 +7,6 @@ import eol_scons
 tools = Split("""
 qt4
 qtt_qtconfig
-hcrdds
 doxygen
 boost_program_options
 """)

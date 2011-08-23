@@ -19,8 +19,8 @@
 #include <QObject>
 #include <QPrinter>
 
-class QtProductReader;
 class BscanGraphicsScene;
+class BscanRay;
 
 /**
  * @brief Main window class for a bscan display.
@@ -29,7 +29,8 @@ class BscanGraphicsScene;
 class BscanMainWindow : public QMainWindow {
     Q_OBJECT
 public:
-    BscanMainWindow(QtProductReader *productReader);
+    BscanMainWindow();
+    virtual ~BscanMainWindow();
     bool isPaused() const;
 public slots:
     /**
@@ -65,6 +66,11 @@ public slots:
      * @param zoom the zoom factor
      */
     void setZoom(float zoom);
+    /**
+     * @brief Slot which accepts an incoming ray for addition to the display.
+     * @param ray the BscanRay to be added to the display
+     */
+    void addRay(const BscanRay & ray);
 protected slots:
     void _showLocAndData(double time, unsigned int gate, const QString &varName, 
             float value);
@@ -86,14 +92,16 @@ protected slots:
 private:
     BscanGraphicsView* _view(int index) const { return _bscans[index]->view(); }
     BscanGraphicsScene* _scene(int index) const { return _view(index)->scene(); }
-    int _nBscans() const { return _bscans.size(); }
+    unsigned int _nBscans() const { return _bscans.size(); }
 private:
     Ui::Bscan _ui;
     GateLimitDialog *_glDialog;
     TimeSpanDialog *_tsDialog;
-    QtProductReader *_productReader;
-    std::vector<BscanWidget*> _bscans;
-    BscanWidgetGroup _bscanGroup;
+    std::vector<BscanWidget *> _bscans;
+    // Put all of our BscanWidget instances into a BscanWidgetGroup, so they 
+    // share gate limits, time limits, pause state, zoom state, and 
+    // horizontal/vertical scroll settings
+    BscanWidgetGroup _bwGroup;
     // If a printer is chosen via the dialog popped up during print(), keep
     // it around so that the user will get the same choice by default next
     // time.

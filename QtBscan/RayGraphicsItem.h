@@ -11,9 +11,9 @@
 #include <map>
 #include <set>
 #include <QGraphicsItem>
-namespace RadarDDS {
-    class ProductSet;
-}
+
+class BscanRay;
+
 /**
  * RayGraphicsItem is a QGraphicsItem for representing radar rays.  It 
  * generates as a simple rectangular view appropriate for time-height/bscan 
@@ -22,11 +22,11 @@ namespace RadarDDS {
 class RayGraphicsItem : public QGraphicsItem {
 public:
     /**
-     * Construct a RayGraphicsItem from a RadarDDS::ProductSet
+     * Construct a RayGraphicsItem from a BscanRay
      * @param ray a RadarDDS:ProductSet containing the data for this item
      * @param displayVar the name of the variable to be displayed
      */
-    RayGraphicsItem(RadarDDS::ProductSet &ray, QString displayVar = "");
+    RayGraphicsItem(const BscanRay &ray, QString displayVar = "");
     RayGraphicsItem(const RayGraphicsItem &srcItem);
     virtual ~RayGraphicsItem() {}
     
@@ -67,8 +67,8 @@ public:
      */
     void setDisplayVar(QString varName);
     /**
-     * Return a std::map from our var names to their units.
-     * @return a std::map mapping var names to their units strings
+     * Return a QStringList with the names of the available variables.
+     * @return a QStringList with the names of the available variables.
      */
     QStringList varNames() const {
         QStringList names;

@@ -12,23 +12,23 @@
 #include <QPainter>
 
 #include "BscanGraphicsScene.h"
+#include "BscanRay.h"
 #include "RayGraphicsItem.h"
 
 /*
  * Basic constructor
  */
-BscanGraphicsScene::BscanGraphicsScene(QtProductReader *productReader, 
-        unsigned int timeSpan) : 
-    _productReader(productReader),
+BscanGraphicsScene::BscanGraphicsScene(unsigned int timeSpan, 
+        const std::string & varName, const std::string & ctFileName) : 
     _sceneStartTime(0),
     _timeSpan(timeSpan), 
     _minGate(0), 
     _maxGate(0),
     _lastScrubTime(0),
     _isPaused(false),
-    _displayVar("DZ"),
+    _displayVar(varName.c_str()),
     _displayVarUnits(""),
-    _colorTable(83, 92, "eldoraDbz.ct") {
+    _colorTable(83, 92, ctFileName.c_str()) {
     // Set up our connections
     initConnections_();
     // update our scene rect
@@ -39,7 +39,6 @@ BscanGraphicsScene::BscanGraphicsScene(QtProductReader *productReader,
  * Copy constructor
  */
 BscanGraphicsScene::BscanGraphicsScene(const BscanGraphicsScene & srcScene) :
-    _productReader(srcScene._productReader),
     _sceneStartTime(srcScene._sceneStartTime),
     _timeSpan(srcScene._timeSpan),
     _minGate(srcScene._minGate),
@@ -73,17 +72,6 @@ BscanGraphicsScene::~BscanGraphicsScene() {
 
 void
 BscanGraphicsScene::initConnections_() {
-    // Connect to accept data from the product reader
-    //
-    // For this we seem to need Qt 4.5 or later.  As late as (at least) Qt 4.2,
-    // newItem() signals from _productRead don't seem to make it to our
-    // connected addProductSet() slot.  The source of this problem is unclear.
-#if QT_VERSION < 0x040500
-#  error "Qt 4.5 or later is required!"
-#endif
-    connect(_productReader, SIGNAL(newItem(RadarDDS::ProductSet)),
-            this, SLOT(addProductSet(RadarDDS::ProductSet)));
-    
     // Resend changed() signals from our color table as local
     // colorTableChanged() signals
     connect(&_colorTable, SIGNAL(changed()), this, SIGNAL(colorTableChanged()));
@@ -121,9 +109,9 @@ BscanGraphicsScene::timeSpan() const {
 }
 
 void
-BscanGraphicsScene::addProductSet(RadarDDS::ProductSet ps) {
-    double time = ps.products[0].hskp.timetag * 1.0e-6;
-    int oldNGates = nGates();	// gate count from our previous ray
+BscanGraphicsScene::addRay(const BscanRay & ray) {
+    double time = 1.0e-6 * ray.time();
+    unsigned int oldNGates = nGates();	// gate count from our previous ray
 
     // If this is our first ray, set our start time and set gate limits to 
     // show the whole ray
@@ -138,7 +126,7 @@ BscanGraphicsScene::addProductSet(RadarDDS::ProductSet ps) {
     }
     
     // Create a RayGraphicsItem from the ProductSet and add it to our list
-    RayGraphicsItem *newItem = new RayGraphicsItem(ps, _displayVar);
+    RayGraphicsItem *newItem = new RayGraphicsItem(ray, _displayVar);
     _itemMap[time] = newItem;
     // Our x coordinates run from zero to _timeSpan, so translate the new
     // ray into the correct x location. We do this to keep the x coordinates
@@ -147,8 +135,9 @@ BscanGraphicsScene::addProductSet(RadarDDS::ProductSet ps) {
 
     // If the gate count changes w.r.t. the previous ray, change limits
     // to show all gates of the new ray
-    if (newItem->nGates() != oldNGates)
+    if (ray.nGates() != oldNGates) {
         setGateLimits(0, newItem->nGates());
+    }
     
     // Now add this item to the scene
     addItem(newItem);

@@ -13,43 +13,36 @@
 
 #include "RayGraphicsItem.h"
 #include "BscanGraphicsScene.h"
+#include "BscanRay.h"
 #include "ColorTable.h"
-
-#include "hcrddsTypeSupportC.h"
 
 // Bad data value
 const float RayGraphicsItem::BadValue = HUGE_VAL;
 
-RayGraphicsItem::RayGraphicsItem(RadarDDS::ProductSet &ray, 
-        QString displayVar) {
-    // convert timetag (usecs since 1970-01-01 00:00:00 UTC) to 
-    // seconds since 1970-01-01 00:00:00 UTC
-    _time = 1.0e-6 * ray.products[0].hskp.timetag;
-    // dwell period calculation is for single prt only!
-    _dwellPeriod = ray.products[0].samples * ray.products[0].hskp.prt1;
+RayGraphicsItem::RayGraphicsItem(const BscanRay &ray, QString displayVar) {
+    // convert ray time (usecs since 1970-01-01 00:00:00 UTC) to seconds since 
+    // 1970-01-01 00:00:00 UTC
+    _time = 1.0e-6 * ray.time();
+    // dwell period
+    _dwellPeriod = ray.dwellPeriod();
     // For each var in the product set...
-    for (unsigned int v = 0; v < ray.products.length(); v++) {
-        // Get a reference to the RadarDDS::Product
-        RadarDDS::Product &p = ray.products[v];
-        // Name and units
-        QString varName = p.name.in();
-        _unitsMap[varName] = p.units.in();
+    for (unsigned int v = 0; v < ray.nProducts(); v++) {
+        std::string varName(ray.productName(v));
+        QString qVarName(varName.c_str());
+        _unitsMap[qVarName] = ray.productUnits(varName).c_str();
         // Set the gate count from the first var, and verify that other
         // vars have the same gate count.
         if (v == 0) {
-            _nGates = p.data.length();
+            _nGates = ray.nGates();
         } else {
-            if (p.data.length() != _nGates) {
+            if (ray.nGates() != _nGates) {
                 std::cerr << "RayGraphicsItem(): Gate count mismatch " << 
-                    p.data.length() << " != " << _nGates << std::endl;
+                    ray.nGates() << " != " << _nGates << std::endl;
                 exit(1);
             }
         }
         // Get the data for this var, in engineering units
-        _dataMap[varName] = std::vector<float>(_nGates);
-        for (unsigned int g = 0; g < _nGates; g++) {
-            _dataMap[varName][g] = p.data[g] * p.scale + p.offset;
-        }
+        _dataMap[qVarName] = ray.productData(v);
     }
     // Set our display var
     setDisplayVar(displayVar);

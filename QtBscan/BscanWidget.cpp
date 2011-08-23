@@ -71,37 +71,39 @@ static const uchar PauseImageData[] = {
 static const QImage *PauseImage = 0;
 
 
-BscanWidget::BscanWidget(QtProductReader *productReader) {
-    _scene = new BscanGraphicsScene(productReader);
+BscanWidget::BscanWidget() :
+    _view(),
+    _scene() {
     _init();
 }
-BscanWidget::BscanWidget(const BscanGraphicsScene & scene) {
-    _scene = new BscanGraphicsScene(scene);
+
+BscanWidget::BscanWidget(const BscanWidget & wTemplate) :
+    _view(),
+    _scene(wTemplate._scene) {
     _init();
 }
 
 BscanWidget::~BscanWidget() {
-    delete _scene;
-    delete _view;
     for (int i = 0; i < children().size(); i++)
         delete children()[i];
 }
 
 void
 BscanWidget::_init() {
-    connect(_scene, SIGNAL(colorTableChanged()), this, SLOT(_buildAnnotation()));
-    connect(_scene, SIGNAL(displayVarChanged(QString)), this, SLOT(_buildAnnotation()));
-    connect(_scene, SIGNAL(pauseStateChanged(bool)), this, SLOT(_buildAnnotation()));
-    connect(_scene, SIGNAL(unitsChanged()), this, SLOT(_buildAnnotation()));
+    // Connect signals so we update annotation whenever something interesting
+    // changes in the scene.
+    connect(&_scene, SIGNAL(colorTableChanged()), this, SLOT(_buildAnnotation()));
+    connect(&_scene, SIGNAL(displayVarChanged(QString)), this, SLOT(_buildAnnotation()));
+    connect(&_scene, SIGNAL(pauseStateChanged(bool)), this, SLOT(_buildAnnotation()));
+    connect(&_scene, SIGNAL(unitsChanged()), this, SLOT(_buildAnnotation()));
     
-    _view = new BscanGraphicsView();
-    _view->setScene(_scene);
+    _view.setScene(&_scene);
     
     _buildAnnotation();
     
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(&_annot);
-    layout->addWidget(_view);
+    layout->addWidget(&_view);
     setLayout(layout);
 }
 
@@ -125,7 +127,7 @@ BscanWidget::_buildAnnotation() {
     // Draw each color from the color table as a single pixel in a 
     // (1 x nColors) QImage
     //
-    const ColorTable &colorTable = _scene->colorTable();
+    const ColorTable &colorTable = _scene.colorTable();
     const QList<QColor> colors = colorTable.colors();
     int nColors = colors.size();
     QImage colorbarImg(1, nColors, QImage::Format_ARGB32);
@@ -171,8 +173,8 @@ BscanWidget::_buildAnnotation() {
     painter.drawText(11, 196 + textHeight / 2, valueString);
 
     // Rotated string with var name and units
-    QString varString = _scene->displayVar() + " (" + 
-        _scene->displayVarUnits() + ")";
+    QString varString = _scene.displayVar() + " (" + 
+        _scene.displayVarUnits() + ")";
     painter.setFont(QFont("Helvetica", 8));
     QRect textRect = painter.boundingRect(QRect(), 0, varString);
     
@@ -183,7 +185,7 @@ BscanWidget::_buildAnnotation() {
     
     // If we're paused, draw a semi-transparent "pause" symbol in the 
     // middle of our annotation.
-    if (_scene->isPaused()) {
+    if (_scene.isPaused()) {
         if (! PauseImage)
             PauseImage = new QImage(QImage::fromData(PauseImageData, sizeof(PauseImageData)));
         painter.drawImage(annotImg.width() / 2 - PauseImage->width() / 2,
@@ -200,11 +202,17 @@ BscanWidget::keyPressEvent(QKeyEvent *event) {
     switch (event->key()) {
     // On 'p', toggle our paused state
     case Qt::Key_P:
-        _scene->setPaused(!_scene->isPaused());
+        _scene.setPaused(!_scene.isPaused());
         event->accept();
         break;
     // ignore everything else
     default:
         event->ignore();
     }
+}
+
+void
+BscanWidget::addRay(const BscanRay & ray) {
+    // Just pass this ray to our scene
+    _scene.addRay(ray);
 }

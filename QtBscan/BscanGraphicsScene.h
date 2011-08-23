@@ -13,11 +13,10 @@
 
 #include <QGraphicsScene>
 #include "ColorTable.h"
-#include "QtProductReader.h"
 
-class QAction;
 class QPainter;
 class RayGraphicsItem;
+class BscanRay;
 
 /**
  * BscanGraphicsScene is a subclass of QGraphicsScene which keeps a list of and 
@@ -28,10 +27,15 @@ class BscanGraphicsScene : public QGraphicsScene {
     Q_OBJECT
 public:
     /**
-     * Construct with the given time span and gate limits.
+     * Construct with the given time span, variable for display, and color
+     * table.
      * @param timeSpan the time span of the scene, in seconds
+     * @param varName the name of the variable to display
+     * @param ctFileName the name of the color table file to use
      */
-    BscanGraphicsScene(QtProductReader *productReader, unsigned int timeSpan = 30);
+    BscanGraphicsScene(unsigned int timeSpan = 30,
+            const std::string & varName = "DZ", 
+            const std::string & ctFileName = "eldoraDbz.ct");
     /**
      * Copy constructor.
      * @param scene the BscanGraphicsScene to be copied
@@ -131,13 +135,12 @@ public slots:
      */
     void setPaused(bool state);
     /**
-     * Use the given ProductSet to generate a new ray in the scene. If 
-     * necessary, the end time displayed by the scene will be adjusted to 
-     * accommodate the new ray and older rays outside the time span of the 
-     * scene will be deleted.
-     * @param ps the new HcrDDS::ProductSet
+     * Add the given BscanRay to the scene. If necessary, the end time displayed
+     * by the scene will be adjusted to accommodate the new ray and older rays 
+     * outside the time span of the scene will be deleted.
+     * @param ray the new BscanRay 
      */
-    void addProductSet(RadarDDS::ProductSet ps);
+    void addRay(const BscanRay & ray);
     /**
      * Set time limits of the scene
      * @param startTime start time of the scene, in seconds since 1970-01-01
@@ -206,8 +209,6 @@ signals:
      */
     void colorTableChanged();
 private:
-    // Our product reader (which supplies us data)
-    QtProductReader *_productReader;
     // Map from time to RayGraphicsItem-s
     typedef std::map<double,RayGraphicsItem*> ItemMap_t;
     ItemMap_t _itemMap;
@@ -223,13 +224,18 @@ private:
 };
 
 /**
- * Class which links BscanGraphicsScene-s so that they share gate limits, 
- * time limits, and pause state.
+ * @brief Class which links a set of BscanGraphicsScene instances so that they 
+ * share gate limits, time limits, and pause state. When one of these states 
+ * changes in one of the  * scenes, it is changed in all of them.
  */
 class BscanSceneGroup : QObject {
     Q_OBJECT
 public:
     BscanSceneGroup() {};
+    /**
+     * @brief Add a BscanGraphicsScene to the group.
+     * @param scene the BscanGraphicsScene to be added to the group.
+     */
     void addScene(BscanGraphicsScene* scene) {
         connect(scene, SIGNAL(gateLimitsChanged(unsigned int, unsigned int)),
                 this, SIGNAL(gateLimitsChanged(unsigned int, unsigned int)));
@@ -243,6 +249,17 @@ public:
                 this, SIGNAL(pauseStateChanged(bool)));
         connect(this, SIGNAL(pauseStateChanged(bool)), 
                 scene, SLOT(setPaused(bool)));
+    }
+    /**
+     * @brief Remove a BscanGraphicsScene to the group.
+     * @param scene the BscanGraphicsScene to be removed from the group. If
+     * the scene is not in the group, this method has no effect.
+     */
+    void removeScene(BscanGraphicsScene* scene) {
+        // Disconnect signals in both directions between this and the
+        // scene being removed.
+        disconnect(this, 0, scene, 0);
+        disconnect(scene, 0, this, 0);
     }
 signals:
     void gateLimitsChanged(unsigned int minGate, unsigned int maxGate);

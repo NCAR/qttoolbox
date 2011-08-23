@@ -15,11 +15,9 @@
 
 #include "BscanMainWindow.h"
 
-#include "QtProductReader.h"
 #include "ui_Bscan.h"
 
-BscanMainWindow::BscanMainWindow(QtProductReader *productReader) : 
-    _productReader(productReader),
+BscanMainWindow::BscanMainWindow() : 
     _mousePosLabel() {
     _ui.setupUi(this);
     // Remove the UI main frame's layout and set it to a QVBoxLayout
@@ -41,16 +39,29 @@ BscanMainWindow::BscanMainWindow(QtProductReader *productReader) :
     _tsDialog = new TimeSpanDialog(_scene(0));
 }
 
+BscanMainWindow::~BscanMainWindow() {
+    // Delete our instances of BscanWidget
+    for (unsigned int i = 0; i < _nBscans(); i++) {
+        delete(_bscans[i]);
+    }
+    // Delete the layout we created
+    delete _ui.frame->layout();
+}
+
 void 
 BscanMainWindow::addNewPlot() {
     // Create the new bscan and add it to our group to share settings
     BscanWidget *newBscan;
     if (_nBscans() == 0) {
-        newBscan = new BscanWidget(_productReader);
+        newBscan = new BscanWidget();
     } else {
-        newBscan = new BscanWidget(*_scene(0));
+        newBscan = new BscanWidget(*_bscans[0]);
     }
-    _bscanGroup.addBscanWidget(newBscan);
+    
+    _bscans.push_back(newBscan);
+    
+    // Add the widget to our BscanWidgetGroup so they all share settings
+    _bwGroup.addBscanWidget(newBscan);
     
     // Display data under mouse when reported by the BscanWidget's view
     connect(newBscan->view(), 
@@ -60,7 +71,6 @@ BscanMainWindow::addNewPlot() {
     
     // Add this widget to the UI's layout
     _ui.frame->layout()->addWidget(newBscan);
-    _bscans.push_back(newBscan);
     
     // Enable "Remove Plot" if we have more than one plot
     _ui.actionRemovePlot->setEnabled((_nBscans() > 1));
@@ -72,12 +82,13 @@ BscanMainWindow::removePlot() {
     if (_nBscans() == 1)
         return;
     
-    BscanWidget *lastBscan = _bscans[_nBscans() - 1];
+    BscanWidget *lastBscan = _bscans.at(_nBscans() - 1);
     _ui.frame->layout()->removeWidget(lastBscan);
-    delete(lastBscan);
+    _bwGroup.removeBscanWidget(lastBscan);
     _bscans.pop_back();
+    delete(lastBscan);
     
-    // Enable "Remove Plot" if we have more than one plot
+    // Disable "Remove Plot" if we have only one plot
     _ui.actionRemovePlot->setEnabled((_nBscans() > 1));
 }
 
@@ -86,8 +97,8 @@ BscanMainWindow::removePlot() {
  */
 void
 BscanMainWindow::print() {
-    QPrintDialog *printDialog = new QPrintDialog(&_printer);
-    if (printDialog->exec() == QDialog::Accepted) {
+    QPrintDialog printDialog(&_printer);
+    if (printDialog.exec() == QDialog::Accepted) {
         QPainter painter(&_printer);
         QPixmap pm = QPixmap::grabWidget(_ui.frame);
         painter.drawPixmap(QRect(0, 0, painter.device()->width(), 
@@ -143,5 +154,13 @@ BscanMainWindow::_showLocAndData(double time, unsigned int gate,
         QString label(varName + ": " + QString::number(value) + " @ gate " + 
                 QString::number(gate) + ", " + timeLabel);
         _mousePosLabel.setText(label);
+    }
+}
+
+void
+BscanMainWindow::addRay(const BscanRay & ray) {
+    // Pass this ray to each of our BscanWidget instances
+    for (unsigned int i = 0; i < _bscans.size(); i++) {
+        _bscans[i]->addRay(ray);
     }
 }

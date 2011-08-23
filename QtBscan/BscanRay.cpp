@@ -6,9 +6,12 @@
  */
 
 #include "BscanRay.h"
+#include <QMetaType>
+
+Q_DECLARE_METATYPE(BscanRay)
 
 /**
- * @brief Inner class _Product contains name, units, gate count, and data for a 
+ * @brief Inner class _Product contains name, units, and data for a 
  * product within a BScanRay.
  */
 class BscanRay::_Product {
@@ -18,18 +21,12 @@ public:
      * data.
      * @param name the name of the product
      * @param units a string naming the units of the product's data
-     * @param gateSpacing the gate spacing for the data, in meters
      * @param data a vector containing nGates values of data for this
      * product
      */
-    _Product(std::string name, std::string units, float gateSpacing,
-            const std::vector<double> & data);
-    virtual ~_Product();
-    /**
-     * @brief Return the gate count for the product
-     * @return the gate count for the product
-     */
-    unsigned int nGates() const { return((unsigned int)_data.size()); }
+    _Product(std::string name, std::string units, 
+            const std::vector<float> & data);
+    virtual ~_Product() {}
     /**
      * @brief Return the name of this product
      * @return the name of this product
@@ -44,54 +41,84 @@ public:
      * @brief Return a vector of this product's data
      * @return a vector of this product's data
      */
-    const std::vector<double> & data() const { return _data; }
-    /**
-     * @brief Return the product's data value for the selected gate
-     * @param gateNum the number of the selected gate
-     * @return the product's data value for the selected gate
-     * @throws out_of_range exception for a gate number which is out of
-     * range
-     */
-    double operator[](unsigned int gateNum) const { return _data[gateNum]; }
+    const std::vector<float> & data() const { return _data; }
 private:
-    unsigned int _nGates;
     std::string _name;
     std::string _units;
-    std::vector<double> _data;
+    std::vector<float> _data;
 };
 
 
-BscanRay::BscanRay(long long time, double dwellPeriod) :
+BscanRay::BscanRay(long long time, float lat, float lon, float alt,
+        float azimuth, float elevation, float dwellPeriod, 
+        unsigned int nGates, float gateSpacing) :
     _time(time),
-    _dwellPeriod(dwellPeriod) {
+    _lat(lat),
+    _lon(lon),
+    _alt(alt),
+    _azimuth(azimuth),
+    _elevation(elevation),
+    _dwellPeriod(dwellPeriod),
+    _nGates(nGates),
+    _gateSpacing(gateSpacing) {
+    // Register BscanRay as something we can ship via Qt signal.
+    qRegisterMetaType<BscanRay>();
 }
 
 BscanRay::~BscanRay() {
-    // TODO Auto-generated destructor stub
+}
+
+void
+BscanRay::addProduct(std::string name, std::string units,
+        const std::vector<float> & data) {
+    _products.push_back(new _Product(name, units, data));
 }
 
 bool
 BscanRay::hasProduct(std::string name) const {
-    return(_products.find(name) != _products.end());
-}
-
-std::vector<std::string>
-BscanRay::productNames() const {
-    std::vector<std::string> names;
-    // The keys from our _products map are the product names
-    for (std::map<std::string, _Product &>::const_iterator it = _products.begin();
-            it != _products.end(); it++) {
-        names.push_back((*it).first);
+    std::vector<_Product *>::const_iterator it;
+    for (it = _products.begin(); it != _products.end(); it++) {
+        if ((*it)->name() == name)
+            return true;
     }
-    return names;
+    return false;
 }
 
-BscanRay::_Product &
+BscanRay::_Product *
 BscanRay::_getProduct(std::string name) const {
-    std::map<std::string, _Product &>::const_iterator it = _products.find(name);
-    if (it == _products.end()) {
-        throw NoSuchProductException(name);
+    std::vector<_Product *>::const_iterator it;
+    for (it = _products.begin(); it != _products.end(); it++) {
+        if ((*it)->name() == name)
+            return(*it);
     }
-    return((*it).second);
+    throw NoSuchProductException(name);
 }
 
+std::string
+BscanRay::productName(unsigned int ndx) const {
+    return(_products[ndx]->name());
+}
+
+std::string
+BscanRay::productUnits(unsigned int ndx) const {
+    return(_products[ndx]->units());
+}
+std::string
+BscanRay::productUnits(std::string productName) const {
+    return(_getProduct(productName)->units());
+}
+const std::vector<float> &
+BscanRay::productData(unsigned int ndx) const {
+    return(_products[ndx]->data());
+}
+const std::vector<float> &
+BscanRay::productData(std::string productName) const {
+    return(_getProduct(productName)->data());
+}
+
+
+BscanRay::_Product::_Product(std::string name, std::string units, 
+        const std::vector<float> & data) : 
+        _name(name),
+        _units(units),
+        _data(data) {}

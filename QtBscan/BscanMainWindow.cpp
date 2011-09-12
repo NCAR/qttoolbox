@@ -101,8 +101,24 @@ BscanMainWindow::print() {
     if (printDialog.exec() == QDialog::Accepted) {
         QPainter painter(&_printer);
         QPixmap pm = QPixmap::grabWidget(_ui.frame);
-        painter.drawPixmap(QRect(0, 0, painter.device()->width(), 
-                painter.device()->height()), pm);
+        // Get the aspect ratio of the printer device and of the pixmap
+        int devWidth = painter.device()->width();
+        int devHeight = painter.device()->height();
+        float devAspect = float(devWidth) / devHeight;
+        float pmAspect = float(pm.width()) / pm.height();
+        // Select printer area to print the pixmap as large as possible
+        // while maintaining its aspect ratio.
+        int printWidth = devWidth;
+        int printHeight = devHeight;
+        if (pmAspect > devAspect) {
+            printHeight = printWidth / pmAspect;
+        } else {
+            printWidth = printHeight * pmAspect;
+        }
+        // Now print the pixmap. Set the print origin to center the image on
+        // the page.
+        painter.drawPixmap(QRect((devWidth - printWidth) / 2, 
+                (devHeight - printHeight) / 2, printWidth, printHeight), pm);
     }
 }
 

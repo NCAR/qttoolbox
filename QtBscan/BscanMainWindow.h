@@ -45,7 +45,8 @@ public slots:
     void removePlot();
     /**
      * @brief Print the UI's plot frame, popping up a dialog for selecting the
-     * print device.
+     * print device. The image will be printed as large as possible on the
+     * page while maintaining the correct aspect ratio 
      */
     void print();
     /**

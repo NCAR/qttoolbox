@@ -10,6 +10,7 @@
 
 #include <QList>
 #include <QColor>
+#include <cmath>
 
 class ColorTable : public QObject {
     Q_OBJECT
@@ -29,7 +30,9 @@ public:
      * @param value the value of interest.
      */
     const QColor & colorOf(double value) const {
-        if (value < _minValue) {
+        if (isnan(value)) {
+            return _tooLowColor;   // arbitrary choice here...
+        } else if (value < _minValue) {
             return _tooLowColor;
         } else if (value > _maxValue) {
             return _tooHighColor;

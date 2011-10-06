@@ -157,6 +157,7 @@ BscanGraphicsView::contextMenuEvent(QContextMenuEvent *event) {
     action = new QAction("eldoraVel.ct", this);
     action->setData(action->text());
     connect(action, SIGNAL(triggered()), scene(), SLOT(setColorTable()));
+    ctMenu.addAction(action);
     action = new QAction("jet.ct", this);
     action->setData(action->text());
     connect(action, SIGNAL(triggered()), scene(), SLOT(setColorTable()));

@@ -37,6 +37,12 @@ public:
             float azimuth, float elevation, float dwellPeriod, 
             unsigned int nGates, float gateSpacing);
     /**
+     * @brief Copy constructor
+     * @param ray the source BscanRay to be copied
+     */
+    BscanRay(const BscanRay & ray);
+    
+    /**
      * @brief Default constructor, required for registration as a QMetaType.
      */
     BscanRay() {}

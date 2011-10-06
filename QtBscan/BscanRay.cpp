@@ -65,7 +65,27 @@ BscanRay::BscanRay(long long time, float lat, float lon, float alt,
     qRegisterMetaType<BscanRay>();
 }
 
+BscanRay::BscanRay(const BscanRay & ray) :
+    _time(ray._time),
+    _lat(ray._lat),
+    _lon(ray._lon),
+    _alt(ray._alt),
+    _azimuth(ray._azimuth),
+    _elevation(ray._elevation),
+    _dwellPeriod(ray._dwellPeriod),
+    _nGates(ray._nGates),
+    _gateSpacing(ray._gateSpacing) {
+    // Copy over all of the products
+    for (int i = 0; i < ray._products.size(); i++) {
+        _products.push_back(new _Product(ray._products[i]->name(),
+                ray._products[i]->units(), ray._products[i]->data()));
+    }
+}
 BscanRay::~BscanRay() {
+    for (int i = 0; i < _products.size(); i++) {
+        delete _products[i];
+    }
+    _products.clear();
 }
 
 void
@@ -121,4 +141,5 @@ BscanRay::_Product::_Product(std::string name, std::string units,
         const std::vector<float> & data) : 
         _name(name),
         _units(units),
-        _data(data) {}
+        _data(data) {
+}

@@ -91,6 +91,7 @@ public:
                 _viewGroup.removeView(widget->view());
                 _sceneGroup.removeScene(widget->view()->scene());
                 _bscans.erase(it);
+		return;
             }
         }
     }

@@ -84,8 +84,6 @@ BscanWidget::BscanWidget(const BscanWidget & wTemplate) :
 }
 
 BscanWidget::~BscanWidget() {
-    for (int i = 0; i < children().size(); i++)
-        delete children()[i];
 }
 
 void

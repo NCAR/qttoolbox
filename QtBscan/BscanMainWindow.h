@@ -14,6 +14,8 @@
 #include "TimeSpanDialog.h"
 #include "ui_Bscan.h"
 
+#include "QtConfig.h"
+
 #include <QLabel>
 #include <QMainWindow>
 #include <QObject>
@@ -29,7 +31,7 @@ class BscanRay;
 class BscanMainWindow : public QMainWindow {
     Q_OBJECT
 public:
-    BscanMainWindow();
+    BscanMainWindow(QtConfig &config);
     virtual ~BscanMainWindow();
     bool isPaused() const;
 public slots:
@@ -108,6 +110,7 @@ private:
     // time.
     QPrinter _printer;
     QLabel _mousePosLabel;
+  QtConfig &_config;
 };
 
 #endif /* BSCANMAINWINDOW_H_ */

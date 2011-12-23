@@ -6,6 +6,7 @@
  */
 #include <cmath>
 #include <iostream>
+#include <algorithm>
 
 #include <QAction>
 #include <QDateTime>
@@ -15,6 +16,7 @@
 #include "BscanRay.h"
 #include "RayGraphicsItem.h"
 
+#ifdef NOTDEF
 /*
  * Basic constructor
  */
@@ -28,13 +30,31 @@ BscanGraphicsScene::BscanGraphicsScene(unsigned int timeSpan,
     _isPaused(false),
     _displayVar(varName.c_str()),
     _displayVarUnits(""),
-    _colorTable(83, 92, ctFileName.c_str()) {
+    _colorTable(83, 92, ctFileName.c_str()),
+    _config(NULL)
+ {
     // Set up our connections
     initConnections_();
     // update our scene rect
     updateSceneRect_();
 }
-
+#endif
+BscanGraphicsScene::BscanGraphicsScene(QtConfig &config):
+  _sceneStartTime(0),
+  _timeSpan(config.getInt("SCENE/TimeSpan", 30)),
+  _minGate(config.getInt("SCENE/MinGate", 0)),
+  _maxGate(config.getInt("SCENE/MaxGate",0)),
+  _lastScrubTime(0),
+  _isPaused(false),
+  _displayVar(config.getString("SCENE/VarName", "DZ").c_str()),
+  _displayVarUnits(""),
+  _colorTable(83, 92, config.getString("SCENE/ColorTable", "eldoraDbz.ct").c_str()),
+  _config(config){
+  // Set up our connections
+  initConnections_();
+  // update our scene rect
+  updateSceneRect_();
+}
 /*
  * Copy constructor
  */
@@ -46,7 +66,9 @@ BscanGraphicsScene::BscanGraphicsScene(const BscanGraphicsScene & srcScene) :
     _lastScrubTime(srcScene._lastScrubTime),
     _isPaused(srcScene._isPaused),
     _displayVarUnits(""),
-    _colorTable(srcScene._colorTable) {
+    _colorTable(srcScene._colorTable),
+    _config(srcScene._config) 
+{
     // Copy the rays from the source scene and add them here
     ItemMap_t srcItemMap = srcScene._itemMap;
     for (ItemMap_t::const_iterator it = srcItemMap.begin(); it != srcItemMap.end(); it++) {
@@ -115,8 +137,12 @@ BscanGraphicsScene::addRay(const BscanRay & ray) {
 
     // If this is our first ray, set our start time and set gate limits to 
     // show the whole ray
-    if (startTime() == 0)
+    // also - start displaying the first available product
+    if (startTime() == 0) {
         setStartTime_(time);
+        QString varName(ray.productName(0).c_str());
+        setDisplayVar(varName);
+    }
     
     // Potentially adjust our scene start time if we're not paused and the
     // new ray would be off the edge of the scene.
@@ -136,7 +162,16 @@ BscanGraphicsScene::addRay(const BscanRay & ray) {
     // If the gate count changes w.r.t. the previous ray, change limits
     // to show all gates of the new ray
     if (ray.nGates() != oldNGates) {
-        setGateLimits(0, newItem->nGates());
+      if (_maxGate) {
+        unsigned int nGates = newItem->nGates();
+        _maxGate = std::min(_maxGate, nGates);
+      } else {
+        _maxGate = newItem->nGates();
+      }
+      if (_minGate) {
+        _minGate = std::min(_minGate, _maxGate-1);
+      }
+      setGateLimits(_minGate, _maxGate);
     }
     
     // Now add this item to the scene
@@ -194,6 +229,8 @@ BscanGraphicsScene::setGateLimits(unsigned int minGate, unsigned int maxGate) {
     if (minGate == _minGate && maxGate == _maxGate)
         return;
     
+    _config.setInt("SCENE/MinGate", minGate);
+    _config.setInt("SCENE/MaxGate", maxGate);
     _minGate = minGate;
     _maxGate = maxGate;
 
@@ -207,6 +244,7 @@ BscanGraphicsScene::setTimeSpan(unsigned int newSpan) {
     if (newSpan == _timeSpan)
         return;
     
+    _config.setInt("SCENE/TimeSpan", newSpan);
     // If our time span is shrinking, set the end time of the scene to
     // the last ray time (if we have rays) or leave it unchanged
     double newStartTime = _sceneStartTime;
@@ -428,6 +466,11 @@ BscanGraphicsScene::setDisplayVar(QString varName) {
         RayGraphicsItem *rgi = it->second;
         rgi->setDisplayVar(_displayVar);
     }
+    std::string minKey = _displayVar.toStdString() + "/minValue";
+    std::string maxKey = _displayVar.toStdString() + "/maxValue";
+    double minValue = _config.getFloat(minKey, 0.0);
+    double maxValue = _config.getFloat(maxKey, 100.0);
+    _colorTable.setValueLimits(minValue, maxValue);
     emit displayVarChanged(_displayVar);
 }
 
@@ -436,6 +479,7 @@ BscanGraphicsScene::setColorTable() {
     QAction *action = qobject_cast<QAction*>(sender());
     if (action) {
     	QString ctName = action->data().toString();
+        _config.setString("SCENE/ColorTable", ctName.toStdString());
     	_colorTable = ColorTable(_colorTable.minimumValue(), 
     			_colorTable.maximumValue(), ctName);
     	emit colorTableChanged();

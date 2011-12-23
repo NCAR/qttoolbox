@@ -12,6 +12,7 @@
 #include <QWidget>
 #include "BscanGraphicsView.h"
 #include "BscanRay.h"
+#include "QtConfig.h"
 
 /**
  * @brief The BscanWidget is a frame containing a BscanGraphicsView (which displays 
@@ -25,7 +26,7 @@ public:
     /**
      * @brief Instantiate a BscanWidget.
      */
-    BscanWidget();
+    BscanWidget(QtConfig &config);
     /**
      * @brief Copy constructor to clone a given BscanWidget.
      * 
@@ -33,7 +34,7 @@ public:
      * state as the template, displaying the same data.
      * @param wTemplate the template BscanWidget to be cloned
      */
-    BscanWidget(const BscanWidget & wTemplate);
+  BscanWidget(const BscanWidget & wTemplate);
     virtual ~BscanWidget();
     
     /**

@@ -71,9 +71,9 @@ static const uchar PauseImageData[] = {
 static const QImage *PauseImage = 0;
 
 
-BscanWidget::BscanWidget() :
+BscanWidget::BscanWidget(QtConfig &config) :
     _view(),
-    _scene() {
+    _scene(config) {
     _init();
 }
 

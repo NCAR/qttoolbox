@@ -13,12 +13,15 @@
 #include <QPrinter>
 #include <QScrollBar>
 
+#include <QtConfig.h>
+
 #include "BscanMainWindow.h"
 
 #include "ui_Bscan.h"
 
-BscanMainWindow::BscanMainWindow() : 
-    _mousePosLabel() {
+BscanMainWindow::BscanMainWindow(QtConfig &config) : 
+  _mousePosLabel(),
+  _config(config) {
     _ui.setupUi(this);
     // Remove the UI main frame's layout and set it to a QVBoxLayout
     delete _ui.frame->layout();
@@ -53,9 +56,9 @@ BscanMainWindow::addNewPlot() {
     // Create the new bscan and add it to our group to share settings
     BscanWidget *newBscan;
     if (_nBscans() == 0) {
-        newBscan = new BscanWidget();
+        newBscan = new BscanWidget(_config);
     } else {
-        newBscan = new BscanWidget(*_bscans[0]);
+      newBscan = new BscanWidget(*_bscans[0]);
     }
     
     _bscans.push_back(newBscan);

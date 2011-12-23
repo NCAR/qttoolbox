@@ -11,6 +11,8 @@
 #include <map>
 #include <vector>
 
+#include <QtConfig.h>
+
 #include <QGraphicsScene>
 #include "ColorTable.h"
 
@@ -26,6 +28,7 @@ class BscanRay;
 class BscanGraphicsScene : public QGraphicsScene {
     Q_OBJECT
 public:
+#ifdef NOTDEF
     /**
      * Construct with the given time span, variable for display, and color
      * table.
@@ -36,6 +39,14 @@ public:
     BscanGraphicsScene(unsigned int timeSpan = 30,
             const std::string & varName = "DZ", 
             const std::string & ctFileName = "eldoraDbz.ct");
+#endif
+  /**
+     * Construct with time span, variable for display, and color
+     * table specified by config
+     * @param config - user configuration
+     */
+  BscanGraphicsScene(QtConfig &config);
+
     /**
      * Copy constructor.
      * @param scene the BscanGraphicsScene to be copied
@@ -160,6 +171,11 @@ public slots:
      */
     void setDisplayLimits(double minValue, double maxValue) {
         _colorTable.setValueLimits(minValue, maxValue);
+        // save user's display limits for current displayed variable
+        std::string minKey = _displayVar.toStdString() + "/minValue";
+        std::string maxKey = _displayVar.toStdString() + "/maxValue";
+        _config.setFloat(minKey, minValue);
+        _config.setFloat(maxKey, maxValue);
     }
     /**
      * Set the scene's color table based on the text of a QAction.
@@ -221,6 +237,7 @@ private:
     QString _displayVar;
     QString _displayVarUnits;
     ColorTable _colorTable;
+    QtConfig &_config;
 };
 
 /**

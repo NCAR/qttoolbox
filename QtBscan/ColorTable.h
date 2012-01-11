@@ -30,7 +30,7 @@ public:
      * @param value the value of interest.
      */
     const QColor & colorOf(double value) const {
-        if (isnan(value)) {
+        if (std::isnan(value)) {
             return _tooLowColor;   // arbitrary choice here...
         } else if (value < _minValue) {
             return _tooLowColor;

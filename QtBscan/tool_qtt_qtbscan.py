@@ -26,7 +26,10 @@ bscanShareDir = env.subst(os.path.join(env['INSTALL_SHAREDIR'], 'qtt_bscan'))
 f = open('BscanShareDir.h', 'w')
 f.write('#include <string>\n')
 f.write('// directory where shared files (e.g., color tables) are stored\n')
-f.write('static const std::string BscanShareDir = "' + bscanShareDir + '";\n')
+# Make sure we replace backslashes with double backslashes for C string syntax.
+# This is important in the Windows world, where backslash is the path separator!
+f.write('static const std::string BscanShareDir = "' + 
+        bscanShareDir.replace('\\','\\\\') + '";\n')
 f.close()
 
 # This will create the ui_*.h files

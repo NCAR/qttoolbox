@@ -8,7 +8,6 @@ tools = Split("""
 qt4
 qtt_qtconfig
 doxygen
-boost_program_options
 """)
 
 env = Environment(tools = ['default'] + tools)

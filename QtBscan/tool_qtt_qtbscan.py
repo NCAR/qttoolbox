@@ -5,22 +5,29 @@ import re
 import eol_scons
 
 tools = Split("""
+prefixoptions
 qt4
 qtt_qtconfig
 doxygen
 """)
 
 env = Environment(tools = ['default'] + tools)
+env.AppendUnique(CPPFLAGS = ['-g', '-O0'])
 
 qt4modules = ['QtCore','QtGui']
 env.EnableQt4Modules(qt4modules)
 
-# Shared files (e.g., colortable files) will be installed in bscanShareDir,
-# which is <INSTALL_DIR>/share/bscan
-bscanShareDir = os.path.join(env['INSTALL_SHAREDIR'], 'bscan')
+# The directory where shared files (e.g., color tables) for QtBscan will be
+# installed
+bscanShareDir = env.subst(os.path.join(env['INSTALL_SHAREDIR'], 'qtt_bscan'))
 
-# Put in a preprocessor macro defining BSCAN_SHAREDIR
-env.AppendUnique(CPPDEFINES = ['BSCAN_SHAREDIR=\\"' + bscanShareDir + '\\"'])
+# Create BscanShareDir.h, which holds a string with the path to installed 
+# shared files for QtBscan.
+f = open('BscanShareDir.h', 'w')
+f.write('#include <string>\n')
+f.write('// directory where shared files (e.g., color tables) are stored\n')
+f.write('static const std::string BscanShareDir = "' + bscanShareDir + '";\n')
+f.close()
 
 # This will create the ui_*.h files
 uifiles = Split("""
@@ -82,9 +89,6 @@ tooldir = env.Dir('.').srcnode().abspath    # this directory
 
 def qtt_qtbscan(env):
     env.AppendUnique(CPPPATH = [tooldir])
-    # add -DBSCAN_SHAREDIR=<share_dir> to compiles so that source knows where 
-    # to look for shared files (e.g., colortables)
-    env.AppendUnique(CPPDEFINES = ['BSCAN_SHAREDIR=\\"' + bscanShareDir + '\\"'])
     env.AppendLibrary('qtbscan')
     env.AppendDoxref('qttoolbox_QtBscan')
     env.Require(tools)

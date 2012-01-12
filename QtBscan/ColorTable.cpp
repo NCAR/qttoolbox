@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include "ColorTable.h"
+#include "BscanShareDir.h"
 #include <QFile>
 #include <QStringList>
 #include <QTextStream>
@@ -17,10 +18,10 @@ ColorTable::ColorTable(double minValue, double maxValue, QString name,
         _maxValue(maxValue),
         _tooLowColor(tooLowColor),
         _tooHighColor(tooHighColor) {
-    // Path list for finding color tables: check BSCAN_SHAREDIR, then just
+    // Path list for finding color tables: check BscanShareDir, then just
     // try the unmunged filename
     QStringList searchPath;
-    searchPath << BSCAN_SHAREDIR << "";
+    searchPath << BscanShareDir.c_str() << "";
     
     QString testedFiles;    // keep a list of file names we've tested
 
@@ -137,10 +138,10 @@ ColorTable::operator=(const ColorTable& src) {
 bool
 ColorTable::colorTableFileExists(QString name, bool verbose, 
 		QString *fullPath) {
-    // Path list for finding color tables: check BSCAN_SHAREDIR, then just
+    // Path list for finding color tables: check BscanShareDir, then just
     // try the unmunged filename
     QStringList searchPath;
-    searchPath << BSCAN_SHAREDIR << "";
+    searchPath << BscanShareDir.c_str() << "";
     
     QString testedFiles;    // keep a list of file names we've tested
 

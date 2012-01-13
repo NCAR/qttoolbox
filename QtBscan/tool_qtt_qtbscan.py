@@ -19,17 +19,17 @@ env.EnableQt4Modules(qt4modules)
 
 # The directory where shared files (e.g., color tables) for QtBscan will be
 # installed
-bscanShareDir = env.subst(os.path.join(env['INSTALL_SHAREDIR'], 'qtt_bscan'))
+bscanShareDir = env.subst(os.path.join(env['INSTALL_SHAREDIR'], 'qtt_qtbscan'))
 
 # Create BscanShareDir.h, which holds a string with the path to installed 
 # shared files for QtBscan.
 f = open('BscanShareDir.h', 'w')
 f.write('#include <string>\n')
 f.write('// directory where shared files (e.g., color tables) are stored\n')
-# Make sure we replace backslashes with double backslashes for C string syntax.
-# This is important in the Windows world, where backslash is the path separator!
+# Make sure we replace backslashes with slashes for ANSI C path syntax, which
+# should work with C system calls under all OSes.
 f.write('static const std::string BscanShareDir = "' + 
-        bscanShareDir.replace('\\','\\\\') + '";\n')
+        bscanShareDir.replace('\\','/') + '";\n')
 f.close()
 
 # This will create the ui_*.h files
@@ -84,7 +84,7 @@ for file in os.listdir('colortables'):
 # INSTALL_DIR/share/bscan
 ct_targets = []
 for file in colortables:
-    ct_targets += env.InstallShare('bscan', file)
+    ct_targets += env.InstallShare('qtt_qtbscan', file)
 Default(ct_targets)
 
 # Finally, the tool section...

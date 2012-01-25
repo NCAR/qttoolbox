@@ -5,6 +5,9 @@
  *      Author: burghart
  */
 #include <cmath>
+#include <csignal>
+#include <cerrno>
+#include <cstring>
 #include <iostream>
 #include <QDateTime>
 #include <QLabel>
@@ -100,7 +103,20 @@ BscanMainWindow::removePlot() {
  */
 void
 BscanMainWindow::print() {
-    QPrintDialog printDialog(&_printer);
+    // Ignore possible SIGPIPE when instantiating QPrintDialog
+    struct sigaction oldAction;
+    struct sigaction newAction;
+    newAction.sa_handler = SIG_IGN;
+    newAction.sa_flags = 0;
+    sigemptyset(&(newAction.sa_mask));
+    if (sigaction(SIGPIPE, &newAction, &oldAction) < 0) {
+        std::cerr << __PRETTY_FUNCTION__ << 
+                " failed to setup SIGPIPE ignore: " << strerror(errno) << 
+                std::endl;
+    }
+    
+    QPrintDialog printDialog(&_printer, this);
+        
     if (printDialog.exec() == QDialog::Accepted) {
         QPainter painter(&_printer);
         QPixmap pm = QPixmap::grabWidget(_ui.frame);
@@ -123,6 +139,9 @@ BscanMainWindow::print() {
         painter.drawPixmap(QRect((devWidth - printWidth) / 2, 
                 (devHeight - printHeight) / 2, printWidth, printHeight), pm);
     }
+    
+    // Restore the previous SIGPIPE handler
+    sigaction(SIGPIPE, &oldAction, 0);
 }
 
 void

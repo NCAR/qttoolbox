@@ -22,8 +22,8 @@ public:
     /**
      * @brief Create a ray from the given time and origin location, pointing angle,
      * and gate geometry.
-     * @param time long long ray time in microseconds since 1970-01-01
-     * 00:00:00 UTC
+     * @param time long long ray time at the center of the dwell period, in 
+     *      microseconds since 1970-01-01 00:00:00 UTC
      * @param lat the latitude of the ray's origin, in degrees
      * @param lon the longitude of the ray's origin, in degrees
      * @param alt the altitude of the ray's origin, in meters MSL
@@ -50,10 +50,10 @@ public:
     virtual ~BscanRay();
     
     /**
-     * @brief Return the time of this ray, in microseconds since 1970-01-01 
-     * 00:00:00 UTC
-     * @return the time of this ray, in microseconds since 1970-01-01 
-     * 00:00:00 UTC
+     * @brief Return the time at the middle of the dwell period of this ray, 
+     * in microseconds since 1970-01-01 00:00:00 UTC
+     * @return the time at the middle of the dwell period of this ray, in 
+     * microseconds since 1970-01-01 00:00:00 UTC
      */
     long long time() const { return _time; }
     /**

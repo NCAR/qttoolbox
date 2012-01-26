@@ -31,6 +31,10 @@ BscanGraphicsView::BscanGraphicsView(QWidget *parent) :
     setMinimumSize(400, 200);
     // Allow for getting bigger, but not for shrinking below our minimum size
     setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    // MinimalViewportUpdate (the default) doesn't play well with 
+    // BscanGraphicsScene's changes in its foreground. Use FullViewportUpdate 
+    // instead.
+    setViewportUpdateMode(FullViewportUpdate);
 }
 
 BscanGraphicsView::~BscanGraphicsView() {

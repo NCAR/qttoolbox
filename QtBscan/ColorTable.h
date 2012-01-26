@@ -12,9 +12,26 @@
 #include <QColor>
 #include <cmath>
 
+/**
+ * @brief ColorTable provides a mapping between a range of values and a defined
+ * list of colors. 
+ */
 class ColorTable : public QObject {
     Q_OBJECT
 public:
+    /**
+     * @brief ColorTable constructor.
+     * @param minValue The minimum value which will map into the list of 
+     * colors.
+     * @param maxValue the maximum value which will map into the list of 
+     * colors
+     * @param fileName the name of the file defining the list of colors in the
+     * color table
+     * @param tooLowColor the color to be returned for values below minValue
+     * (default: black)
+     * @param tooHighColor the color to be returned for values above maxValue
+     * (default: red)
+     */
     ColorTable(double minValue, double maxValue, QString fileName = "",
             QColor tooLowColor = QColor(0, 0, 0), 
             QColor tooHighColor = QColor(255, 0, 0));

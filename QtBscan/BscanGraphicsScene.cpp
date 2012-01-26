@@ -6,10 +6,12 @@
  */
 #include <cmath>
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 
 #include <QAction>
 #include <QDateTime>
+#include <QGraphicsView>
 #include <QPainter>
 
 #include "BscanGraphicsScene.h"
@@ -39,17 +41,18 @@ BscanGraphicsScene::BscanGraphicsScene(unsigned int timeSpan,
     updateSceneRect_();
 }
 #endif
-BscanGraphicsScene::BscanGraphicsScene(QtConfig &config):
+BscanGraphicsScene::BscanGraphicsScene(QtConfig &config) :
+  QGraphicsScene(),
+  _deleteLaterList(),
   _sceneStartTime(0),
   _timeSpan(config.getInt("SCENE/TimeSpan", 30)),
   _minGate(config.getInt("SCENE/MinGate", 0)),
   _maxGate(config.getInt("SCENE/MaxGate",0)),
-  _lastScrubTime(0),
   _isPaused(false),
   _displayVar(config.getString("SCENE/VarName", "DZ").c_str()),
-  _displayVarUnits(""),
+  _displayVarUnits(),
   _colorTable(83, 92, config.getString("SCENE/ColorTable", "eldoraDbz.ct").c_str()),
-  _config(config){
+  _config(config) {
   // Set up our connections
   initConnections_();
   // update our scene rect
@@ -59,25 +62,24 @@ BscanGraphicsScene::BscanGraphicsScene(QtConfig &config):
  * Copy constructor
  */
 BscanGraphicsScene::BscanGraphicsScene(const BscanGraphicsScene & srcScene) :
+    _deleteLaterList(),
     _sceneStartTime(srcScene._sceneStartTime),
     _timeSpan(srcScene._timeSpan),
     _minGate(srcScene._minGate),
     _maxGate(srcScene._maxGate),
-    _lastScrubTime(srcScene._lastScrubTime),
     _isPaused(srcScene._isPaused),
-    _displayVarUnits(""),
+    _displayVarUnits(),
     _colorTable(srcScene._colorTable),
     _config(srcScene._config) 
 {
-    // Copy the rays from the source scene and add them here
-    ItemMap_t srcItemMap = srcScene._itemMap;
-    for (ItemMap_t::const_iterator it = srcItemMap.begin(); it != srcItemMap.end(); it++) {
-        double rayTime = it->first;
-        RayGraphicsItem *srcItem = it->second;
-        RayGraphicsItem *newItem = new RayGraphicsItem(*srcItem);
-        _itemMap[rayTime] = newItem;
-        addItem(newItem);
+    // Copy the BscanRay map
+    for (BscanRayMap_t::const_iterator it = srcScene._bscanRayMap.begin(); 
+            it != srcScene._bscanRayMap.end(); it++) {    
+        double time = it->first;
+        BscanRay * ray = it->second;
+        _bscanRayMap[time] = new BscanRay(*ray);
     }
+    // Items will be added by setDisplayVar()
     setDisplayVar(srcScene._displayVar);
     // Set up our connections
     initConnections_();
@@ -86,10 +88,17 @@ BscanGraphicsScene::BscanGraphicsScene(const BscanGraphicsScene & srcScene) :
 }
 
 BscanGraphicsScene::~BscanGraphicsScene() {
-    for (ItemMap_t::iterator it = _itemMap.begin(); it != _itemMap.end(); it++) {
-        RayGraphicsItem *rgi = it->second;
-        delete(rgi);
+    for (BscanRayMap_t::iterator it = _bscanRayMap.begin(); 
+            it != _bscanRayMap.end(); it++) {
+        BscanRay *ray = it->second;
+        delete(ray);
     }
+    _bscanRayMap.clear();
+    // Clear up items we were holding for later deletion
+    for (int i = 0; i < _deleteLaterList.size(); i++) {
+        delete(_deleteLaterList[i]);
+    }
+    _deleteLaterList.clear();
 }
 
 void
@@ -115,11 +124,11 @@ BscanGraphicsScene::updateSceneRect_() {
  */
 unsigned int
 BscanGraphicsScene::nGates() const {
-    if (_itemMap.empty())
+    if (_bscanRayMap.empty())
         return 1;
     
-    ItemMap_t::const_reverse_iterator rit = _itemMap.rbegin();
-    if (rit != _itemMap.rend())
+    BscanRayMap_t::const_reverse_iterator rit = _bscanRayMap.rbegin();
+    if (rit != _bscanRayMap.rend())
         return rit->second->nGates();
     else
         return 1;
@@ -135,6 +144,9 @@ BscanGraphicsScene::addRay(const BscanRay & ray) {
     double time = 1.0e-6 * ray.time();
     unsigned int oldNGates = nGates();	// gate count from our previous ray
 
+    // Add this ray to our map of BscanRay-s
+    _bscanRayMap[time] = new BscanRay(ray);
+    
     // If this is our first ray, set our start time and set gate limits to 
     // show the whole ray
     // also - start displaying the first available product
@@ -151,13 +163,14 @@ BscanGraphicsScene::addRay(const BscanRay & ray) {
         setStartTime_(time - 0.9 * _timeSpan);
     }
     
-    // Create a RayGraphicsItem from the ProductSet and add it to our list
-    RayGraphicsItem *newItem = new RayGraphicsItem(ray, _displayVar);
-    _itemMap[time] = newItem;
+    // Create a RayGraphicsItem from the BscanRay and add it to our scene
+    RayGraphicsItem * newItem = new RayGraphicsItem(ray, _displayVar, _colorTable);
+    addItem(newItem);
+
     // Our x coordinates run from zero to _timeSpan, so translate the new
     // ray into the correct x location. We do this to keep the x coordinates
     // in the range +/- 2^15, because of limits in Qt's raster paint engine.
-    newItem->translate(-_sceneStartTime, 0);
+    newItem->moveBy(-_sceneStartTime, 0);
 
     // If the gate count changes w.r.t. the previous ray, change limits
     // to show all gates of the new ray
@@ -174,44 +187,13 @@ BscanGraphicsScene::addRay(const BscanRay & ray) {
       setGateLimits(_minGate, _maxGate);
     }
     
-    // Now add this item to the scene
-    addItem(newItem);
-    
-    // The units of our latest item become *our* units
-    if (newItem->displayVarUnits() != _displayVarUnits) {
-        _displayVarUnits = newItem->displayVarUnits();
+    // The units of our latest ray become *our* units
+    std::string newUnits = ray.hasProduct(_displayVar.toStdString()) ?
+        ray.productUnits(_displayVar.toStdString()) : "";
+    if (newUnits != _displayVarUnits.toStdString()) {
+        _displayVarUnits = QString(newUnits.c_str());
         emit unitsChanged();
     }
-}
-
-void
-BscanGraphicsScene::scrubRaysBefore_(double scrubTime) {
-    if (_itemMap.empty())
-        return;
-
-    // Remove items from the scene which are between the last scrub 
-    // time and this scrub time
-    ItemMap_t::iterator startIt = _itemMap.upper_bound(_lastScrubTime);
-    ItemMap_t::iterator endIt = _itemMap.lower_bound(scrubTime);        
-    for (ItemMap_t::iterator it = startIt; it != endIt; it++) {
-        removeItem(it->second);
-    }
-
-    // XXX SLIGHT KLUGE HERE
-    // Now actually delete items which are earlier than our *last* scrub 
-    // time. Waiting until now gives a little time to those who get an 
-    // item list via our items() methods and are dealing with those items.
-    //
-    // This seems to be necessary for Qt4.4.3, while just doing the simple
-    // removeItem(item) immediately followed by delete(item) in the loop
-    // above works for at least Qt4.2.1 and Qt4.5.2.
-    endIt = _itemMap.lower_bound(_lastScrubTime);
-    for (ItemMap_t::iterator it = _itemMap.begin(); it != endIt; it++) {
-        delete(it->second);
-    }
-    _itemMap.erase(_itemMap.begin(), endIt);
-
-    _lastScrubTime = scrubTime;
 }
 
 void
@@ -249,8 +231,8 @@ BscanGraphicsScene::setTimeSpan(unsigned int newSpan) {
     // the last ray time (if we have rays) or leave it unchanged
     double newStartTime = _sceneStartTime;
     if (newSpan < _timeSpan) {
-        double newEndTime = (_itemMap.size() > 0) ? 
-                _itemMap.rbegin()->first : endTime();
+        double newEndTime = (_bscanRayMap.size() > 0) ? 
+                _bscanRayMap.rbegin()->first : endTime();
         newStartTime = newEndTime - newSpan;
     }
     
@@ -265,29 +247,46 @@ BscanGraphicsScene::setStartTime_(double newStart) {
 void
 BscanGraphicsScene::setTimeLimits(double newStartTime, 
         unsigned int newTimeSpan) {
-    if (newStartTime == _sceneStartTime && newTimeSpan == _timeSpan)
+    bool startChanged = (_sceneStartTime != newStartTime);
+    bool spanChanged = (_timeSpan != newTimeSpan);
+    if (! startChanged && ! spanChanged)
         return;
 
-    // If our start time changes...
-    if (newStartTime != _sceneStartTime) {
-        // Clean out rays before our new start time
-        scrubRaysBefore_(newStartTime);
-        
-        // Time shift our items to reflect the new start time.  This is
-        // all due to a limitation in Qt's raster paint engine that requires
-        // us to keep our coordinate limits in the range +/- 2^15...
-        double deltaTime = newStartTime - _sceneStartTime;
-        for (ItemMap_t::const_iterator it = _itemMap.begin(); 
-            it != _itemMap.end(); it++) {
-            RayGraphicsItem *ray = it->second;
-            ray->translate(-deltaTime, 0);
-        }
-    }
     _sceneStartTime = newStartTime;
     _timeSpan = newTimeSpan;
     updateSceneRect_();
     
+    // If our start time changes...
+    if (startChanged) {
+        // Clean out rays before our new start time
+        BscanRayMap_t::iterator startIt = _bscanRayMap.begin();
+        BscanRayMap_t::iterator endIt = _bscanRayMap.lower_bound(_sceneStartTime);
+        // First delete all of the dynamically allocated BscanRay-s before the
+        // start time. After that's done, we can erase the dangling pointers 
+        // from _bscanRayMap.
+        for (BscanRayMap_t::iterator it = startIt; it != endIt; it++) {
+            delete(it->second);
+        }
+        _bscanRayMap.erase(startIt, endIt);
+
+        // Remove all of our old RayGraphicsItem-s and regenerate new ones
+        // based on our current set of BscanRay-s
+        updateRayGraphicsItems_();
+    }
+
     emit timeLimitsChanged(_sceneStartTime, _timeSpan);
+}
+
+void 
+BscanGraphicsScene::setDisplayLimits(double minValue, double maxValue) {
+    _colorTable.setValueLimits(minValue, maxValue);
+    // save user's display limits for current displayed variable
+    std::string minKey = _displayVar.toStdString() + "/minValue";
+    std::string maxKey = _displayVar.toStdString() + "/maxValue";
+    _config.setFloat(minKey, minValue);
+    _config.setFloat(maxKey, maxValue);
+    
+    updateRayGraphicsItems_();
 }
 
 void
@@ -388,7 +387,7 @@ BscanGraphicsScene::drawForeground(QPainter *painter, const QRectF &rect) {
     
     // Find the x-axis label step value which will give us a good number of 
     // labels, without making things too dense
-    const int goodXSteps[] = { 1, 2, 5, 10, 30, 60, 120, 300 };
+    const int goodXSteps[] = { 1, 2, 5, 10, 15, 30, 60, 120, 300, 600, 900, 1800 };
     labelStep = 100000000;  // default to *huge*
     maxLabels = devWidth / 100 + 1;  // allow at least 100 pixels per label
     for (unsigned int i = 0; i < (sizeof(goodXSteps) / sizeof(*goodXSteps)); i++) {
@@ -418,7 +417,7 @@ BscanGraphicsScene::drawForeground(QPainter *painter, const QRectF &rect) {
         
         // Draw the text label, with a surrounding filled box.
         int alignmentFlags = Qt::AlignBottom | Qt::AlignHCenter;
-        QString label = QDateTime::fromTime_t(i).toString("hh:mm:ss");
+        QString label = QDateTime::fromTime_t(i).toString("yyyy-MM-dd\nhh:mm:ss");
         QPointF labelLoc = worldToDev.map(QPointF(sceneX, sceneRect().bottom()));
         QRectF pixTextRect = painter->boundingRect(QRectF(labelLoc, QSizeF(0, 0)), 
                 alignmentFlags, label);
@@ -449,11 +448,17 @@ BscanGraphicsScene::drawForeground(QPainter *painter, const QRectF &rect) {
 QStringList
 BscanGraphicsScene::varNames() const {
     // Return the list of vars from the latest ray we have
-    ItemMap_t::const_reverse_iterator rit = _itemMap.rbegin();
-    if (rit == _itemMap.rend())
+    BscanRayMap_t::const_reverse_iterator rit = _bscanRayMap.rbegin();
+    if (rit == _bscanRayMap.rend())
         return QStringList();
-    else
-        return rit->second->varNames();
+    else {
+        BscanRay * ray = rit->second;
+        QStringList list;
+        for (int i = 0; i < ray->nProducts(); i++) {
+            list.append(QString(ray->productName(i).c_str()));
+        }
+        return list;
+    }
 }
 
 void
@@ -462,15 +467,17 @@ BscanGraphicsScene::setDisplayVar(QString varName) {
         return;
     
     _displayVar = varName;
-    for (ItemMap_t::iterator it = _itemMap.begin(); it != _itemMap.end(); it++) {
-        RayGraphicsItem *rgi = it->second;
-        rgi->setDisplayVar(_displayVar);
-    }
+
     std::string minKey = _displayVar.toStdString() + "/minValue";
     std::string maxKey = _displayVar.toStdString() + "/maxValue";
     double minValue = _config.getFloat(minKey, 0.0);
     double maxValue = _config.getFloat(maxKey, 100.0);
     _colorTable.setValueLimits(minValue, maxValue);
+    
+    // Now that _displayVar and _colorTable have been updated, recreate all
+    // the RayGraphicsItems.
+    updateRayGraphicsItems_();
+    
     emit displayVarChanged(_displayVar);
 }
 
@@ -482,6 +489,33 @@ BscanGraphicsScene::setColorTable() {
         _config.setString("SCENE/ColorTable", ctName.toStdString());
     	_colorTable = ColorTable(_colorTable.minimumValue(), 
     			_colorTable.maximumValue(), ctName);
+    	updateRayGraphicsItems_();
     	emit colorTableChanged();
     }
+}
+
+void
+BscanGraphicsScene::updateRayGraphicsItems_() {
+    // Get rid of all of our old RayGraphicsItem-s
+    clear();
+    // Recreate RayGraphicsItem-s for each of our BscanRay-s, based on our
+    // current _displayVar, _colorTable, etc.
+    for (BscanRayMap_t::iterator it = _bscanRayMap.begin(); 
+            it != _bscanRayMap.end(); it++) {
+        double time = it->first;
+        BscanRay * ray = it->second;
+        
+        // Create a new RayGraphicsItem
+        RayGraphicsItem * newItem = new RayGraphicsItem(*ray, _displayVar, 
+                _colorTable);
+        // Our x coordinates run from zero to _timeSpan, so translate the new
+        // ray into the correct x location. We do this to keep the x coordinates
+        // in the range +/- 2^15, because of limits in Qt's raster paint engine.
+        newItem->moveBy(-_sceneStartTime, 0);
+        // Add the item to our item map, and to the scene
+        addItem(newItem);
+    }
+    // Invalidate everything to force a complete redraw. (Although this doesn't
+    // seem to work as expected...)
+    invalidate(sceneRect());
 }

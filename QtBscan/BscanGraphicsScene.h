@@ -40,21 +40,21 @@ public:
             const std::string & varName = "DZ", 
             const std::string & ctFileName = "eldoraDbz.ct");
 #endif
-  /**
-     * Construct with time span, variable for display, and color
+    /**
+     * @brief Construct with time span, variable for display, and color
      * table specified by config
      * @param config - user configuration
      */
-  BscanGraphicsScene(QtConfig &config);
+    BscanGraphicsScene(QtConfig &config);
 
     /**
-     * Copy constructor.
+     * @brief Copy constructor.
      * @param scene the BscanGraphicsScene to be copied
      */
     BscanGraphicsScene(const BscanGraphicsScene & scene);
     virtual ~BscanGraphicsScene();
     /**
-     * Return the number of radar gates currently being shown in the scene.
+     * @brief Return the number of radar gates currently being shown in the scene.
      */
     unsigned int nGates() const;
     /**
@@ -62,11 +62,11 @@ public:
      */
     unsigned int timeSpan() const;
     /**
-     * Return the index of the minimum gate currently being shown.
+     * @brief Return the index of the minimum gate currently being shown.
      */
     unsigned int minGate() const { return _minGate; }
     /**
-     * Set the minimum gate to display.
+     * @brief Set the minimum gate to display.
      * @param minGate the minimum gate to display.
      */
     void setMinGate(unsigned int minGate);
@@ -75,164 +75,167 @@ public:
      */
     unsigned int maxGate() const { return _maxGate; }
     /**
-     * Set the maximum gate to display.
+     * @brief Set the maximum gate to display.
      * @param maxGate the maximum gate to display.
      */
     void setMaxGate(unsigned int maxGate);
     /**
-     * Pause the scene.  While paused, the scene's time bounds will be held 
+     * @brief Pause the scene.  While paused, the scene's time bounds will be held 
      * fixed.
      * @see unpause()
      * @see setPaused()
      */
     void pause();
     /**
-     * Unpause the scene, allowing it to dynamically adjust time bounds
+     * @brief Unpause the scene, allowing it to dynamically adjust time bounds
      * again.
      * @see pause()
      * @see setPaused()
      */
     void unpause();
     /**
-     * Returns true iff the scene is paused.
+     * @brief Returns true iff the scene is paused.
      */
     bool isPaused() const { return _isPaused; }
     /**
-     * Return the scene's start time.
+     * @brief Return the scene's start time.
      */
     double startTime() const { return _sceneStartTime; }
     /**
-     * Return the scene's end time.
+     * @brief Return the scene's end time.
      */
     double endTime() const { return(_sceneStartTime + _timeSpan); }
     /**
-     * Return the name of the currently displayed variable.
+     * @brief Return the name of the currently displayed variable.
      * @return the name of the currently displayed variable
      */
     QString displayVar() const { return _displayVar; }
     /**
-     * Return the units string for the currently displayed variable.
+     * @brief Return the units string for the currently displayed variable.
      * @return the units string for the currently displayed variable.
      */
     QString displayVarUnits() const { return _displayVarUnits; }
     /**
-     * Return the list of available vars. The list is obtained from
+     * @brief Return the list of available vars. The list is obtained from
      * the latest ray in the scene. If there are no rays in the scene,
      * an empty list is returned.
      * @return the list of var names known to the scene
      */
     QStringList varNames() const;
     /**
-     * Return a reference to the scene's color table.
+     * @brief Return a reference to the scene's color table.
      */
     const ColorTable & colorTable() const { return _colorTable; }
 public slots:
     /**
-     * Set the scene's gate limits.
+     * @brief Set the scene's gate limits.
      * @param minGate the minimum gate to display
      * @param maxGate the maximum gate to display
      */
     void setGateLimits(unsigned int minGate, unsigned int maxGate);
     /**
-     * Set the scene's time span.
+     * @brief Set the scene's time span.
      * @param timeSpan the desired time span, in seconds
      */
     void setTimeSpan(unsigned int timeSpan);
     /**
-     * Set the paused state of the scene.
+     * @brief Set the paused state of the scene.
      * @param state the new paused state
      * @see pause()
      * @see unpause()
      */
     void setPaused(bool state);
     /**
-     * Add the given BscanRay to the scene. If necessary, the end time displayed
-     * by the scene will be adjusted to accommodate the new ray and older rays 
-     * outside the time span of the scene will be deleted.
+     * @brief Add the given BscanRay to the scene. If necessary, the end time 
+     * displayed by the scene will be adjusted to accommodate the new ray and 
+     * older rays outside the time span of the scene will be deleted.
      * @param ray the new BscanRay 
      */
     void addRay(const BscanRay & ray);
     /**
-     * Set time limits of the scene
+     * @brief Set time limits of the scene
      * @param startTime start time of the scene, in seconds since 1970-01-01
      *     00:00:00 UTC
      * @param timeSpan time span of the scene, in seconds
      */
     void setTimeLimits(double startTime, unsigned int timeSpan);
     /**
-     * Set the variable to display.
+     * @brief Set the variable to display.
      * @param varName the name of the variable to display
      */
     void setDisplayVar(QString varName);
     /**
-     * Set the display limits for our color table.
+     * @brief Set the display limits for our color table.
      * @param minValue the minimum value to be represented by the color table
      * @param maxValue the maximum value to be represented by the color table
      */
-    void setDisplayLimits(double minValue, double maxValue) {
-        _colorTable.setValueLimits(minValue, maxValue);
-        // save user's display limits for current displayed variable
-        std::string minKey = _displayVar.toStdString() + "/minValue";
-        std::string maxKey = _displayVar.toStdString() + "/maxValue";
-        _config.setFloat(minKey, minValue);
-        _config.setFloat(maxKey, maxValue);
-    }
+    void setDisplayLimits(double minValue, double maxValue);
     /**
-     * Set the scene's color table based on the text of a QAction.
+     * @brief Set the scene's color table based on the text of a QAction.
      */
     void setColorTable();
 protected:
     void initConnections_();
-    void scrubRaysBefore_(double scrubTime);
+    /**
+     * @brief Set the start time of the scene. 
+     */
     void setStartTime_(double startTime);
-    // set our scene rect to reflect current gate and time limits
+    /**
+     * @brief Set our scene rect to reflect current gate and time limits.
+     */
     void updateSceneRect_();
-    
+    /**
+     * @brief Create RayGraphicsItems-s from our BscanRay-s using the current
+     * _displayVar, _colorTable, etc.
+     */
+    void updateRayGraphicsItems_();
+        
     // virtual method from QGraphicsScene
     virtual void drawForeground(QPainter *painter, const QRectF & rect);
 signals:
     /**
-     * This signal is emitted when the scene's gate limits change.
+     * @brief This signal is emitted when the scene's gate limits change.
      * @param minGate the new minimum gate
      * @param maxGate the new maximum gate
      */
     void gateLimitsChanged(unsigned int minGate, unsigned int maxGate);
     /**
-     * This signal is emitted when the scene's time limits change
+     * @brief This signal is emitted when the scene's time limits change
      * @param startTime the new start time of the scene, in seconds since
      *     1-Jan-1970 00:00 UTC
      * @param timeSpan the new time span in seconds
      */
     void timeLimitsChanged(double startTime, unsigned int timeSpan);
     /**
-     * This signal is emitted when the scene's pause state changes, with
+     * @brief This signal is emitted when the scene's pause state changes, with
      * state true if the scene is paused.
      * @param paused true if the scene is now paused
      */
     void pauseStateChanged(bool paused);
     /**
-     * This signal is emitted when the displayed variable changes.
+     * @brief This signal is emitted when the displayed variable changes.
      * @param varName the name of the new display variable.
      */
     void displayVarChanged(QString varName);
     /**
-     * This signal is emitted when the units of our displayed variable
+     * @brief This signal is emitted when the units of our displayed variable
      * change.
      */
     void unitsChanged();
     /**
-     * This signal is emitted when any trait of the color table changes
+     * @brief This signal is emitted when any trait of the color table changes
      */
     void colorTableChanged();
 private:
-    // Map from time to RayGraphicsItem-s
-    typedef std::map<double,RayGraphicsItem*> ItemMap_t;
-    ItemMap_t _itemMap;
+    // Map from time to BscanRay-s
+    typedef std::map<double, BscanRay*> BscanRayMap_t;
+    BscanRayMap_t _bscanRayMap;
+    // List of RayGraphicsItem-s held temporarily for later deletion
+    std::vector<RayGraphicsItem*> _deleteLaterList;
     double _sceneStartTime;
     unsigned int _timeSpan;
     unsigned int _minGate;
     unsigned int _maxGate;
-    double _lastScrubTime;
     bool _isPaused;
     QString _displayVar;
     QString _displayVarUnits;

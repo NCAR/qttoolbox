@@ -12,6 +12,8 @@
 #include <set>
 #include <QGraphicsItem>
 
+#include "ColorTable.h"
+
 class BscanRay;
 
 /**
@@ -22,13 +24,16 @@ class BscanRay;
 class RayGraphicsItem : public QGraphicsItem {
 public:
     /**
-     * Construct a RayGraphicsItem from a BscanRay
+     * Construct a RayGraphicsItem from a BscanRay, display variable name,
+     * and color table.
      * @param ray a RadarDDS:ProductSet containing the data for this item
      * @param displayVar the name of the variable to be displayed
+     * @param colorTable the ColorTable to use in rendering the ray.
      */
-    RayGraphicsItem(const BscanRay &ray, QString displayVar = "");
+    RayGraphicsItem(const BscanRay &ray, QString displayVar, 
+            const ColorTable &colorTable);
     RayGraphicsItem(const RayGraphicsItem &srcItem);
-    virtual ~RayGraphicsItem() {}
+    virtual ~RayGraphicsItem();
     
     virtual QRectF boundingRect() const { return _boundingRect; }
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
@@ -46,37 +51,10 @@ public:
      * @param gate the gate to be reported.
      */
     float gateValue(unsigned int gate) const {
-        if (_dvData && gate < _nGates)
-            return (*_dvData)[gate];
+        if (! _data.empty() && gate < _nGates)
+            return _data[gate];
         else
             return BadValue;
-    }
-    /**
-     * Get the currently displayed variable.
-     * @return the name of the currently displayed variable.
-     */
-    QString displayVar() const { return _displayVar; }
-    /**
-     * Get units of the displayed variable.
-     * @return the units string for the currently displayed variable.
-     */
-    QString displayVarUnits() const;
-    /**
-     * Set the variable for display
-     * @param varName the name of the variable to display.
-     */
-    void setDisplayVar(QString varName);
-    /**
-     * Return a QStringList with the names of the available variables.
-     * @return a QStringList with the names of the available variables.
-     */
-    QStringList varNames() const {
-        QStringList names;
-        UnitsMap_t::const_iterator it;
-        for (it = _unitsMap.begin(); it != _unitsMap.end(); it++)
-            names << it->first;
-
-        return names;
     }
     /**
      * Bad data value
@@ -85,17 +63,12 @@ public:
 private:
     void _initBoundingRect();
     
-    // Map from var name to vector of gate-by-gate data
-    typedef std::map<QString,std::vector<float> > DataMap_t;
-    DataMap_t _dataMap;
-    // Map from var name to units string
-    typedef std::map<QString,QString> UnitsMap_t;
-    UnitsMap_t _unitsMap;
-    double _time;
-    double _dwellPeriod;
+    double _time;           // seconds since 1970-01-01 00:00:00 UTC
+    double _dwellPeriod;    // seconds
     unsigned int _nGates;
-    QString _displayVar;        // name of the var to display
-    std::vector<float> *_dvData;    // data for _displayVar
+    QImage _rayImage;
     QRectF _boundingRect;
+    // per-gate data for the displayed variable
+    std::vector<float> _data;
 };
 #endif /* RAYGRAPHICSITEM_H_ */

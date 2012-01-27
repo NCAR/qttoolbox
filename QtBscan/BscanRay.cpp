@@ -76,13 +76,13 @@ BscanRay::BscanRay(const BscanRay & ray) :
     _nGates(ray._nGates),
     _gateSpacing(ray._gateSpacing) {
     // Copy over all of the products
-    for (int i = 0; i < ray._products.size(); i++) {
+    for (unsigned int i = 0; i < ray._products.size(); i++) {
         _products.push_back(new _Product(ray._products[i]->name(),
                 ray._products[i]->units(), ray._products[i]->data()));
     }
 }
 BscanRay::~BscanRay() {
-    for (int i = 0; i < _products.size(); i++) {
+    for (unsigned int i = 0; i < _products.size(); i++) {
         delete _products[i];
     }
     _products.clear();

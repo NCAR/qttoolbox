@@ -95,7 +95,7 @@ BscanGraphicsScene::~BscanGraphicsScene() {
     }
     _bscanRayMap.clear();
     // Clear up items we were holding for later deletion
-    for (int i = 0; i < _deleteLaterList.size(); i++) {
+    for (unsigned int i = 0; i < _deleteLaterList.size(); i++) {
         delete(_deleteLaterList[i]);
     }
     _deleteLaterList.clear();
@@ -454,7 +454,7 @@ BscanGraphicsScene::varNames() const {
     else {
         BscanRay * ray = rit->second;
         QStringList list;
-        for (int i = 0; i < ray->nProducts(); i++) {
+        for (unsigned int i = 0; i < ray->nProducts(); i++) {
             list.append(QString(ray->productName(i).c_str()));
         }
         return list;
@@ -502,7 +502,6 @@ BscanGraphicsScene::updateRayGraphicsItems_() {
     // current _displayVar, _colorTable, etc.
     for (BscanRayMap_t::iterator it = _bscanRayMap.begin(); 
             it != _bscanRayMap.end(); it++) {
-        double time = it->first;
         BscanRay * ray = it->second;
         
         // Create a new RayGraphicsItem

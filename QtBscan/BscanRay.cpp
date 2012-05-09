@@ -7,6 +7,7 @@
 
 #include "BscanRay.h"
 #include <QMetaType>
+#include <cmath>
 
 Q_DECLARE_METATYPE(BscanRay)
 
@@ -48,10 +49,13 @@ private:
     std::vector<float> _data;
 };
 
+/// (static) default missing value
+const float BscanRay::DEFAULT_MISSING_VALUE = HUGE_VAL;
+
 
 BscanRay::BscanRay(long long time, float lat, float lon, float alt,
         float azimuth, float elevation, float dwellPeriod, 
-        unsigned int nGates, float gateSpacing) :
+        unsigned int nGates, float gateSpacing, float missingValue) :
     _time(time),
     _lat(lat),
     _lon(lon),
@@ -60,7 +64,8 @@ BscanRay::BscanRay(long long time, float lat, float lon, float alt,
     _elevation(elevation),
     _dwellPeriod(dwellPeriod),
     _nGates(nGates),
-    _gateSpacing(gateSpacing) {
+    _gateSpacing(gateSpacing),
+    _missingValue(missingValue) {
     // Register BscanRay as something we can ship via Qt signal.
     qRegisterMetaType<BscanRay>();
 }

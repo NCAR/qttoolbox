@@ -19,6 +19,7 @@
  */
 class BscanRay {
 public:
+    static const float DEFAULT_MISSING_VALUE;
     /**
      * @brief Create a ray from the given time and origin location, pointing angle,
      * and gate geometry.
@@ -32,10 +33,13 @@ public:
      * @param dwellPeriod the dwell period of the ray, in seconds
      * @param nGates the number of gates of data contained in the ray
      * @param gateSpacing the width of each gate of data, in meters
+     * @param missingValue the number used to represent a missing value
+     *        (default is BscanRay::DEFAULT_MISSING_VALUE).
      */
     BscanRay(long long time, float lat, float lon, float alt, 
             float azimuth, float elevation, float dwellPeriod, 
-            unsigned int nGates, float gateSpacing);
+            unsigned int nGates, float gateSpacing, 
+            float missingValue = DEFAULT_MISSING_VALUE);
     /**
      * @brief Copy constructor
      * @param ray the source BscanRay to be copied
@@ -146,6 +150,10 @@ public:
      */
     const std::vector<float> & productData(std::string productName) const;
     /**
+     * @brief Return the number used to represent missing values in this ray.
+     */
+    float missingValue() const { return _missingValue; }
+    /**
      * @brief Exception type thrown when a requested product does not exist
      */
     class NoSuchProductException : public std::exception {
@@ -195,6 +203,8 @@ private:
     unsigned int _nGates;
     // Gate spacing for the ray, in meters
     float _gateSpacing;
+    // The number used to represent a missing value in the ray
+    float _missingValue;
     // Vector of _Product instances
     std::vector<_Product *> _products;
 };

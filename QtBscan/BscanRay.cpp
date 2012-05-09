@@ -23,9 +23,10 @@ public:
      * @param name the name of the product
      * @param units a string naming the units of the product's data
      * @param data a vector containing nGates values of data for this
+     * @param missingValue the float value used to represent missing data
      * product
      */
-    _Product(std::string name, std::string units, 
+    _Product(std::string name, std::string units, float missingValue,
             const std::vector<float> & data);
     virtual ~_Product() {}
     /**
@@ -43,19 +44,21 @@ public:
      * @return a vector of this product's data
      */
     const std::vector<float> & data() const { return _data; }
+    /**
+     * @brief Return the number used to represent missing values in the data.
+     */
+    float missingValue() const { return _missingValue; }
 private:
     std::string _name;
     std::string _units;
+    float _missingValue;
     std::vector<float> _data;
 };
-
-/// (static) default missing value
-const float BscanRay::DEFAULT_MISSING_VALUE = HUGE_VAL;
 
 
 BscanRay::BscanRay(long long time, float lat, float lon, float alt,
         float azimuth, float elevation, float dwellPeriod, 
-        unsigned int nGates, float gateSpacing, float missingValue) :
+        unsigned int nGates, float gateSpacing) :
     _time(time),
     _lat(lat),
     _lon(lon),
@@ -64,8 +67,7 @@ BscanRay::BscanRay(long long time, float lat, float lon, float alt,
     _elevation(elevation),
     _dwellPeriod(dwellPeriod),
     _nGates(nGates),
-    _gateSpacing(gateSpacing),
-    _missingValue(missingValue) {
+    _gateSpacing(gateSpacing) {
     // Register BscanRay as something we can ship via Qt signal.
     qRegisterMetaType<BscanRay>();
 }
@@ -83,7 +85,8 @@ BscanRay::BscanRay(const BscanRay & ray) :
     // Copy over all of the products
     for (unsigned int i = 0; i < ray._products.size(); i++) {
         _products.push_back(new _Product(ray._products[i]->name(),
-                ray._products[i]->units(), ray._products[i]->data()));
+                ray._products[i]->units(), ray._products[i]->missingValue(),
+                ray._products[i]->data()));
     }
 }
 BscanRay::~BscanRay() {
@@ -94,9 +97,17 @@ BscanRay::~BscanRay() {
 }
 
 void
-BscanRay::addProduct(std::string name, std::string units,
+BscanRay::addProduct(std::string name, std::string units, 
         const std::vector<float> & data) {
-    _products.push_back(new _Product(name, units, data));
+    // Just call the other addProduct() method, using HUGE_VAL as the 
+    // missing value.
+    addProduct(name, units, HUGE_VAL, data);
+}
+
+void
+BscanRay::addProduct(std::string name, std::string units, float missingValue,
+        const std::vector<float> & data) {
+    _products.push_back(new _Product(name, units, missingValue, data));
 }
 
 bool
@@ -143,8 +154,9 @@ BscanRay::productData(std::string productName) const {
 
 
 BscanRay::_Product::_Product(std::string name, std::string units, 
-        const std::vector<float> & data) : 
+        float missingValue, const std::vector<float> & data) : 
         _name(name),
         _units(units),
+        _missingValue(missingValue),
         _data(data) {
 }

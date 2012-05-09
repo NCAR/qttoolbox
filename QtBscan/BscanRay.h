@@ -33,13 +33,10 @@ public:
      * @param dwellPeriod the dwell period of the ray, in seconds
      * @param nGates the number of gates of data contained in the ray
      * @param gateSpacing the width of each gate of data, in meters
-     * @param missingValue the number used to represent a missing value
-     *        (default is BscanRay::DEFAULT_MISSING_VALUE).
      */
     BscanRay(long long time, float lat, float lon, float alt, 
             float azimuth, float elevation, float dwellPeriod, 
-            unsigned int nGates, float gateSpacing, 
-            float missingValue = DEFAULT_MISSING_VALUE);
+            unsigned int nGates, float gateSpacing);
     /**
      * @brief Copy constructor
      * @param ray the source BscanRay to be copied
@@ -111,8 +108,19 @@ public:
      * @param name the product name
      * @param units the units for the product's data
      * @param data a vector containing data values for the product
+     * @deprecated The addProduct() method which explicitly sets missing value
+     * should be used instead. This one just sets missing value to HUGE_VAL.
      */
     void addProduct(std::string name, std::string units,
+            const std::vector<float> & data);
+    /**
+     * @brief Add a product to the ray
+     * @param name the product name
+     * @param units the units for the product's data
+     * @param missingValue the number used to represent missing data
+     * @param data a vector containing data values for the product
+     */
+    void addProduct(std::string name, std::string units, float missingValue,
             const std::vector<float> & data);
     /**
      * @brief Return the number of products in this ray
@@ -138,6 +146,18 @@ public:
      */
     std::string productUnits(std::string productName) const;
     /**
+     * @brief Return the number used to represent missing data for the selected
+     * product
+     * @param ndx the index of the product of interest
+     */
+    float productMissingValue(unsigned int ndx) const;
+    /**
+     * @brief Return the number used to represent missing data for the selected
+     * product
+     * @param productName the name of the product of interest
+     */
+    float productMissingValue(std::string productName) const;
+    /**
      * @brief Return the data for product at the selected index
      * @param ndx the index of the product of interest
      */
@@ -149,10 +169,6 @@ public:
      * product
      */
     const std::vector<float> & productData(std::string productName) const;
-    /**
-     * @brief Return the number used to represent missing values in this ray.
-     */
-    float missingValue() const { return _missingValue; }
     /**
      * @brief Exception type thrown when a requested product does not exist
      */
@@ -203,8 +219,6 @@ private:
     unsigned int _nGates;
     // Gate spacing for the ray, in meters
     float _gateSpacing;
-    // The number used to represent a missing value in the ray
-    float _missingValue;
     // Vector of _Product instances
     std::vector<_Product *> _products;
 };

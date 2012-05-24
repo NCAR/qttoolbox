@@ -14,7 +14,7 @@
 /// so that a configuration will contain the default values
 /// if they haven't been set.
 /// Configurations are always synced when a value is written.
-class QtConfig {
+class QtConfig : protected QSettings {
     public:
         /// Constructor. The organization and application keys provide for
         /// categorization of the configuration set, as provided by the QSettings 
@@ -27,9 +27,6 @@ class QtConfig {
 
         /// Destructor
         virtual ~QtConfig();
-
-        /// Force a synchronization of the datastore.
-        void sync();
 
         /// Set the value of the configuration item.
         /// @param key Configuration item name.
@@ -141,11 +138,6 @@ class QtConfig {
         /// @returns A list of the groups below this key.
         std::vector<std::string> childGroups(
                 std::string topGroup);
-
-    protected:
-        /// The configuration permanent store
-        QSettings _settings;
-
 };
 
 #endif

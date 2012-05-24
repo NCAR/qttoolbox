@@ -7,7 +7,7 @@
 QtConfig::QtConfig(
         const std::string organization,
             const std::string application) :
-    _settings(QSettings::IniFormat,
+    QSettings(QSettings::IniFormat,
             QSettings::UserScope,
             organization.c_str(),
             application.c_str()) {
@@ -24,17 +24,17 @@ std::vector<std::string> QtConfig::childGroups(
     std::vector<std::string> result;
 
     // set the top group
-    _settings.beginGroup(topGroup.c_str());
+    beginGroup(topGroup.c_str());
 
     // get the child groups
-    QStringList children = _settings.childGroups();
+    QStringList children = QSettings::childGroups();
 
     // save them
     for (int i = 0; i < children.size(); i++) {
         result.push_back(children[i].toStdString());
     }
 
-    _settings.endGroup();
+    endGroup();
 
     return result;
 }
@@ -43,7 +43,7 @@ std::vector<std::string> QtConfig::childGroups(
 void QtConfig::setString(
         std::string key,
             std::string t) {
-    _settings.setValue(key.c_str(), t.c_str());
+    setValue(key.c_str(), t.c_str());
     sync();
 }
 
@@ -51,11 +51,13 @@ void QtConfig::setString(
 std::string QtConfig::getString(
         std::string key,
             std::string defaultValue) {
-    std::string s = std::string(_settings.value(key.c_str(),
-            defaultValue.c_str()).toString().toAscii());
+    std::string s = 
+    	value(key.c_str(), defaultValue.c_str()).toString().toStdString();
 
-    _settings.setValue(key.c_str(), s.c_str());
-    sync();
+	if (! contains(key.c_str())) {
+    	setValue(key.c_str(), s.c_str());
+    	sync();
+    }
 
     return s;
 }
@@ -64,7 +66,7 @@ std::string QtConfig::getString(
 void QtConfig::setDouble(
         std::string key,
             double value) {
-    _settings.setValue(key.c_str(), value);
+    setValue(key.c_str(), value);
     sync();
 }
 
@@ -72,9 +74,11 @@ void QtConfig::setDouble(
 double QtConfig::getDouble(
         std::string key,
             double defaultValue) {
-    double d = _settings.value(key.c_str(), defaultValue).toDouble();
-    _settings.setValue(key.c_str(), d);
-    sync();
+    double d = value(key.c_str(), defaultValue).toDouble();
+    if (! contains(key.c_str())) {
+    	setValue(key.c_str(), d);
+    	sync();
+    }
     return d;
 }
 
@@ -82,7 +86,7 @@ double QtConfig::getDouble(
 void QtConfig::setFloat(
         std::string key,
             float value) {
-    _settings.setValue(key.c_str(), value);
+    setValue(key.c_str(), value);
     sync();
 }
 
@@ -90,9 +94,11 @@ void QtConfig::setFloat(
 float QtConfig::getFloat(
         std::string key,
             float defaultValue) {
-    float d = _settings.value(key.c_str(), defaultValue).toDouble();
-    _settings.setValue(key.c_str(), d);
-    sync();
+    float d = value(key.c_str(), defaultValue).toDouble();
+    if (! contains(key.c_str())) {
+    	setValue(key.c_str(), d);
+    	sync();
+    }
     return d;
 }
 
@@ -100,7 +106,7 @@ float QtConfig::getFloat(
 void QtConfig::setInt(
         std::string key,
             int value) {
-    _settings.setValue(key.c_str(), value);
+    setValue(key.c_str(), value);
     sync();
 }
 
@@ -108,9 +114,11 @@ void QtConfig::setInt(
 int QtConfig::getInt(
         std::string key,
             int defaultValue) {
-    int i = (int)_settings.value(key.c_str(), defaultValue).toDouble();
-    _settings.setValue(key.c_str(), i);
-    sync();
+    int i = (int)value(key.c_str(), defaultValue).toDouble();
+    if (! contains(key.c_str())) {
+    	setValue(key.c_str(), i);
+    	sync();
+    }	
     return i;
 }
 
@@ -118,7 +126,7 @@ int QtConfig::getInt(
 void QtConfig::setBool(
         std::string key,
             bool value) {
-    _settings.setValue(key.c_str(), value);
+    setValue(key.c_str(), value);
     sync();
 }
 
@@ -126,9 +134,11 @@ void QtConfig::setBool(
 bool QtConfig::getBool(
         std::string key,
             bool defaultValue) {
-    bool b = _settings.value(key.c_str(), defaultValue).toBool();
-    _settings.setValue(key.c_str(), b);
-    sync();
+    bool b = value(key.c_str(), defaultValue).toBool();
+    if (! contains(key.c_str())) {
+    	setValue(key.c_str(), b);
+    	sync();
+    }
     return b;
 }
 
@@ -140,25 +150,25 @@ void QtConfig::setArray(
     std::vector<std::vector<int> > result;
 
     // Find out if the array exists, and its size
-    int arraySize = _settings.beginReadArray(key.c_str());
-    _settings.endArray();
+    int arraySize = beginReadArray(key.c_str());
+    endArray();
 
     if (arraySize != 0) {
         // if the array already exists
     }
 
     // now create the array
-    _settings.beginWriteArray(key.c_str());
+    beginWriteArray(key.c_str());
     for (unsigned int i = 0; i < defaultValues.size(); i++) {
-        _settings.setArrayIndex(i);
+        setArrayIndex(i);
         QList<QVariant> variantList;
         for (unsigned int j = 0; j < defaultValues[i].size(); j++) {
             variantList.append(QVariant(defaultValues[i][j]));
         }
-        _settings.setValue(subKey.c_str(), variantList);
+        setValue(subKey.c_str(), variantList);
         result.push_back(defaultValues[i]);
     }
-    _settings.endArray();
+    endArray();
 
     sync();
 
@@ -172,42 +182,38 @@ std::vector<std::vector<int> > QtConfig::getArray(
     std::vector<std::vector<int> > result;
 
     // Find out if the array exists, and its size
-    unsigned int arraySize = _settings.beginReadArray(key.c_str());
-    _settings.endArray();
+    unsigned int arraySize = beginReadArray(key.c_str());
+    endArray();
 
     if (arraySize == 0) {
         // if the array doesn't exist
         // add the default values
-        _settings.beginWriteArray(key.c_str());
+        beginWriteArray(key.c_str());
         for (unsigned int i = 0; i < defaultValues.size(); i++) {
-            _settings.setArrayIndex(i);
+            setArrayIndex(i);
             QList<QVariant> variantList;
             for (unsigned int j = 0; j < defaultValues[i].size(); j++) {
                 variantList.append(QVariant(defaultValues[i][j]));
             }
-            _settings.setValue(subKey.c_str(), variantList);
+            setValue(subKey.c_str(), variantList);
             result.push_back(defaultValues[i]);
         }
-        _settings.endArray();
+        endArray();
     } else {
-        _settings.beginReadArray(key.c_str());
+        beginReadArray(key.c_str());
         for (unsigned int i = 0; i < arraySize; i++) {
-            _settings.setArrayIndex(i);
-            QList<QVariant> variantList = _settings.value(subKey.c_str()).toList();
+            setArrayIndex(i);
+            QList<QVariant> variantList = value(subKey.c_str()).toList();
             std::vector<int> entry;
             for (int i = 0; i < variantList.size(); i++) {
                 entry.push_back(variantList[i].toInt());
             }
             result.push_back(entry);
         }
-        _settings.endArray();
+        endArray();
     }
 
     sync();
 
     return result;
-}
-//////////////////////////////////////////////////////////
-void QtConfig::sync() {
-    _settings.sync();
 }

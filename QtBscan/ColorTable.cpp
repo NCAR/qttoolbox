@@ -14,21 +14,15 @@
 
 ColorTable::ColorTable(double minValue, double maxValue, QString name,
         QColor tooLowColor, QColor tooHighColor) :
+        _fileName(name),
         _minValue(minValue),
         _maxValue(maxValue),
-        _fileName(name),
         _tooLowColor(tooLowColor),
         _tooHighColor(tooHighColor) {
-    // Path list for finding color tables: check BscanShareDir, then just
-    // try the unmunged filename
-    QStringList searchPath;
-    searchPath << BscanShareDir.c_str() << "";
     
-    QString testedFiles;    // keep a list of file names we've tested
-
     QFile file("");
-    
     bool fileOk = false;
+
     QString fullPath;
     if (colorTableFileExists(_fileName, true, &fullPath)) {
     	file.setFileName(fullPath);

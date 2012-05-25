@@ -39,7 +39,7 @@ public:
     ColorTable(const ColorTable &src);
     virtual ~ColorTable();
     /**
-     * Return the color associated with the given value.  If the value is
+     * @brief Return the color associated with the given value.  If the value is
      * in the range [minValue(), maxValue()], the appropriate color from the
      * list will be returned.  If the value is less than minValue() then
      * tooLowColor() will be returned, and if the value is greater than 
@@ -64,12 +64,12 @@ public:
         }   
     }
     /**
-     * Return the current minimum value.
+     * @brief Return the current minimum value.
      * @return the current minimum value.
      */
     double minimumValue() const { return _minValue; }
     /**
-     * Set the minimum value for display.
+     * @brief Set the minimum value for display.
      * @param minValue the new minimum value
      */
     void setMinimumValue(double minValue);
@@ -79,28 +79,28 @@ public:
      */
     double maximumValue() const { return _maxValue; }
     /**
-     * Set the maximum value for display.
+     * @brief Set the maximum value for display.
      * @param maxValue the new maximum value
      */
     void setMaximumValue(double maxValue);
     /**
-     * Set display value limits.
+     * @brief Set display value limits.
      * @param minValue the new minimum value
      * @param maxValue the new maximum value
      */
     void setValueLimits(double minValue, double maxValue);
     /**
-     * Return the list of in-range colors.
+     * @brief Return the list of in-range colors.
      * @return the list of in-range colors
      */
     const QList<QColor> & colors() const { return _colors; }
     /**
-     * Return the color used for data which are off-scale high.
+     * @brief Return the color used for data which are off-scale high.
      * @return the color used for data which are off-scale high.
      */
     const QColor & tooHighColor() const { return _tooHighColor; }
     /**
-     * Return the color used for data which are off-scale low.
+     * @brief Return the color used for data which are off-scale low.
      * @return the color used for data which are off-scale low.
      */
     const QColor & tooLowColor() const { return _tooLowColor; }
@@ -108,7 +108,7 @@ public:
     ColorTable& operator=(const ColorTable& src);
     
     /**
-     * Static method to determine if a given color table file exists
+     * @brief Static method to determine if a given color table file exists
      * @param name the name of the color table being sought, e.g. "chris.ct"
      * @param verbose if true, print a message if the file is not found
      * @param fullPath if this pointer is not null, the full path name of the 

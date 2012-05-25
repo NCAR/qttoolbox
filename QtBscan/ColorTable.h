@@ -44,6 +44,9 @@ public:
      * list will be returned.  If the value is less than minValue() then
      * tooLowColor() will be returned, and if the value is greater than 
      * maxValue() then tooHighColor() will be returned.
+     *
+     * This method should remain inlined, since it gets called a *lot*!
+     *
      * @param value the value of interest.
      */
     const QColor & colorOf(double value) const {
@@ -104,6 +107,11 @@ public:
      * @return the color used for data which are off-scale low.
      */
     const QColor & tooLowColor() const { return _tooLowColor; }
+    /**
+     * @brief Return the color table file name
+     * @return the color table file name
+     */
+    QString fileName() const { return _fileName; }
     
     ColorTable& operator=(const ColorTable& src);
     
@@ -124,6 +132,7 @@ signals:
      */
     void changed();
 private:
+    QString _fileName;
     QList<QColor> _colors;
     double _minValue;
     double _maxValue;

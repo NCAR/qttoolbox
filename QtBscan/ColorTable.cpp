@@ -16,6 +16,7 @@ ColorTable::ColorTable(double minValue, double maxValue, QString name,
         QColor tooLowColor, QColor tooHighColor) :
         _minValue(minValue),
         _maxValue(maxValue),
+        _fileName(name),
         _tooLowColor(tooLowColor),
         _tooHighColor(tooHighColor) {
     // Path list for finding color tables: check BscanShareDir, then just
@@ -29,7 +30,7 @@ ColorTable::ColorTable(double minValue, double maxValue, QString name,
     
     bool fileOk = false;
     QString fullPath;
-    if (colorTableFileExists(name, true, &fullPath)) {
+    if (colorTableFileExists(_fileName, true, &fullPath)) {
     	file.setFileName(fullPath);
     	if (file.open(QIODevice::ReadOnly| QIODevice::Text)) {
     		// The color table file exists and is now open!
@@ -63,7 +64,7 @@ ColorTable::ColorTable(double minValue, double maxValue, QString name,
             continue;
 
         if (tokens.size() != 3) {
-            std::cerr << "Bad line ignored from '" << name.toStdString() << 
+            std::cerr << "Bad line ignored from '" << _fileName.toStdString() <<
                 "': " << line.toStdString() << std::endl;
             continue;
         }
@@ -79,7 +80,7 @@ ColorTable::ColorTable(double minValue, double maxValue, QString name,
             // Append this color to the list
             _colors.append(QColor(r, g, b));
         } else {
-            std::cerr << "Bad RGB ignored from '" << name.toStdString() <<
+            std::cerr << "Bad RGB ignored from '" << _fileName.toStdString() <<
                 "': " << line.toStdString() << std::endl;
         }
     }

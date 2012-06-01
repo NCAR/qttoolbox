@@ -103,6 +103,17 @@ public:
      * @param view the BscanGraphicsView to be added
      */
     void addView(BscanGraphicsView* view) {
+        // If this is not the first view in the group, set it up like the
+        // rest of the group
+        if (! _views.empty()) {
+            view->setZoom(_views[0]->zoom());
+            view->horizontalScrollBar()->setValue(_views[0]->horizontalScrollBar()->value());
+            view->verticalScrollBar()->setValue(_views[0]->verticalScrollBar()->value());
+        }
+        // Add this view to the group and set up connections so that state
+        // will be shared.
+        _views.push_back(view);
+
         connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), 
                 this, SIGNAL(horizontalValueChanged(int)));
         connect(this, SIGNAL(horizontalValueChanged(int)),
@@ -120,15 +131,24 @@ public:
      * @param view the BscanGraphicsView to be removed. 
      */
     void removeView(BscanGraphicsView* view) {
-        // Just disconnect all signals in both directions between this and
-        // the specified view.
-        disconnect(this, 0, view, 0);
-        disconnect(view, 0, this, 0);
+        for (unsigned int i = 0; i < _views.size(); i++) {
+            if (_views[i] == view) {
+                // Disconnect signals in both directions between this and the
+                // view being removed.
+                disconnect(this, 0, view, 0);
+                disconnect(view, 0, this, 0);
+                // Remove the view from our list
+                _views.erase(_views.begin() + i);
+                return;
+            }
+        }
     }
 signals:
     void horizontalValueChanged(int);
     void verticalValueChanged(int);
     void zoomChanged(float);
+private:
+    std::vector<BscanGraphicsView *> _views;
 };
 
 

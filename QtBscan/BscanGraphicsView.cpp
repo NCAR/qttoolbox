@@ -130,6 +130,45 @@ void
 BscanGraphicsView::contextMenuEvent(QContextMenuEvent *event) {
     QMenu menu(this);
     QAction *action;
+    
+    // Submenu to select display variable
+    QMenu varMenu("Display Variable", this);
+    QStringList varNames = scene()->varNames();
+    for (int i = 0; i < varNames.size(); i++) {
+        QString name = varNames[i];
+        QAction *action = new QAction(name, this);
+        action->setData(name);
+        // Put on a check mark if this is the currently displayed variable
+        if (name == scene()->displayVar()) {
+            action->setCheckable(true);
+            action->setChecked(true);
+        }
+        connect(action, SIGNAL(triggered()), this, SLOT(setDisplayVar()));
+        varMenu.addAction(action);
+    }
+    menu.addMenu(&varMenu);
+    
+    // Submenu to change color table
+    QMenu ctMenu("Color Tables", this);
+
+    QList<QString> ctables;
+    ctables << "chris.ct" << "eldoraDbz.ct" << "eldoraVel.ct" << "jet.ct";
+
+    for (int i = 0; i < ctables.size(); i++) {
+        QString name = ctables[i];
+        action = new QAction(name, this);
+        action->setData(name);
+        connect(action, SIGNAL(triggered()), scene(), SLOT(setColorTable()));
+        ctMenu.addAction(action);
+
+        // Put on a check mark if this is the current color table
+        if (name == scene()->colorTable()->fileName()) {
+            action->setCheckable(true);
+            action->setChecked(true);
+        }
+    }
+    menu.addMenu(&ctMenu);
+    
     // Actions to change gate limits and time span
     GateLimitDialog *glDialog = new GateLimitDialog(scene());
     action = new QAction("Set Gate Limits...", this);
@@ -145,45 +184,7 @@ BscanGraphicsView::contextMenuEvent(QContextMenuEvent *event) {
     action = new QAction("Set Display Limits...", this);
     connect(action, SIGNAL(triggered()), dlDialog, SLOT(exec()));
     menu.addAction(action);
-    
-    menu.addSeparator();
-    
-    // Submenu to change color table
-    QMenu ctMenu("Color Tables", this);
-    action = new QAction("chris.ct", this);
-    action->setData(action->text());
-    connect(action, SIGNAL(triggered()), scene(), SLOT(setColorTable()));
-    ctMenu.addAction(action);
-    action = new QAction("eldoraDbz.ct", this);
-    action->setData(action->text());
-    connect(action, SIGNAL(triggered()), scene(), SLOT(setColorTable()));
-    ctMenu.addAction(action);
-    action = new QAction("eldoraVel.ct", this);
-    action->setData(action->text());
-    connect(action, SIGNAL(triggered()), scene(), SLOT(setColorTable()));
-    ctMenu.addAction(action);
-    action = new QAction("jet.ct", this);
-    action->setData(action->text());
-    connect(action, SIGNAL(triggered()), scene(), SLOT(setColorTable()));
-    ctMenu.addAction(action);
-    menu.addMenu(&ctMenu);
-    menu.addSeparator();
-    
-    // Add an action for each available variable
-    QStringList varNames = scene()->varNames();
-    for (int i = 0; i < varNames.size(); i++) {
-        QString name = varNames[i];
-        QAction *action = new QAction(name, this);
-        action->setData(name);
-        // Put on a check mark if this is the currently displayed variable
-        // (this is the 
-        if (name == scene()->displayVar()) {
-            action->setCheckable(true);
-            action->setChecked(true);
-        }
-        connect(action, SIGNAL(triggered()), this, SLOT(setDisplayVar()));
-        menu.addAction(action);
-    }
+
     // Pop up the context menu at the current cursor location
     menu.exec(event->globalPos());
     

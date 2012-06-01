@@ -42,9 +42,14 @@ public slots:
      */
     void addNewPlot();
     /**
+     * @brief Remove the plot with the given index.
+     * @param plotIndex the index of the plot to be removed
+     */
+    void removePlot(unsigned int plotIndex);
+    /**
      * @brief Remove the last (bottom) plot from the model.
      */
-    void removePlot();
+    void removeLastPlot();
     /**
      * @brief Print the UI's plot frame, popping up a dialog for selecting the
      * print device. The image will be printed as large as possible on the
@@ -82,7 +87,7 @@ protected slots:
      */
     void on_actionPrint_triggered() { print(); }
     void on_actionAddPlot_triggered() { addNewPlot(); }
-    void on_actionRemovePlot_triggered() { removePlot(); }
+    void on_actionRemovePlot_triggered() { removeLastPlot(); }
     void on_actionPause_triggered() { pause(); }
     void on_actionUnpause_triggered() { unpause(); }
     void on_actionZoom_100_triggered() { setZoom(1.00); }
@@ -96,6 +101,8 @@ private:
     BscanGraphicsView* _view(int index) const { return _bscans[index]->view(); }
     BscanGraphicsScene* _scene(int index) const { return _view(index)->scene(); }
     unsigned int _nBscans() const { return _bscans.size(); }
+    // Make a scene name using the give index, e.g., "bscan_0" for index 0
+    static std::string _makeSceneName(unsigned int index);
 private:
     Ui::Bscan _ui;
     GateLimitDialog *_glDialog;

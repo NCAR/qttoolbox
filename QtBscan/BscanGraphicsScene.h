@@ -28,30 +28,17 @@ class BscanRay;
 class BscanGraphicsScene : public QGraphicsScene {
     Q_OBJECT
 public:
-#ifdef NOTDEF
     /**
-     * Construct with the given time span, variable for display, and color
-     * table.
-     * @param timeSpan the time span of the scene, in seconds
-     * @param varName the name of the variable to display
-     * @param ctFileName the name of the color table file to use
+     * @brief Construct a scene with the given name. The name is used for looking up and
+     * storing information for the scene in the given configuration.
+     * @param config - The QtConfig holding information for the scene. Time span,
+     * gate limits, variable, display limits, and color table will be read from
+     * and written to this configuration.
+     * @param sceneName - the name of the scene, used in looking up/storing information
+     * in the configuration
      */
-    BscanGraphicsScene(unsigned int timeSpan = 30,
-            const std::string & varName = "DZ", 
-            const std::string & ctFileName = "eldoraDbz.ct");
-#endif
-    /**
-     * @brief Construct with time span, variable for display, and color
-     * table specified by config
-     * @param config - user configuration
-     */
-    BscanGraphicsScene(QtConfig &config);
+    BscanGraphicsScene(QtConfig &config, std::string sceneName);
 
-    /**
-     * @brief Copy constructor.
-     * @param scene the BscanGraphicsScene to be copied
-     */
-    BscanGraphicsScene(const BscanGraphicsScene & scene);
     virtual ~BscanGraphicsScene();
     /**
      * @brief Return the number of radar gates currently being shown in the scene.
@@ -123,9 +110,19 @@ public:
      */
     QStringList varNames() const;
     /**
-     * @brief Return a reference to the scene's color table.
+     * @brief Return the scene's color table.
      */
-    const ColorTable & colorTable() const { return _colorTable; }
+    const ColorTable * colorTable() const { return _colorTable; }
+    /**
+     * @brief Return the scene's name
+     */
+    std::string sceneName() const { return _sceneName; }
+    /**
+     * Set the scene's name, which is used when saving and retrieving values
+     * for the scene in the configuration file.
+     * @param newSceneName the new name for the scene
+     */
+    void setSceneName(std::string newSceneName);
 public slots:
     /**
      * @brief Set the scene's gate limits.
@@ -174,6 +171,10 @@ public slots:
      * @brief Set the scene's color table based on the text of a QAction.
      */
     void setColorTable();
+    /**
+     * @brief Copy all the rays from another BscanGraphicsScene to this scene.
+     */
+    void copyRaysFrom(const BscanGraphicsScene & src);
 protected:
     void initConnections_();
     /**
@@ -239,14 +240,19 @@ private:
     bool _isPaused;
     QString _displayVar;
     QString _displayVarUnits;
-    ColorTable _colorTable;
+    ColorTable * _colorTable;
     QtConfig &_config;
+    /**
+     * Name of the scene, used in getting/saving information about this
+     * scene in the configuration.
+     */
+    std::string _sceneName;
 };
 
 /**
  * @brief Class which links a set of BscanGraphicsScene instances so that they 
  * share gate limits, time limits, and pause state. When one of these states 
- * changes in one of the  * scenes, it is changed in all of them.
+ * changes in one of the scenes, it is changed in all of them.
  */
 class BscanSceneGroup : QObject {
     Q_OBJECT
@@ -257,6 +263,17 @@ public:
      * @param scene the BscanGraphicsScene to be added to the group.
      */
     void addScene(BscanGraphicsScene* scene) {
+        // If this is not the first scene in the group, set it up like the
+        // rest of the group
+        if (! _scenes.empty()) {
+            scene->setGateLimits(_scenes[0]->minGate(), _scenes[0]->maxGate());
+            scene->setTimeLimits(_scenes[0]->startTime(), _scenes[0]->timeSpan());
+            scene->setPaused(_scenes[0]->isPaused());
+        }
+        // Add this scene to the group and set up connections so that state
+        // will be shared.
+        _scenes.push_back(scene);
+
         connect(scene, SIGNAL(gateLimitsChanged(unsigned int, unsigned int)),
                 this, SIGNAL(gateLimitsChanged(unsigned int, unsigned int)));
         connect(this, SIGNAL(gateLimitsChanged(unsigned int, unsigned int)),
@@ -271,20 +288,29 @@ public:
                 scene, SLOT(setPaused(bool)));
     }
     /**
-     * @brief Remove a BscanGraphicsScene to the group.
+     * @brief Remove a BscanGraphicsScene from the group.
      * @param scene the BscanGraphicsScene to be removed from the group. If
      * the scene is not in the group, this method has no effect.
      */
     void removeScene(BscanGraphicsScene* scene) {
-        // Disconnect signals in both directions between this and the
-        // scene being removed.
-        disconnect(this, 0, scene, 0);
-        disconnect(scene, 0, this, 0);
+        for (unsigned int i = 0; i < _scenes.size(); i++) {
+            if (_scenes[i] == scene) {
+                // Disconnect signals in both directions between this and the
+                // scene being removed.
+                disconnect(this, 0, scene, 0);
+                disconnect(scene, 0, this, 0);
+                // Remove the scene from our list
+                _scenes.erase(_scenes.begin() + i);
+                return;
+            }
+        }
     }
 signals:
     void gateLimitsChanged(unsigned int minGate, unsigned int maxGate);
     void timeLimitsChanged(double startTime, unsigned int timeSpan);
     void pauseStateChanged(bool paused);
+private:
+    std::vector<BscanGraphicsScene *> _scenes;
 };
 
 #endif /* BSCANGRAPHICSSCENE_H_ */

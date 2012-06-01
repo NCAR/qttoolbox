@@ -71,15 +71,9 @@ static const uchar PauseImageData[] = {
 static const QImage *PauseImage = 0;
 
 
-BscanWidget::BscanWidget(QtConfig &config) :
+BscanWidget::BscanWidget(QtConfig &config, std::string sceneName) :
     _view(),
-    _scene(config) {
-    _init();
-}
-
-BscanWidget::BscanWidget(const BscanWidget & wTemplate) :
-    _view(),
-    _scene(wTemplate._scene) {
+    _scene(config, sceneName) {
     _init();
 }
 
@@ -125,7 +119,7 @@ BscanWidget::_buildAnnotation() {
     // Draw each color from the color table as a single pixel in a 
     // (1 x nColors) QImage
     //
-    const ColorTable &colorTable = _scene.colorTable();
+    const ColorTable &colorTable = *_scene.colorTable();
     const QList<QColor> colors = colorTable.colors();
     int nColors = colors.size();
     QImage colorbarImg(1, nColors, QImage::Format_ARGB32);
@@ -213,4 +207,9 @@ void
 BscanWidget::addRay(const BscanRay & ray) {
     // Just pass this ray to our scene
     _scene.addRay(ray);
+}
+
+void
+BscanWidget::copyRaysFrom(const BscanWidget & src) {
+    _scene.copyRaysFrom(src._scene);
 }

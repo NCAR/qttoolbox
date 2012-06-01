@@ -40,6 +40,6 @@ DisplayLimitDialog::initFromScene() {
     _ui.minSpinBox->setMaximum(10000.0);
     _ui.maxSpinBox->setMinimum(-10000.0);
     _ui.maxSpinBox->setMaximum(10000.0);
-    _ui.minSpinBox->setValue(_scene->colorTable().minimumValue());
-    _ui.maxSpinBox->setValue(_scene->colorTable().maximumValue());
+    _ui.minSpinBox->setValue(_scene->colorTable()->minimumValue());
+    _ui.maxSpinBox->setValue(_scene->colorTable()->maximumValue());
 }

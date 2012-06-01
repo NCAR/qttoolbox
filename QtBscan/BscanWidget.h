@@ -10,6 +10,7 @@
 
 #include <QLabel>
 #include <QWidget>
+#include <QtConfig>
 #include "BscanGraphicsView.h"
 #include "BscanRay.h"
 #include "QtConfig.h"
@@ -25,16 +26,13 @@ class BscanWidget : public QWidget {
 public:
     /**
      * @brief Instantiate a BscanWidget.
+     * @param config The QtConfig to be used for obtaining and storing
+     * information for this widget.
+     * @param sceneName The scene name for this bscan, used in building names for
+     * some parameters stored in the configuration.
      */
-    BscanWidget(QtConfig &config);
-    /**
-     * @brief Copy constructor to clone a given BscanWidget.
-     * 
-     * Clone wTemplate such that the new widget will start out in the same 
-     * state as the template, displaying the same data.
-     * @param wTemplate the template BscanWidget to be cloned
-     */
-  BscanWidget(const BscanWidget & wTemplate);
+    BscanWidget(QtConfig &config, std::string sceneName = "SCENE");
+
     virtual ~BscanWidget();
     
     /**
@@ -42,6 +40,16 @@ public:
      * @return a pointer to our BscanGraphicsView
      */
     BscanGraphicsView * view() { return(& _view); }
+    /**
+     * @brief Set the scene name, which is used when saving and retrieving
+     * values for the scene in the configuration file.
+     * @param newSceneName the new name for the scene
+     */
+    void setSceneName(std::string newSceneName) { _scene.setSceneName(newSceneName); }
+    /**
+     * @brief Copy all the rays from an another BscanWidget
+     */
+    void copyRaysFrom(const BscanWidget& src);
 public slots:
     /**
      * @brief This slot accepts incoming BscanRay data to be displayed in 
@@ -81,8 +89,8 @@ public:
         _viewGroup.addView(widget->view());
     }
     /**
-     * @brief Remove a BscanWidget to the group. If the chosen widget is not in
-     * the group, nothing is changed.
+     * @brief Remove a BscanWidget from the group. If the chosen widget is not
+     * in the group, nothing is changed.
      * @param widget the BscanWidget to be removed
      */
     void removeBscanWidget(BscanWidget * widget) {
@@ -92,7 +100,7 @@ public:
                 _viewGroup.removeView(widget->view());
                 _sceneGroup.removeScene(widget->view()->scene());
                 _bscans.erase(it);
-		return;
+                return;
             }
         }
     }

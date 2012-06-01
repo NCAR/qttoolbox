@@ -9,6 +9,7 @@
 #include <cerrno>
 #include <cstring>
 #include <iostream>
+#include <sstream>
 #include <QDateTime>
 #include <QLabel>
 #include <QPainter>
@@ -38,7 +39,10 @@ BscanMainWindow::BscanMainWindow(QtConfig &config) :
     // Add our mouse position label to the status bar of the UI
     _ui.statusbar->insertWidget(0, &_mousePosLabel);
     // Start with one plot
-    addNewPlot();
+    int nPlots = _config.getInt("numPlots", 1);
+    for (int i = 0; i < nPlots; i++) {
+        addNewPlot();
+    }
     setPaused(false);
     // Set up our gate limit and time span dialogs
     _glDialog = new GateLimitDialog(_scene(0));
@@ -56,17 +60,24 @@ BscanMainWindow::~BscanMainWindow() {
 
 void 
 BscanMainWindow::addNewPlot() {
-    // Create the new bscan and add it to our group to share settings
+    // Create a scene name for the new plot using the index of the plot.
+    // I.e., the first plot is "bscan_0", etc.
+    std::string bscanName = _makeSceneName(_nBscans());
+
+    // Create the new bscan
     BscanWidget *newBscan;
-    if (_nBscans() == 0) {
-        newBscan = new BscanWidget(_config);
-    } else {
-      newBscan = new BscanWidget(*_bscans[0]);
+    newBscan = new BscanWidget(_config, bscanName);
+
+    // If this is not the first plot, copy rays from one of the existing
+    // plots
+    if (_nBscans() > 0) {
+        newBscan->copyRaysFrom(*_bscans[0]);
     }
-    
+    // Add the new plot to our list
     _bscans.push_back(newBscan);
     
-    // Add the widget to our BscanWidgetGroup so they all share settings
+    // Add the widget to our BscanWidgetGroup so they all share similar time
+    // and gate limits.
     _bwGroup.addBscanWidget(newBscan);
     
     // Display data under mouse when reported by the BscanWidget's view
@@ -82,18 +93,29 @@ BscanMainWindow::addNewPlot() {
     _ui.actionRemovePlot->setEnabled((_nBscans() > 1));
 }
 
+void
+BscanMainWindow::removeLastPlot() {
+    removePlot(_nBscans() - 1);
+}
+
 void 
-BscanMainWindow::removePlot() {
+BscanMainWindow::removePlot(unsigned int plotIndex) {
     // Don't remove the last plot
     if (_nBscans() == 1)
         return;
+    // Rename all the plots after the one being removed
+    for (unsigned int i = plotIndex + 1; i < _nBscans(); i++) {
+        _bscans[i]->setSceneName(_makeSceneName(i - 1));
+    }
+    BscanWidget *bscan = _bscans.at(plotIndex);
+    _ui.frame->layout()->removeWidget(bscan);
+    _bwGroup.removeBscanWidget(bscan);
+    _bscans.erase(_bscans.begin() + plotIndex);
+    delete(bscan);
     
-    BscanWidget *lastBscan = _bscans.at(_nBscans() - 1);
-    _ui.frame->layout()->removeWidget(lastBscan);
-    _bwGroup.removeBscanWidget(lastBscan);
-    _bscans.pop_back();
-    delete(lastBscan);
-    
+    // Save the new plot count to the config
+    _config.setInt("numPlots", _nBscans());
+
     // Disable "Remove Plot" if we have only one plot
     _ui.actionRemovePlot->setEnabled((_nBscans() > 1));
 }
@@ -201,4 +223,12 @@ BscanMainWindow::addRay(const BscanRay & ray) {
     for (unsigned int i = 0; i < _bscans.size(); i++) {
         _bscans[i]->addRay(ray);
     }
+}
+
+// static
+std::string
+BscanMainWindow::_makeSceneName(unsigned int index) {
+    std::ostringstream sstream;
+    sstream << "bscan_" << index;
+    return(sstream.str());
 }

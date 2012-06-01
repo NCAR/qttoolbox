@@ -18,73 +18,35 @@
 #include "BscanRay.h"
 #include "RayGraphicsItem.h"
 
-#ifdef NOTDEF
-/*
- * Basic constructor
- */
-BscanGraphicsScene::BscanGraphicsScene(unsigned int timeSpan, 
-        const std::string & varName, const std::string & ctFileName) : 
-    _sceneStartTime(0),
-    _timeSpan(timeSpan), 
-    _minGate(0), 
-    _maxGate(0),
-    _lastScrubTime(0),
-    _isPaused(false),
-    _displayVar(varName.c_str()),
-    _displayVarUnits(""),
-    _colorTable(83, 92, ctFileName.c_str()),
-    _config(NULL)
- {
-    // Set up our connections
-    initConnections_();
-    // update our scene rect
-    updateSceneRect_();
-}
-#endif
-BscanGraphicsScene::BscanGraphicsScene(QtConfig &config) :
-  QGraphicsScene(),
-  _deleteLaterList(),
-  _sceneStartTime(0),
-  _timeSpan(config.getInt("SCENE/TimeSpan", 30)),
-  _minGate(config.getInt("SCENE/MinGate", 0)),
-  _maxGate(config.getInt("SCENE/MaxGate",0)),
-  _isPaused(false),
-  _displayVar(config.getString("SCENE/VarName", "DZ").c_str()),
-  _displayVarUnits(),
-  _colorTable(83, 92, config.getString("SCENE/ColorTable", "eldoraDbz.ct").c_str()),
-  _config(config) {
-  // Set up our connections
-  initConnections_();
-  // update our scene rect
-  updateSceneRect_();
-}
-/*
- * Copy constructor
- */
-BscanGraphicsScene::BscanGraphicsScene(const BscanGraphicsScene & srcScene) :
+BscanGraphicsScene::BscanGraphicsScene(QtConfig &config,
+        std::string sceneName) :
+    QGraphicsScene(),
     _deleteLaterList(),
-    _sceneStartTime(srcScene._sceneStartTime),
-    _timeSpan(srcScene._timeSpan),
-    _minGate(srcScene._minGate),
-    _maxGate(srcScene._maxGate),
-    _isPaused(srcScene._isPaused),
-    _displayVarUnits(),
-    _colorTable(srcScene._colorTable),
-    _config(srcScene._config) 
-{
-    // Copy the BscanRay map
-    for (BscanRayMap_t::const_iterator it = srcScene._bscanRayMap.begin(); 
-            it != srcScene._bscanRayMap.end(); it++) {    
-        double time = it->first;
-        BscanRay * ray = it->second;
-        _bscanRayMap[time] = new BscanRay(*ray);
-    }
-    // Items will be added by setDisplayVar()
-    setDisplayVar(srcScene._displayVar);
+    _sceneStartTime(0),
+    _isPaused(false),
+    _config(config),
+    _sceneName(sceneName) {
+    // Get time span, gate limits, and display var from the config (or use
+    // default values)
+    int minGate = _config.getInt(_sceneName + "/MinGate", 0);
+    int maxGate = _config.getInt(_sceneName + "/MaxGate", 0);
+    setGateLimits(minGate, maxGate);
+
+    int timeSpan = _config.getInt(_sceneName + "/TimeSpan", 30);
+    setTimeSpan(timeSpan);
+
+    _displayVar = _config.getString(_sceneName + "/VarName", "").c_str();
+    _displayVarUnits = "";
+    // Set min and max values to be displayed. Use values stored for
+    // _displayVar from the config, or default values.
+    float minVal = config.getFloat(_displayVar.toStdString() + "/minValue", -1);
+    float maxVal = config.getFloat(_displayVar.toStdString() + "/maxValue", 1);
+    // Finally, set up our color table
+    std::string ctName =
+            _config.getString(_sceneName + "/ColorTable", "eldoraDbz.ct");
+    _colorTable = new ColorTable(minVal, maxVal, ctName.c_str());
     // Set up our connections
     initConnections_();
-    // update our scene rect
-    updateSceneRect_();
 }
 
 BscanGraphicsScene::~BscanGraphicsScene() {
@@ -105,7 +67,7 @@ void
 BscanGraphicsScene::initConnections_() {
     // Resend changed() signals from our color table as local
     // colorTableChanged() signals
-    connect(&_colorTable, SIGNAL(changed()), this, SIGNAL(colorTableChanged()));
+    connect(_colorTable, SIGNAL(changed()), this, SIGNAL(colorTableChanged()));
 }
 
 // set our scene rect to reflect current gate and time limits
@@ -147,11 +109,13 @@ BscanGraphicsScene::addRay(const BscanRay & ray) {
     // Add this ray to our map of BscanRay-s
     _bscanRayMap[time] = new BscanRay(ray);
     
-    // If this is our first ray, set our start time and set gate limits to 
-    // show the whole ray
-    // also - start displaying the first available product
+    // If we have no start time, use the time of this ray
     if (startTime() == 0) {
         setStartTime_(time);
+    }
+
+    // If we have no _displayVar, use the first product from this ray
+    if (_displayVar.length() == 0) {
         QString varName(ray.productName(0).c_str());
         setDisplayVar(varName);
     }
@@ -164,7 +128,7 @@ BscanGraphicsScene::addRay(const BscanRay & ray) {
     }
     
     // Create a RayGraphicsItem from the BscanRay and add it to our scene
-    RayGraphicsItem * newItem = new RayGraphicsItem(ray, _displayVar, _colorTable);
+    RayGraphicsItem * newItem = new RayGraphicsItem(ray, _displayVar, *_colorTable);
     addItem(newItem);
 
     // Our x coordinates run from zero to _timeSpan, so translate the new
@@ -175,16 +139,10 @@ BscanGraphicsScene::addRay(const BscanRay & ray) {
     // If the gate count changes w.r.t. the previous ray, change limits
     // to show all gates of the new ray
     if (ray.nGates() != oldNGates) {
-      if (_maxGate) {
-        unsigned int nGates = newItem->nGates();
-        _maxGate = std::min(_maxGate, nGates);
-      } else {
-        _maxGate = newItem->nGates();
-      }
-      if (_minGate) {
-        _minGate = std::min(_minGate, _maxGate-1);
-      }
-      setGateLimits(_minGate, _maxGate);
+      unsigned int nGates = newItem->nGates();
+      unsigned int maxGate = std::max(_maxGate, nGates);
+      unsigned int minGate = std::min(_minGate, maxGate - 1);
+      setGateLimits(minGate, maxGate);
     }
     
     // The units of our latest ray become *our* units
@@ -211,8 +169,8 @@ BscanGraphicsScene::setGateLimits(unsigned int minGate, unsigned int maxGate) {
     if (minGate == _minGate && maxGate == _maxGate)
         return;
     
-    _config.setInt("SCENE/MinGate", minGate);
-    _config.setInt("SCENE/MaxGate", maxGate);
+    _config.setInt(_sceneName + "/MinGate", minGate);
+    _config.setInt(_sceneName + "/MaxGate", maxGate);
     _minGate = minGate;
     _maxGate = maxGate;
 
@@ -226,7 +184,7 @@ BscanGraphicsScene::setTimeSpan(unsigned int newSpan) {
     if (newSpan == _timeSpan)
         return;
     
-    _config.setInt("SCENE/TimeSpan", newSpan);
+    _config.setInt(_sceneName + "/TimeSpan", newSpan);
     // If our time span is shrinking, set the end time of the scene to
     // the last ray time (if we have rays) or leave it unchanged
     double newStartTime = _sceneStartTime;
@@ -279,7 +237,7 @@ BscanGraphicsScene::setTimeLimits(double newStartTime,
 
 void 
 BscanGraphicsScene::setDisplayLimits(double minValue, double maxValue) {
-    _colorTable.setValueLimits(minValue, maxValue);
+    _colorTable->setValueLimits(minValue, maxValue);
     // save user's display limits for current displayed variable
     std::string minKey = _displayVar.toStdString() + "/minValue";
     std::string maxKey = _displayVar.toStdString() + "/maxValue";
@@ -472,8 +430,11 @@ BscanGraphicsScene::setDisplayVar(QString varName) {
     std::string maxKey = _displayVar.toStdString() + "/maxValue";
     double minValue = _config.getFloat(minKey, 0.0);
     double maxValue = _config.getFloat(maxKey, 100.0);
-    _colorTable.setValueLimits(minValue, maxValue);
+    _colorTable->setValueLimits(minValue, maxValue);
     
+    // Save our new display var in the config
+    _config.setString(_sceneName + "/VarName", varName.toStdString());
+
     // Now that _displayVar and _colorTable have been updated, recreate all
     // the RayGraphicsItems.
     updateRayGraphicsItems_();
@@ -486,9 +447,17 @@ BscanGraphicsScene::setColorTable() {
     QAction *action = qobject_cast<QAction*>(sender());
     if (action) {
     	QString ctName = action->data().toString();
-        _config.setString("SCENE/ColorTable", ctName.toStdString());
-    	_colorTable = ColorTable(_colorTable.minimumValue(), 
-    			_colorTable.maximumValue(), ctName);
+        _config.setString(_sceneName + "/ColorTable", ctName.toStdString());
+
+        ColorTable * oldCt = _colorTable;
+    	_colorTable = new ColorTable(oldCt->minimumValue(),
+    	        oldCt->maximumValue(), ctName);
+    	delete(oldCt);
+
+        // Resend changed() signals from our color table as local
+        // colorTableChanged() signals
+        connect(_colorTable, SIGNAL(changed()), this, SIGNAL(colorTableChanged()));
+
     	updateRayGraphicsItems_();
     	emit colorTableChanged();
     }
@@ -506,7 +475,7 @@ BscanGraphicsScene::updateRayGraphicsItems_() {
         
         // Create a new RayGraphicsItem
         RayGraphicsItem * newItem = new RayGraphicsItem(*ray, _displayVar, 
-                _colorTable);
+                *_colorTable);
         // Our x coordinates run from zero to _timeSpan, so translate the new
         // ray into the correct x location. We do this to keep the x coordinates
         // in the range +/- 2^15, because of limits in Qt's raster paint engine.
@@ -517,4 +486,35 @@ BscanGraphicsScene::updateRayGraphicsItems_() {
     // Invalidate everything to force a complete redraw. (Although this doesn't
     // seem to work as expected...)
     invalidate(sceneRect());
+}
+
+void
+BscanGraphicsScene::setSceneName(std::string newSceneName) {
+    if (newSceneName == _sceneName)
+        return;
+    // Copy the current scene configuration values into the config file under
+    // the new scene name.
+    _config.setInt(newSceneName + "/TimeSpan",
+            _config.getInt(_sceneName + "/TimeSpan", 0));
+    _config.setInt(newSceneName + "/minGate",
+            _config.getInt(_sceneName + "/minGate", 0));
+    _config.setInt(newSceneName + "/maxGate",
+            _config.getInt(_sceneName + "/maxGate", 0));
+    _config.setString(newSceneName + "/VarName",
+            _config.getString(_sceneName + "/VarName", ""));
+    _config.setString(newSceneName + "/ColorTable",
+            _config.getString(_sceneName + "/ColorTable", ""));
+    // Now just change our _sceneName
+    _sceneName = newSceneName;
+}
+
+void
+BscanGraphicsScene::copyRaysFrom(const BscanGraphicsScene & srcScene) {
+    // Copy the BscanRay map from the source scene.
+    for (BscanRayMap_t::const_iterator it = srcScene._bscanRayMap.begin();
+            it != srcScene._bscanRayMap.end(); it++) {
+        double time = it->first;
+        BscanRay * ray = it->second;
+        _bscanRayMap[time] = new BscanRay(*ray);
+    }
 }

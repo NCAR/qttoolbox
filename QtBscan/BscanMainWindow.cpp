@@ -76,6 +76,9 @@ BscanMainWindow::addNewPlot() {
     // Add the new plot to our list
     _bscans.push_back(newBscan);
     
+    // Save the new plot count to the config
+    _config.setInt("numPlots", _nBscans());
+
     // Add the widget to our BscanWidgetGroup so they all share similar time
     // and gate limits.
     _bwGroup.addBscanWidget(newBscan);

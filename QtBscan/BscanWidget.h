@@ -10,7 +10,7 @@
 
 #include <QLabel>
 #include <QWidget>
-#include <QtConfig>
+#include <QtConfig.h>
 #include "BscanGraphicsView.h"
 #include "BscanRay.h"
 #include "QtConfig.h"

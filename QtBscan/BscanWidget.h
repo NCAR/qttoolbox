@@ -13,7 +13,6 @@
 #include <QtConfig.h>
 #include "BscanGraphicsView.h"
 #include "BscanRay.h"
-#include "QtConfig.h"
 
 /**
  * @brief The BscanWidget is a frame containing a BscanGraphicsView (which displays 

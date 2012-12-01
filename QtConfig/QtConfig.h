@@ -133,11 +133,34 @@ class QtConfig : protected QSettings {
                     std::string subKey,
                     std::vector<std::vector<int> > defaultValues);
 
+        /// Set the values of an array type configuration item.
+        /// @param key Configuration item name.
+        /// @param subKey The field name within the array.
+        /// This allows arrays to contain multiple field keys.
+        /// @param values Vector of configuration item values.
+        void setArray(
+                std::string key,
+                    std::string subKey,
+                    std::vector<std::string> values);
+
+        /// Get the values of an array type configuration item.
+        /// @param key Configuration item name.
+        /// @param subKey The field name within the array.
+        /// This allows arrays to contain multiple field keys.
+        /// @param values Vector of default configuration item values.
+        std::vector<std::string> getArray(
+                std::string key,
+                    std::string subKey,
+                    std::vector<std::string> defaultValues);
+
         /// Get the configuration groups below the given group.
         /// @param topGroup Limit list to keys below this group.
         /// @returns A list of the groups below this key.
         std::vector<std::string> childGroups(
                 std::string topGroup);
+
+        /// @returns The name of the underlying configuration file.
+        std::string fileName();
 };
 
 #endif

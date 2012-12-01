@@ -2,6 +2,7 @@
 #include <QList>
 #include <QStringList>
 #include <QVariant>
+#include <iostream>
 
 //////////////////////////////////////////////////////////
 QtConfig::QtConfig(
@@ -216,4 +217,74 @@ std::vector<std::vector<int> > QtConfig::getArray(
     sync();
 
     return result;
+}
+//////////////////////////////////////////////////////////
+void QtConfig::setArray(
+        std::string key,
+            std::string subKey,
+            std::vector<std::string> defaultValues) {
+    std::vector<std::string> result;
+
+    // Find out if the array exists, and its size
+    int arraySize = beginReadArray(key.c_str());
+    endArray();
+
+    if (arraySize != 0) {
+        // if the array already exists
+    }
+
+    // now create the array
+    beginWriteArray(key.c_str());
+    for (unsigned int i = 0; i < defaultValues.size(); i++) {
+        setArrayIndex(i);
+        QList<QVariant> variantList;
+        variantList.append(QVariant(QString(defaultValues[i].c_str())));
+        setValue(subKey.c_str(), defaultValues[i].c_str());
+        result.push_back(defaultValues[i]);
+    }
+    endArray();
+
+    sync();
+
+    return;
+}
+//////////////////////////////////////////////////////////
+std::vector<std::string> QtConfig::getArray(
+        std::string key,
+            std::string subKey,
+            std::vector<std::string> defaultValues) {
+    std::vector<std::string> result;
+
+    // Find out if the array exists, and its size
+    unsigned int arraySize = beginReadArray(key.c_str());
+    endArray();
+
+    if (arraySize == 0) {
+        // if the array doesn't exist
+        // add the default values
+        beginWriteArray(key.c_str());
+        for (unsigned int i = 0; i < defaultValues.size(); i++) {
+            setArrayIndex(i);
+            setValue(QString(subKey.c_str()), QString(defaultValues[i].c_str()));
+            result.push_back(defaultValues[i]);
+        }
+        endArray();
+    } else {
+        beginReadArray(key.c_str());
+        for (unsigned int i = 0; i < arraySize; i++) {
+            setArrayIndex(i);
+            std::string entry = value(QString(subKey.c_str())).toString().toStdString();
+            result.push_back(entry);
+        }
+        endArray();
+    }
+
+    sync();
+
+    return result;
+}
+
+//////////////////////////////////////////////////////////
+std::string QtConfig::fileName() {
+	return QSettings::fileName().toStdString();
 }

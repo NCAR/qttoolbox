@@ -16,14 +16,19 @@
 /// Configurations are always synced when a value is written.
 class QtConfig : protected QSettings {
     public:
-        /// Constructor. The organization and application keys provide for
-        /// categorization of the configuration set, as provided by the QSettings 
-        /// scheme.
-        /// @param organization The organization.
-        /// @param application The application.
-        QtConfig(
-                const std::string organization,
-                    const std::string application);
+    /// Constructor. The organization and application keys provide for
+    /// categorization of the configuration set, as provided by the QSettings
+    /// scheme.
+    /// @param organization The organization.
+    /// @param application The application.
+    QtConfig(
+            const std::string organization,
+                const std::string application);
+
+    /// Constructor which specifies theconfig file path.
+    /// @param organization The organization.
+    /// @param application The application.
+    QtConfig(const std::string filePath);
 
         /// Destructor
         virtual ~QtConfig();

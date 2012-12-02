@@ -15,6 +15,12 @@ QtConfig::QtConfig(
 }
 
 //////////////////////////////////////////////////////////
+QtConfig::QtConfig(const std::string filePath):
+QSettings(filePath.c_str(), QSettings::IniFormat) {
+
+}
+
+//////////////////////////////////////////////////////////
 QtConfig::~QtConfig() {
 }
 

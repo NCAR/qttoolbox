@@ -4,6 +4,7 @@
 #include <QSettings>
 #include <string>
 #include <vector>
+#include <map>
 
 /// Provide an interface for persistent configuration
 /// management. Configuration items are specified
@@ -139,24 +140,25 @@ class QtConfig : protected QSettings {
                     std::vector<std::vector<int> > defaultValues);
 
         /// Set the values of an array type configuration item.
-        /// @param key Configuration item name.
-        /// @param subKey The field name within the array.
+        /// @param key Configuration array group name.
         /// This allows arrays to contain multiple field keys.
-        /// @param values Vector of configuration item values.
+        /// @param values es Vector of default configuration item values. Each
+        /// map in the vector contains a dictionary of key/value pairs for
+        /// one array entry. The keys do not have to be the same for each
+        /// array entry, although that could get confusing.
         void setArray(
                 std::string key,
-                    std::string subKey,
-                    std::vector<std::string> values);
+                std::vector<std::map<std::string, std::string> > values);
 
         /// Get the values of an array type configuration item.
-        /// @param key Configuration item name.
-        /// @param subKey The field name within the array.
-        /// This allows arrays to contain multiple field keys.
-        /// @param values Vector of default configuration item values.
-        std::vector<std::string> getArray(
+        /// @param key Configuration array group name.
+        /// @param defaultValues Vector of default configuration item values. Each
+        /// map in the vector contains a dictionary of key/value pairs for
+        /// one array entry. The keys do not have to be the same for each
+        /// array entry, although that could get confusing.
+        std::vector<std::map<std::string, std::string> > getArray(
                 std::string key,
-                    std::string subKey,
-                    std::vector<std::string> defaultValues);
+                std::vector<std::map<std::string, std::string> > defaultValues);
 
         /// Get the configuration groups below the given group.
         /// @param topGroup Limit list to keys below this group.
@@ -166,6 +168,9 @@ class QtConfig : protected QSettings {
 
         /// @returns The name of the underlying configuration file.
         std::string fileName();
+
+        /// @return All of the keys in the configuration.
+        std::vector<std::string> getKeys();
 };
 
 #endif

@@ -225,28 +225,23 @@ std::vector<std::vector<int> > QtConfig::getArray(
     return result;
 }
 //////////////////////////////////////////////////////////
-void QtConfig::setArray(
-        std::string key,
-            std::string subKey,
-            std::vector<std::string> defaultValues) {
+void QtConfig::setArray(std::string key,
+		std::vector<std::map<std::string, std::string> > values) {
     std::vector<std::string> result;
 
     // Find out if the array exists, and its size
     int arraySize = beginReadArray(key.c_str());
     endArray();
 
-    if (arraySize != 0) {
-        // if the array already exists
-    }
-
     // now create the array
     beginWriteArray(key.c_str());
-    for (unsigned int i = 0; i < defaultValues.size(); i++) {
+    for (unsigned int i = 0; i < values.size(); i++) {
         setArrayIndex(i);
-        QList<QVariant> variantList;
-        variantList.append(QVariant(QString(defaultValues[i].c_str())));
-        setValue(subKey.c_str(), defaultValues[i].c_str());
-        result.push_back(defaultValues[i]);
+        std::map<std::string, std::string> entry = values[i];
+        std::map<std::string, std::string>::iterator j;
+        for (j = entry.begin(); j != entry.end(); j++) {
+        	setValue(QString(j->first.c_str()), QString(j->second.c_str()));
+        }
     }
     endArray();
 
@@ -255,11 +250,10 @@ void QtConfig::setArray(
     return;
 }
 //////////////////////////////////////////////////////////
-std::vector<std::string> QtConfig::getArray(
+std::vector<std::map<std::string, std::string> > QtConfig::getArray(
         std::string key,
-            std::string subKey,
-            std::vector<std::string> defaultValues) {
-    std::vector<std::string> result;
+        std::vector<std::map<std::string, std::string> > defaultValues) {
+	std::vector<std::map<std::string, std::string> > result;
 
     // Find out if the array exists, and its size
     unsigned int arraySize = beginReadArray(key.c_str());
@@ -271,15 +265,24 @@ std::vector<std::string> QtConfig::getArray(
         beginWriteArray(key.c_str());
         for (unsigned int i = 0; i < defaultValues.size(); i++) {
             setArrayIndex(i);
-            setValue(QString(subKey.c_str()), QString(defaultValues[i].c_str()));
-            result.push_back(defaultValues[i]);
+            std::map<std::string, std::string> entry = defaultValues[i];
+            std::map<std::string, std::string>::iterator j;
+            for (j = entry.begin(); j != entry.end(); j++) {
+            	setValue(QString(j->first.c_str()), QString(j->second.c_str()));
+            }
         }
         endArray();
     } else {
         beginReadArray(key.c_str());
         for (unsigned int i = 0; i < arraySize; i++) {
             setArrayIndex(i);
-            std::string entry = value(QString(subKey.c_str())).toString().toStdString();
+        	QStringList keys = childKeys();
+    		std::map<std::string, std::string> entry;
+        	for (int i = 0; i < keys.size(); i++) {
+        		std::string key = keys[i].toStdString();
+        	    entry[key] =
+        	    	value(key.c_str()).toString().toStdString();
+        	}
             result.push_back(entry);
         }
         endArray();
@@ -289,8 +292,16 @@ std::vector<std::string> QtConfig::getArray(
 
     return result;
 }
-
 //////////////////////////////////////////////////////////
 std::string QtConfig::fileName() {
 	return QSettings::fileName().toStdString();
+}
+//////////////////////////////////////////////////////////
+std::vector<std::string> QtConfig::getKeys() {
+	std::vector<std::string> result;
+	QStringList keys = allKeys();
+	for (int i = 0; i < keys.size(); i++) {
+		result.push_back(keys[i].toStdString());
+	}
+	return result;
 }

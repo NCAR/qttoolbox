@@ -25,6 +25,7 @@ BscanGraphicsScene::BscanGraphicsScene(QtConfig &config,
     _sceneStartTime(0),
     _isPaused(false),
     _config(config),
+    _pointingUp(true),
     _sceneName(sceneName) {
     // Get time span, gate limits, and display var from the config (or use
     // default values)
@@ -37,6 +38,11 @@ BscanGraphicsScene::BscanGraphicsScene(QtConfig &config,
 
     _displayVar = _config.getString(_sceneName + "/VarName", "").c_str();
     _displayVarUnits = "";
+    
+    // Get pointing direction from config, or default to pointing up.
+    bool pointingUp = _config.getBool(_sceneName + "/PointingUp", true);
+    setPointingUp(pointingUp);
+    
     // Set min and max values to be displayed. Use values stored for
     // _displayVar from the config, or default values.
     float minVal = config.getFloat(_displayVar.toStdString() + "/minValue", -1);
@@ -77,6 +83,10 @@ BscanGraphicsScene::updateSceneRect_() {
     qreal width = _timeSpan;
     qreal top = _maxGate + 1;
     qreal height = -int(_maxGate - _minGate + 1);  // height is negative!
+    if (! _pointingUp) {
+        top = top + height;
+        height = -height;
+    }
     setSceneRect(left, top, width, height);
 }
 
@@ -177,6 +187,18 @@ BscanGraphicsScene::setGateLimits(unsigned int minGate, unsigned int maxGate) {
     updateSceneRect_();
     
     emit gateLimitsChanged(_minGate, _maxGate);
+}
+
+void
+BscanGraphicsScene::setPointingUp(bool pointingUp) {
+    if (pointingUp == _pointingUp)
+        return;
+    
+    _config.setBool(_sceneName + "/PointingUp", pointingUp);
+    _pointingUp = pointingUp;
+    
+    updateSceneRect_();
+    emit pointingUpChanged(_pointingUp);
 }
 
 void
@@ -367,8 +389,8 @@ BscanGraphicsScene::drawForeground(QPainter *painter, const QRectF &rect) {
         // Build a test rectangle centered at this x location and 20 pixels
         // wide.  If it doesn't intersect the exposed rectangle, move on.
         QRectF pixTestRect = 
-            worldToDev.mapRect(QRectF(sceneX, sceneRect().bottom(), 
-                                      sceneX, sceneRect().top()));
+            worldToDev.mapRect(QRectF(sceneX, sceneRect().top(), 
+                                      0, sceneRect().height()));
         pixTestRect.adjust(-20, 0, 20, 0);
         if (! pixExposedRect.intersects(pixTestRect))
             continue;
@@ -391,11 +413,13 @@ BscanGraphicsScene::drawForeground(QPainter *painter, const QRectF &rect) {
         // ...first a fat line in semi-transparent white
         painter->save();
         painter->setPen(wideWhitePen);
-        painter->drawLine(worldToDev.map(QPointF(sceneX, sceneTextRect.bottom())), 
+        qreal sceneTextTop = (sceneRect().height() < 0) ? 
+                sceneTextRect.bottom() : sceneTextRect.top();
+        painter->drawLine(worldToDev.map(QPointF(sceneX, sceneTextTop)), 
                 worldToDev.map(QPointF(sceneX, sceneRect().top())));
         painter->restore();
         // ...then a thin line in semi-transparent black
-        painter->drawLine(worldToDev.map(QPointF(sceneX, sceneTextRect.bottom())), 
+        painter->drawLine(worldToDev.map(QPointF(sceneX, sceneTextTop)), 
                 worldToDev.map(QPointF(sceneX, sceneRect().top())));
     }
 

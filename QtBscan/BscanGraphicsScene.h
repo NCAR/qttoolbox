@@ -123,6 +123,10 @@ public:
      * @param newSceneName the new name for the scene
      */
     void setSceneName(std::string newSceneName);
+    /**
+     * @brief Return the boolean "pointing up" state.
+     */
+    bool pointingUp() const { return _pointingUp; }
 public slots:
     /**
      * @brief Set the scene's gate limits.
@@ -171,6 +175,12 @@ public slots:
      * @brief Set the scene's color table based on the text of a QAction.
      */
     void setColorTable();
+    /**
+     * @brief Set the scene's "pointing up" state. 
+     * @param pointingUp true iff the radar is pointing up, false if the
+     * radar is pointing down
+     */
+    void setPointingUp(bool pointingUp);
     /**
      * @brief Copy all the rays from another BscanGraphicsScene to this scene.
      */
@@ -227,6 +237,12 @@ signals:
      * @brief This signal is emitted when any trait of the color table changes
      */
     void colorTableChanged();
+    /**
+     * @brief This signal is emitted when the "pointing up" state changes
+     * @param pointingUp the new "pointing up" state: true if the radar is 
+     * pointing up, false if the radar is pointing down
+     */
+    void pointingUpChanged(bool pointingUp);
 private:
     // Map from time to BscanRay-s
     typedef std::map<double, BscanRay*> BscanRayMap_t;
@@ -242,6 +258,7 @@ private:
     QString _displayVarUnits;
     ColorTable * _colorTable;
     QtConfig &_config;
+    bool _pointingUp;
     /**
      * Name of the scene, used in getting/saving information about this
      * scene in the configuration.
@@ -286,6 +303,10 @@ public:
                 this, SIGNAL(pauseStateChanged(bool)));
         connect(this, SIGNAL(pauseStateChanged(bool)), 
                 scene, SLOT(setPaused(bool)));
+        connect(scene, SIGNAL(pointingUpChanged(bool)),
+                this, SIGNAL(pointingUpChanged(bool)));
+        connect(this, SIGNAL(pointingUpChanged(bool)),
+                scene, SLOT(setPointingUp(bool)));
     }
     /**
      * @brief Remove a BscanGraphicsScene from the group.
@@ -309,6 +330,7 @@ signals:
     void gateLimitsChanged(unsigned int minGate, unsigned int maxGate);
     void timeLimitsChanged(double startTime, unsigned int timeSpan);
     void pauseStateChanged(bool paused);
+    void pointingUpChanged(bool pointingUp);
 private:
     std::vector<BscanGraphicsScene *> _scenes;
 };

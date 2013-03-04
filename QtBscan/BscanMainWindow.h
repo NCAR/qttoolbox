@@ -79,6 +79,10 @@ public slots:
      * @param ray the BscanRay to be added to the display
      */
     void addRay(const BscanRay & ray);
+    /**
+     * @brief Toggle the "pointing up" state of our scenes.
+     */
+    void togglePointingUp();
 protected slots:
     void _showLocAndData(double time, unsigned int gate, const QString &varName, 
             float value);
@@ -97,6 +101,7 @@ protected slots:
     void on_actionQuit_triggered() { qApp->closeAllWindows(); }
     void on_actionSetGateRange_triggered() { _glDialog->exec(); }
     void on_actionSetTimeSpan_triggered() { _tsDialog->exec(); }
+    void on_actionTogglePointingUp_triggered() { togglePointingUp(); }
 private:
     BscanGraphicsView* _view(int index) const { return _bscans[index]->view(); }
     BscanGraphicsScene* _scene(int index) const { return _view(index)->scene(); }

@@ -206,6 +206,12 @@ BscanMainWindow::setZoom(float zoom) {
 }
 
 void
+BscanMainWindow::togglePointingUp() {
+    bool pointingUp = _scene(0)->pointingUp();
+    _scene(0)->setPointingUp(! pointingUp);
+}
+
+void
 BscanMainWindow::_showLocAndData(double time, unsigned int gate, 
         const QString &varName, float value) {
     if (time == -1) {

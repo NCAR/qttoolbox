@@ -24,6 +24,7 @@
 #include "ui_Bscan.h"
 
 BscanMainWindow::BscanMainWindow(QtConfig &config) : 
+  _saveImageDialog(0),
   _mousePosLabel(),
   _config(config) {
     _ui.setupUi(this);
@@ -167,6 +168,22 @@ BscanMainWindow::print() {
     
     // Restore the previous SIGPIPE handler
     sigaction(SIGPIPE, &oldAction, 0);
+}
+
+void
+BscanMainWindow::saveImage() {
+    QPixmap pm = QPixmap::grabWidget(_ui.frame);
+    // Keep around the "Save Image" dialog, so that we start in the same 
+    // directory used to save the last image.
+    if (! _saveImageDialog) {
+        _saveImageDialog = new QFileDialog(this, "Save Image", "hcrbscan.png",
+                "Images (*.png *.jpg)");
+        _saveImageDialog->setAcceptMode(QFileDialog::AcceptSave);
+    }
+    if (_saveImageDialog->exec()) {
+        QStringList filenames = _saveImageDialog->selectedFiles();
+        pm.save(filenames[0], 0, -1);
+    }
 }
 
 void

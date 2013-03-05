@@ -16,6 +16,7 @@
 
 #include "QtConfig.h"
 
+#include <QFileDialog>
 #include <QLabel>
 #include <QMainWindow>
 #include <QObject>
@@ -57,6 +58,11 @@ public slots:
      */
     void print();
     /**
+     * @brief Save the UI's plot frame as an image, popping up a dialog for
+     * choosing the file name.
+     */
+    void saveImage();
+    /**
      * @brief Set the paused state for the model.
      * @param state the new paused state
      */
@@ -90,6 +96,7 @@ protected slots:
      * Slots which are automatically connected to actions in the UI
      */
     void on_actionPrint_triggered() { print(); }
+    void on_actionSaveImage_triggered() { saveImage(); }
     void on_actionAddPlot_triggered() { addNewPlot(); }
     void on_actionRemovePlot_triggered() { removeLastPlot(); }
     void on_actionPause_triggered() { pause(); }
@@ -112,6 +119,7 @@ private:
     Ui::Bscan _ui;
     GateLimitDialog *_glDialog;
     TimeSpanDialog *_tsDialog;
+    QFileDialog *_saveImageDialog;
     std::vector<BscanWidget *> _bscans;
     // Put all of our BscanWidget instances into a BscanWidgetGroup, so they 
     // share gate limits, time limits, pause state, zoom state, and 

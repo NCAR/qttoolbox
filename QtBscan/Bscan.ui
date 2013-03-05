@@ -76,6 +76,7 @@
      <string>File</string>
     </property>
     <addaction name="actionPrint"/>
+    <addaction name="actionSaveImage"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -172,6 +173,11 @@
   <action name="actionTogglePointingUp">
    <property name="text">
     <string>Toggle Up/Down Pointing</string>
+   </property>
+  </action>
+  <action name="actionSaveImage">
+   <property name="text">
+    <string>Save Image...</string>
    </property>
   </action>
  </widget>

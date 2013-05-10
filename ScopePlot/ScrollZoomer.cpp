@@ -34,7 +34,11 @@ public:
 #endif
 };
 
+#if (QWT_VERSION < 0x060100)
 ScrollZoomer::ScrollZoomer(QwtPlotCanvas *canvas):
+#else
+ScrollZoomer::ScrollZoomer(QWidget *canvas):
+#endif
     QwtPlotZoomer(canvas),
     d_cornerWidget(NULL),
     d_hScrollData(NULL),

@@ -20,7 +20,11 @@ public:
         OppositeToScale
     };
 
+#if (QWT_VERSION < 0x060100)
     ScrollZoomer(QwtPlotCanvas *);
+#else
+    ScrollZoomer(QWidget *);
+#endif
     virtual ~ScrollZoomer();
 
     ScrollBar *horizontalScrollBar() const;

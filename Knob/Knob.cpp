@@ -26,7 +26,11 @@ Knob::setTitle(std::string title)
 void
 Knob::setRange(double min, double max)
 {
+#if (QWT_VERSION < 0x060100)
    _knob->setRange(min, max);
+#else
+   _knob->setScale(min, max);
+#endif
 }
 
 void
@@ -56,8 +60,13 @@ Knob::setScaleMaxMinor(int ticks)
 void 
 Knob::getRange(double& min, double& max)
 {
+#if (QWT_VERSION < 0x060100)
 	min = _knob->minValue();
 	max = _knob->maxValue();
+#else
+	min = _knob->lowerBound();
+	max = _knob->upperBound();
+#endif
 }
 
 double

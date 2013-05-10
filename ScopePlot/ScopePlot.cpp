@@ -30,7 +30,9 @@ _paused(false)
 
 	_qwtPlot->setFrameStyle(QFrame::NoFrame);
 	_qwtPlot->setLineWidth(0);
+#if (QWT_VERSION < 0x060100)
 	_qwtPlot->setCanvasLineWidth(2);
+#endif
 	_qwtPlot->setAxisScaleEngine(QwtPlot::xBottom, new QwtLinearScaleEngine());
 
 	_grid = new QwtPlotGrid();
@@ -426,7 +428,11 @@ ScopePlot::configureForSpectrum(int n,
 	_sampleRateHz = sampleRateHz;
 
 	if (logYaxis)
-		_qwtPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLog10ScaleEngine());
+#if (QWT_VERSION < 0x060100)
+		 _qwtPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLog10ScaleEngine());
+#else
+	 	 _qwtPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLogScaleEngine());
+#endif
 	else
 		_qwtPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
 

@@ -234,7 +234,7 @@ BscanMainWindow::_showLocAndData(double time, unsigned int gate,
     if (time == -1) {
         _mousePosLabel.setText("no data under cursor");
     } else {
-        QDateTime qdt = QDateTime::fromTime_t((time_t)time);
+        QDateTime qdt = QDateTime::fromTime_t((time_t)time).toUTC();
         qdt = qdt.addMSecs(qint64(fmod(time, 1.0) * 1000));   // add on the fractional seconds
         QString timeLabel = qdt.toString("hh:mm:ss.zzz");
         QString label(varName + ": " + QString::number(value) + " @ gate " + 

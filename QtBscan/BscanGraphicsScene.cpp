@@ -397,7 +397,7 @@ BscanGraphicsScene::drawForeground(QPainter *painter, const QRectF &rect) {
         
         // Draw the text label, with a surrounding filled box.
         int alignmentFlags = Qt::AlignBottom | Qt::AlignHCenter;
-        QString label = QDateTime::fromTime_t(i).toString("yyyy-MM-dd\nhh:mm:ss");
+        QString label = QDateTime::fromTime_t(i).toUTC().toString("yyyy-MM-dd\nhh:mm:ss");
         QPointF labelLoc = worldToDev.map(QPointF(sceneX, sceneRect().bottom()));
         QRectF pixTextRect = painter->boundingRect(QRectF(labelLoc, QSizeF(0, 0)), 
                 alignmentFlags, label);

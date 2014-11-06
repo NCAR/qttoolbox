@@ -1,5 +1,5 @@
 # build the config library
-tools = ['qt4']
+tools = ['qt4', 'doxygen']
 # tools we need for the build here, but do not get passed as dependencies
 # to those loading *this* tool
 local_tools = ['qtt_common']
@@ -10,9 +10,21 @@ env.EnableQt4Modules(qt4modules)
 
 tooldir = env.Dir('.').srcnode().abspath
 
-qtconfig = env.Library('qtconfig', ['QtConfig.cpp'])
+sources = Split("""
+QtConfig.cpp
+""")
+
+headers = Split("""
+QtConfig.h
+""")
+
+qtconfig = env.Library('qtconfig', sources)
 
 Default(qtconfig)
+
+env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Qttoolbox Config" })
+html = env.Apidocs(sources + headers)
+Default(html)
 
 def qtt_qtconfig(env):
     for t in tools:

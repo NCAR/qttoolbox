@@ -1,4 +1,4 @@
-tools = ['qt4']
+tools = ['qt4', 'doxygen']
 # tools we need for the build here, but do not get passed as dependencies
 # to those loading *this* tool
 local_tools = ['qtt_common']
@@ -9,16 +9,25 @@ env.EnableQt4Modules(qt4modules)
 
 tooldir = env.Dir('.').srcnode().abspath
 
-# build knob shared library
+# build status guage shared library
 sources = Split("""
 StatusGauge.cpp
 StatusGaugePlugin.cpp
+""")
+
+headers = Split("""
+StatusGauge.h
+StatusGaugePlugin.h
 """)
 
 statusgauge = env.SharedLibrary('statusgauge', sources)
 statusgauge_install = env.InstallLib(statusgauge)
 
 Default(statusgauge)
+
+env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Qttoolbox StatusGuage" })
+html = env.Apidocs(sources + headers)
+Default(html)
 
 # The following function and Export actually define the qtt_statusgauge tool
 def qtt_statusgauge(env):

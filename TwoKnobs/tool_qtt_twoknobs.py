@@ -1,4 +1,4 @@
-tools = ['qt4', 'qwt']
+tools = ['qt4', 'qwt', 'doxygen']
 # tools we need for the build here, but do not get passed as dependencies
 # to those loading *this* tool
 local_tools = ['qtt_common']
@@ -17,11 +17,21 @@ sources = Split("""
 TwoKnobs.cpp
 TwoKnobsPlugin.cpp
 """)
+
+headers = Split("""
+TwoKnobs.h
+TwoKnobsPlugin.h
+""")
+
 twoknobs = env.SharedLibrary('twoknobs', sources)
 
 twoknobs_install = env.InstallLib(twoknobs)
 
 Default(twoknobs)
+
+env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Qttoolbox Twoknobs" })
+html = env.Apidocs(sources + headers)
+Default(html)
 
 def qtt_twoknobs(env):
     for t in tools:

@@ -1,4 +1,4 @@
-tools = ['qwt', 'qt4']
+tools = ['qwt', 'qt4', 'doxygen']
 # tools we need for the build here, but do not get passed as dependencies
 # to those loading *this* tool
 local_tools = ['qtt_common']
@@ -18,10 +18,20 @@ Knob.cpp
 KnobPlugin.cpp
 """)
 
+headers = Split("""
+Knob.h
+KnobPlugin.h
+""")
+
 knob = env.SharedLibrary('knob', sources)
 knob_install = env.InstallLib(knob)
 
 Default(knob)
+
+env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Qttoolbox Knob" })
+html = env.Apidocs(sources + headers)
+Default(html)
+
 
 # Actually define and export the qtt_knob tool
 def qtt_knob(env):

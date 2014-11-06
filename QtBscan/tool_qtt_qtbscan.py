@@ -67,7 +67,7 @@ RayGraphicsItem.h
 TimeSpanDialog.h
 """)
 
-env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "qttoolbox bscan" })
+env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Qttoolbox Bscan" })
 html = env.Apidocs(sources + headers)
 Default(html)
 

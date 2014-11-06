@@ -1,4 +1,4 @@
-tools = ['qwt', 'qt4']
+tools = ['qwt', 'qt4', 'doxygen']
 # tools we need for the build here, but do not get passed as dependencies
 # to those loading *this* tool
 local_tools = ['qtt_common']
@@ -20,10 +20,21 @@ ScrollBar.cpp
 ScrollZoomer.cpp
 """)
 
+headers = Split("""
+ScopePlot.h
+ScopePlotPlugin.h
+ScrollBar.h
+ScrollZoomer.h
+""")
+
 scopeplot = env.SharedLibrary('scopeplot', sources)
 scopeplot_install = env.InstallLib(scopeplot)
 
 Default(scopeplot)
+
+env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Qttoolbox Scopeplot" })
+html = env.Apidocs(sources + headers)
+Default(html)
 
 def qtt_scopeplot(env):
     for t in tools:

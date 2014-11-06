@@ -1,6 +1,6 @@
 import os
 
-tools = ['qt4', 'qtt_colorbar']
+tools = ['qt4', 'qtt_colorbar', 'doxygen']
 # tools we need for the build here, but do not get passed as dependencies
 # to those loading *this* tool
 local_tools = ['qtt_common']
@@ -18,10 +18,20 @@ PPIPlugin.cpp
 ScaledLabel.cpp
 """)
 
+headers = Split("""
+PPI.h
+PPIPlugin.h
+ScaledLabel.h
+""")
+
 ppi = env.SharedLibrary('ppi', sources)
 ppi_install = env.InstallLib(ppi)
 
 Default(ppi)
+
+env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Qttoolbox PPI" })
+html = env.Apidocs(sources + headers)
+Default(html)
 
 # The following function and export actually create the qtt_ppi tool
 def qtt_ppi(env):

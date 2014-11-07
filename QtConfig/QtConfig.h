@@ -26,9 +26,8 @@ class QtConfig : protected QSettings {
             const std::string organization,
                 const std::string application);
 
-    /// Constructor which specifies theconfig file path.
-    /// @param organization The organization.
-    /// @param application The application.
+    /// Constructor which specifies the config file path.
+    /// @param filePath path to the configuration file.
     QtConfig(const std::string filePath);
 
         /// Destructor
@@ -53,7 +52,7 @@ class QtConfig : protected QSettings {
 
         /// Set the value of the configuration item.
         /// @param key Configuration item name.
-        /// @param t Configuration item value.
+        /// @param d Configuration item value.
         void setDouble(
                 std::string key,
                     double d);
@@ -133,7 +132,7 @@ class QtConfig : protected QSettings {
         /// @param key Configuration item name.
         /// @param subKey The field name within the array. 
         /// This allows arrays to contain multiple field keys.
-        /// @param values Vector of default configuration item values.
+        /// @param defaultValues Vector of default configuration item values.
         std::vector<std::vector<int> > getArray(
                 std::string key,
                     std::string subKey,
@@ -142,7 +141,7 @@ class QtConfig : protected QSettings {
         /// Set the values of an array type configuration item.
         /// @param key Configuration array group name.
         /// This allows arrays to contain multiple field keys.
-        /// @param values es Vector of default configuration item values. Each
+        /// @param values Vector of default configuration item values. Each
         /// map in the vector contains a dictionary of key/value pairs for
         /// one array entry. The keys do not have to be the same for each
         /// array entry, although that could get confusing.

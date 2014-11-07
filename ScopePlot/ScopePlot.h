@@ -47,7 +47,7 @@ public:
    virtual QSize sizeHint() const;
 
    /// Draw a time series plot.
-   /// @param Y.
+   /// @param Y The vector of y values for display.
    /// @param scaleMin The minimum value to set the y scale to.
    /// @param scaleMax The maximum value to set the y scale to.
    /// @param sampleRateHz The rate of the data samples, in Hz
@@ -168,7 +168,7 @@ protected:
    /// @param n The number of points in the time series.
    /// @param scaleMin The y scale minimum.
    /// @param scaleMax The y scale maximum.
-   /// @param sampeRateHz The sample rate in Hz
+   /// @param sampleRateHz The sample rate in Hz
    void configureForTimeSeries(int n, 
       double scaleMin, 
       double scaleMax,
@@ -178,7 +178,7 @@ protected:
    /// @param n The number of points in the time series.
    /// @param scaleMin The y scale minimum.
    /// @param scaleMax The y scale maximum.
-   /// @param sampeRateHz The sample rate in Hz
+   /// @param sampleRateHz The sample rate in Hz
    void configureForIandQ(int n,
       double scaleMin,
       double scaleMax,
@@ -194,6 +194,7 @@ protected:
    /// @param scaleMin The y scale minimum.
    /// @param scaleMax The y scale maximum.
    /// @param sampleRateHz The sample rate, in Hz
+   /// @param logYaxis If true, display using a log y axis.
    void configureForSpectrum(int n,
       double scaleMin, 
       double scaleMax,

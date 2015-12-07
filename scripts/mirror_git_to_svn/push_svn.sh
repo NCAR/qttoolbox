@@ -32,7 +32,7 @@ fi
 git svn fetch svn
 
 # create master branch if needed
-git show-ref --verify --quiet refs/heads/master || git branch master origin
+git show-ref --verify --quiet refs/heads/master || git branch master origin/master
 
 # create svn branch tracking git-svn remote
 # must be done after above git svn fetch

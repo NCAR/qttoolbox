@@ -31,9 +31,13 @@ fi
 # takes a long time the first time it is run from a large repo
 git svn fetch svn
 
+# create master branch if needed
+git show-ref --verify --quiet refs/heads/master || git branch master origin
+
 # create svn branch tracking git-svn remote
 # must be done after above git svn fetch
 git show-ref --verify --quiet refs/heads/svn || git branch svn git-svn
+
 
 # rebase master so it becomes series of commits after HEAD of svn
 # takes a long time the first time it is run from a large repo

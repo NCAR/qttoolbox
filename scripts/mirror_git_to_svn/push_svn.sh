@@ -27,17 +27,26 @@ if ! [ -f .git/config ] || ! grep -F -q svn-remote .git/config; then
 EOD
 fi
 
-# fetch objects from svn-remote named "svn"
-# takes a long time the first time it is run from a large repo
-git svn fetch svn
+env
 
 # create master branch if needed
 git show-ref --verify --quiet refs/heads/master || git branch master origin/master
 
+# jenkins does not update master branch, and instead
+# works in a DETACHED HEAD state, from a checkout of
+# the most recent commit, as returned by
+#   git rev-parse origin/master^{commit}
+# We could probably do away with this master.
+# stuff and use the value of $GIT_COMMIT 
+git merge --ff-only origin/master master
+
+# fetch objects from svn-remote named "svn"
+# takes a long time the first time it is run from a large repo
+git svn fetch svn
+
 # create svn branch tracking git-svn remote
 # must be done after above git svn fetch
 git show-ref --verify --quiet refs/heads/svn || git branch svn git-svn
-
 
 # rebase master so it becomes series of commits after HEAD of svn
 # takes a long time the first time it is run from a large repo

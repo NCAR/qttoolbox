@@ -8,10 +8,10 @@ svnurl=http://svn.eol.ucar.edu/svn/$repo
 if ! [ $JENKINS_HOME ]; then
 
     JENKINS_HOME=/tmp/${repo}_jenkins
-    giturl=https://github.com/ncareol/${repo}.git
-
     [ -d $JENKINS_HOME ] || mkdir $JENKINS_HOME
     cd $JENKINS_HOME
+
+    giturl=https://github.com/ncareol/${repo}.git
 
     # emulate how jenkins sets up the working tree
     # jenkins works in a "detached head" state, with no current
@@ -56,9 +56,11 @@ git merge --ff-only tmp-master
 # push new commits to subversion
 git svn dcommit
 
-# reset working tree
-git checkout -f $GIT_COMMIT
+# reset working tree, quietly, to suppress the "detached head" warning
+git checkout -f -q $GIT_COMMIT
 
 # delete temporary branch
 git branch -D tmp-master
+
+git status
 

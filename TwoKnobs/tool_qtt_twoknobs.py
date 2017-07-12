@@ -1,16 +1,16 @@
-tools = ['qt4', 'qwt', 'doxygen']
+tools = ['qt5', 'qwt', 'doxygen']
 # tools we need for the build here, but do not get passed as dependencies
 # to those loading *this* tool
 local_tools = ['qtt_common']
 env = Environment(tools = ['default'] + tools + local_tools)
 
-qt4modules = ['QtCore', 'QtGui', 'QtDesigner']
-env.EnableQt4Modules(qt4modules)
+qt5modules = ['QtCore', 'QtGui', 'QtDesigner']
+env.EnableQt5Modules(qt5modules)
 
 tooldir = env.Dir('.')
 
 # uic knob form
-env.Uic4('TwoKnobs.ui')
+env.Uic5('TwoKnobs.ui')
 
 # build knob shared library
 sources = Split("""
@@ -36,7 +36,7 @@ Default(html)
 def qtt_twoknobs(env):
     for t in tools:
         env.Tool(t)
-    env.EnableQt4Modules(qt4modules)
+    env.EnableQt5Modules(qt5modules)
     env.AppendUnique(CPPPATH = [tooldir])
     env.AppendUnique(LIBPATH = [tooldir])
     env.AppendUnique(RPATH=[tooldir])

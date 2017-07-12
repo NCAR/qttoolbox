@@ -6,7 +6,7 @@ import eol_scons
 
 tools = Split("""
 prefixoptions
-qt4
+qt5
 qtt_qtconfig
 doxygen
 """)
@@ -14,8 +14,8 @@ doxygen
 env = Environment(tools = ['default'] + tools)
 env.AppendUnique(CPPFLAGS = ['-g', '-O0'])
 
-qt4modules = ['QtCore','QtGui']
-env.EnableQt4Modules(qt4modules)
+qt5modules = ['QtCore','QtGui']
+env.EnableQt5Modules(qt5modules)
 
 # The directory where shared files (e.g., color tables) for QtBscan will be
 # installed
@@ -39,7 +39,7 @@ DisplayLimitDialog.ui
 GateLimitDialog.ui
 TimeSpanDialog.ui
 """)
-env.Uic4(uifiles)
+env.Uic5(uifiles)
 
 sources = Split("""
 BscanMainWindow.cpp
@@ -94,6 +94,6 @@ def qtt_qtbscan(env):
     env.AppendLibrary('qtbscan')
     env.AppendDoxref('qttoolbox_QtBscan')
     env.Require(tools)
-    env.EnableQt4Modules(qt4modules)
+    env.EnableQt5Modules(qt5modules)
 
 Export('qtt_qtbscan')

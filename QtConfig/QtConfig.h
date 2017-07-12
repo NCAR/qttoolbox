@@ -24,7 +24,7 @@
 #ifndef QTCONFIGINC_
 #define QTCONFIGINC_
 
-#include <QSettings>
+#include <QtCore/QSettings>
 #include <string>
 #include <vector>
 #include <map>

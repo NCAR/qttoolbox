@@ -6,7 +6,7 @@ local_tools = ['qtt_common']
 env = Environment(tools = ['default'] + tools + local_tools)
 
 qt5modules = ['QtCore']
-env.EnableQt5Modules(qt5modules)
+env.EnableQtModules(qt5modules)
 
 tooldir = env.Dir('.').srcnode().abspath
 
@@ -29,7 +29,7 @@ Default(html)
 def qtt_qtconfig(env):
     for t in tools:
         env.Tool(t)
-    env.EnableQt5Modules(qt5modules)
+    env.EnableQtModules(qt5modules)
     env.AppendUnique(CPPPATH = [tooldir])
     env.AppendUnique(LIBPATH = [tooldir])
     env.Append(LIBS = ['qtconfig'])

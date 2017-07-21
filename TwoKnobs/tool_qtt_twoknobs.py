@@ -5,7 +5,7 @@ local_tools = ['qtt_common']
 env = Environment(tools = ['default'] + tools + local_tools)
 
 qt5modules = ['QtCore', 'QtGui', 'QtDesigner']
-env.EnableQt5Modules(qt5modules)
+env.EnableQtModules(qt5modules)
 
 tooldir = env.Dir('.')
 
@@ -35,7 +35,7 @@ html = env.Apidocs(sources + headers)
 def qtt_twoknobs(env):
     for t in tools:
         env.Tool(t)
-    env.EnableQt5Modules(qt5modules)
+    env.EnableQtModules(qt5modules)
     env.AppendUnique(CPPPATH = [tooldir])
     env.AppendUnique(LIBPATH = [tooldir])
     env.AppendUnique(RPATH=[tooldir])

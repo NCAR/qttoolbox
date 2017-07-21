@@ -5,7 +5,7 @@ local_tools = ['default', 'qtt_common', 'doxygen']
 env = Environment(tools = local_tools + tools)
 
 qt5modules = ['QtCore', 'QtGui', 'QtOpenGL', 'QtXml', 'QtDesigner']
-env.EnableQt5Modules(qt5modules)
+env.EnableQtModules(qt5modules)
 
 tooldir = env.Dir('.').srcnode().abspath
 
@@ -36,7 +36,7 @@ html = env.Apidocs(sources + headers)
 def qtt_knob(env):
     for t in tools:
         env.Tool(t)
-    env.EnableQt5Modules(qt5modules)
+    env.EnableQtModules(qt5modules)
     env.AppendUnique(CPPPATH = [tooldir])
     env.AppendUnique(LIBPATH = [tooldir])
     env.AppendUnique(RPATH=[tooldir])

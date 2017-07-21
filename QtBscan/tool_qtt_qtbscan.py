@@ -15,7 +15,7 @@ env = Environment(tools = ['default'] + tools)
 env.AppendUnique(CPPFLAGS = ['-g', '-O0'])
 
 qt5modules = ['QtCore','QtGui']
-env.EnableQt5Modules(qt5modules)
+env.EnableQtModules(qt5modules)
 
 # The directory where shared files (e.g., color tables) for QtBscan will be
 # installed
@@ -94,6 +94,6 @@ def qtt_qtbscan(env):
     env.AppendLibrary('qtbscan')
     env.AppendDoxref('qttoolbox_QtBscan')
     env.Require(tools)
-    env.EnableQt5Modules(qt5modules)
+    env.EnableQtModules(qt5modules)
 
 Export('qtt_qtbscan')

@@ -1,8 +1,5 @@
-tools = ['qwt', 'qt4', 'doxygen']
-# tools we need for the build here, but do not get passed as dependencies
-# to those loading *this* tool
-local_tools = ['qtt_common']
-env = Environment(tools=['default'] + tools + local_tools)
+tools = ['qwt', 'qt4', 'qtt_common', 'doxygen']
+env = Environment(tools=['default'] + tools)
 
 qt4modules = ['QtCore', 'QtGui', 'QtOpenGL', 'QtXml', 'QtDesigner']
 env.EnableQt4Modules(qt4modules)
@@ -44,4 +41,4 @@ def qtt_knob(env):
     env.Append(LIBS = ['knob'])
     
 Export('qtt_knob')
-    
+

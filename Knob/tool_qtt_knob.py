@@ -1,5 +1,8 @@
-tools = ['qwt', 'qt4', 'qtt_common', 'doxygen']
-env = Environment(tools=['default'] + tools)
+tools = ['qwt', 'qt4']
+# tools we need for the build here, but do not get passed as dependencies
+# to those loading *this* tool
+local_tools = ['default', 'qtt_common', 'doxygen']
+env = Environment(tools = local_tools + tools)
 
 qt4modules = ['QtCore', 'QtGui', 'QtOpenGL', 'QtXml', 'QtDesigner']
 env.EnableQt4Modules(qt4modules)

@@ -34,7 +34,6 @@ Default(scopeplot)
 
 env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Qttoolbox Scopeplot" })
 html = env.Apidocs(sources + headers)
-Default(html)
 
 def qtt_scopeplot(env):
     for t in tools:

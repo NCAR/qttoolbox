@@ -30,7 +30,6 @@ Default(knob)
 
 env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Qttoolbox Knob" })
 html = env.Apidocs(sources + headers)
-Default(html)
 
 
 # Actually define and export the qtt_knob tool

@@ -14,7 +14,7 @@ doxygen
 env = Environment(tools = ['default'] + tools)
 env.AppendUnique(CPPFLAGS = ['-g', '-O0'])
 
-qt5modules = ['QtCore','QtGui']
+qt5modules = ['QtCore', 'QtGui', 'QtWidgets']
 env.EnableQtModules(qt5modules)
 
 # The directory where shared files (e.g., color tables) for QtBscan will be

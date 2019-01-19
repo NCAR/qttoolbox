@@ -111,6 +111,3 @@ KnobPlugin::includeFile() const
 {
 	return "Knob.h";
 }
-
-Q_EXPORT_PLUGIN2(QtToolbox, KnobPlugin)
-

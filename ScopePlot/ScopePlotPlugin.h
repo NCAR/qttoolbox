@@ -24,8 +24,8 @@
 #ifndef ScopePlotPLUGIN_H_
 #define ScopePlotPLUGIN_H_
 
-#include <QtPlugin>
-#include <QDesignerCustomWidgetInterface>
+#include <QtCore/QtPlugin>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 ///
 /// Qt plugin class for ScopePlot.
@@ -33,7 +33,8 @@
 class ScopePlotPlugin: public QObject, public QDesignerCustomWidgetInterface 
 {
   Q_OBJECT
-    Q_INTERFACES(QDesignerCustomWidgetInterface)
+  Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QDesignerCustomWidgetInterface")
+  Q_INTERFACES(QDesignerCustomWidgetInterface)
 
 public:
 	ScopePlotPlugin(QObject *parent = 0);

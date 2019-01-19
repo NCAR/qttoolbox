@@ -105,6 +105,3 @@ ScopePlotPlugin::includeFile() const
 {
 	return "ScopePlot.h";
 }
-
-Q_EXPORT_PLUGIN2(QtToolbox, ScopePlotPlugin)
-

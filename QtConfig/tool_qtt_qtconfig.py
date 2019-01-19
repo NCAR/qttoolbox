@@ -24,7 +24,6 @@ Default(qtconfig)
 
 env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Qttoolbox Config" })
 html = env.Apidocs(sources + headers)
-Default(html)
 
 def qtt_qtconfig(env):
     for t in tools:

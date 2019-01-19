@@ -31,7 +31,6 @@ Default(ppi)
 
 env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Qttoolbox PPI" })
 html = env.Apidocs(sources + headers)
-Default(html)
 
 # The following function and export actually create the qtt_ppi tool
 def qtt_ppi(env):

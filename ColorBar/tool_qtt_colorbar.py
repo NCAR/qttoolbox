@@ -29,7 +29,6 @@ Default(colorbar)
 
 env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Qttoolbox Colorbar" })
 html = env.Apidocs(sources + headers)
-Default(html)
 
 # The following function and Export actually define the qtt_colorbar tool
 def qtt_colorbar(env):

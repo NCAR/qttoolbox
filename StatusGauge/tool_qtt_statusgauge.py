@@ -27,7 +27,6 @@ Default(statusgauge)
 
 env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Qttoolbox StatusGuage" })
 html = env.Apidocs(sources + headers)
-Default(html)
 
 # The following function and Export actually define the qtt_statusgauge tool
 def qtt_statusgauge(env):

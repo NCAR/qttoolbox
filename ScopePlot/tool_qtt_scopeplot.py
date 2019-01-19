@@ -1,8 +1,8 @@
 tools = ['qt5', 'qwt', 'doxygen']
 # tools we need for the build here, but do not get passed as dependencies
 # to those loading *this* tool
-local_tools = ['qtt_common']
-env = Environment(tools = ['default'] + tools + local_tools)
+local_tools = ['default', 'qtt_common', 'doxygen']
+env = Environment(tools = local_tools + tools)
 
 qtmodules = ['QtCore', 'QtWidgets', 'QtGui', 'QtDesigner']
 env.EnableQtModules(qtmodules)
@@ -34,7 +34,6 @@ Default(scopeplot)
 
 env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Qttoolbox Scopeplot" })
 html = env.Apidocs(sources + headers)
-Default(html)
 
 def qtt_scopeplot(env):
     for t in tools:

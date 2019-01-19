@@ -69,7 +69,6 @@ TimeSpanDialog.h
 
 env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Qttoolbox Bscan" })
 html = env.Apidocs(sources + headers)
-Default(html)
 
 qtbscanlib = env.Library('qtbscan', sources)
 Default(qtbscanlib)

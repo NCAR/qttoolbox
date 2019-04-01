@@ -24,6 +24,7 @@
 #include "ScopePlot.h"
 #include <QPainter>
 #include <QPixmap>
+#include <QtCore/qstack.h>
 
 #include <iostream>
 #include <stdlib.h>

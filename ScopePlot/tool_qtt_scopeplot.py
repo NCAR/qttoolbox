@@ -4,7 +4,7 @@ tools = ['qt5', 'qwt', 'doxygen']
 local_tools = ['default', 'qtt_common', 'doxygen']
 env = Environment(tools = local_tools + tools)
 
-qtmodules = ['QtCore', 'QtWidgets', 'QtGui', 'QtDesigner']
+qtmodules = ['QtCore', 'QtWidgets', 'QtGui']
 env.EnableQtModules(qtmodules)
 
 tooldir = env.Dir('.').srcnode().abspath
@@ -15,17 +15,20 @@ env.Uic5('ScopePlot.ui')
 # build knob shared library
 sources = Split("""
 ScopePlot.cpp
-ScopePlotPlugin.cpp
 ScrollBar.cpp
 ScrollZoomer.cpp
 """)
 
 headers = Split("""
 ScopePlot.h
-ScopePlotPlugin.h
 ScrollBar.h
 ScrollZoomer.h
 """)
+
+if False:
+    env.Tool('qtdesigner')
+    sources += "ScopePlotPlugin.cpp"
+    headers += "ScopePlotPlugin.h"
 
 scopeplot = env.SharedLibrary('scopeplot', sources)
 scopeplot_install = env.InstallLib(scopeplot)

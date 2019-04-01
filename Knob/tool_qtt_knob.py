@@ -4,7 +4,7 @@ tools = ['qt5', 'qwt', 'doxygen']
 local_tools = ['default', 'qtt_common', 'doxygen']
 env = Environment(tools = local_tools + tools)
 
-qtmodules = ['QtCore', 'QtWidgets', 'QtGui', 'QtOpenGL', 'QtXml', 'QtDesigner']
+qtmodules = ['QtCore', 'QtWidgets', 'QtGui', 'QtOpenGL', 'QtXml']
 env.EnableQtModules(qtmodules)
 
 tooldir = env.Dir('.').srcnode().abspath
@@ -15,13 +15,16 @@ env.Uic5('Knob.ui')
 # build knob shared library
 sources = Split("""
 Knob.cpp
-KnobPlugin.cpp
 """)
 
 headers = Split("""
 Knob.h
-KnobPlugin.h
 """)
+
+if False:
+    env.Tool('qtdesigner')
+    headers += "KnobPlugin.h"
+    sources += "KnobPlugin.cpp"
 
 knob = env.SharedLibrary('knob', sources)
 knob_install = env.InstallLib(knob)

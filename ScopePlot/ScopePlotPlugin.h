@@ -25,7 +25,7 @@
 #define ScopePlotPLUGIN_H_
 
 #include <QtCore/QtPlugin>
-#include <QtUiPlugin/QDesignerCustomWidgetInterface>
+#include <QtDesigner/QDesignerCustomWidgetInterface>
 
 ///
 /// Qt plugin class for ScopePlot.

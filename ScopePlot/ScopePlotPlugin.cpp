@@ -105,3 +105,4 @@ ScopePlotPlugin::includeFile() const
 {
 	return "ScopePlot.h";
 }
+

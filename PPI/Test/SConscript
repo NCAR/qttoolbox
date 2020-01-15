@@ -2,7 +2,7 @@ tools = ['qtt_common', 'qtt_ppi']
 env = Environment(tools = ['default'] + tools)
 
 # uic ppitest form
-env.Uic4('PPITest.ui')
+env.Uic('PPITest.ui')
 
 # build ppitest
 ppitest = env.Program('ppitest', ['main.cpp','PPITest.cc'])

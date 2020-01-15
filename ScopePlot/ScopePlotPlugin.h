@@ -24,31 +24,30 @@
 #ifndef ScopePlotPLUGIN_H_
 #define ScopePlotPLUGIN_H_
 
-#include <QtCore/QtPlugin>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 ///
 /// Qt plugin class for ScopePlot.
 ///
 class ScopePlotPlugin: public QObject, public QDesignerCustomWidgetInterface 
 {
-  Q_OBJECT
-  Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QDesignerCustomWidgetInterface")
-  Q_INTERFACES(QDesignerCustomWidgetInterface)
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "QtToolbox/ScopePlotPlugin")
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
 
 public:
-	ScopePlotPlugin(QObject *parent = 0);
+    ScopePlotPlugin(QObject *parent = 0);
     bool isContainer() const;
-     bool isInitialized() const;
-     QIcon icon() const;
-     QString domXml() const;
-     QString group() const;
-     QString includeFile() const;
-     QString name() const;
-     QString toolTip() const;
-     QString whatsThis() const;
-     QWidget *createWidget(QWidget *parent);
-     void initialize(QDesignerFormEditorInterface *core);
+    bool isInitialized() const;
+    QIcon icon() const;
+    QString domXml() const;
+    QString group() const;
+    QString includeFile() const;
+    QString name() const;
+    QString toolTip() const;
+    QString whatsThis() const;
+    QWidget *createWidget(QWidget *parent);
+    void initialize(QDesignerFormEditorInterface *core);
 
 private:
 	bool initialized;

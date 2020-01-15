@@ -31,7 +31,7 @@
 #ifndef GATELIMITDIALOG_H_
 #define GATELIMITDIALOG_H_
 
-#include <QtGui/QDialog>
+#include <QDialog>
 #include "ui_GateLimitDialog.h"
 class BscanGraphicsScene;
 

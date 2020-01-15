@@ -1,1 +1,14 @@
+*.a
+*.o
+*.os
 *.pyc
+*.so
+moc_*
+ui_*.h
+
+ColorBar/Test/colorbartest
+Knob/Test/knobtest
+ScopePlot/Test/scopeplottest
+StatusGauge/Test/statusgaugetest
+TwoKnobs/Test/twoknobstest
+QtBscan/BscanShareDir.h

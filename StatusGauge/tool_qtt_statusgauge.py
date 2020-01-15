@@ -1,7 +1,7 @@
-tools = ['doxygen', 'qtcore', 'qtgui', 'qtdesigner']
+tools = ['qt5', 'qtcore', 'qtwidgets', 'qtdesigner']
 # tools we need for the build here, but do not get passed as dependencies
 # to those loading *this* tool
-local_tools = ['qtt_common']
+local_tools = ['qtt_common', 'doxygen']
 env = Environment(tools = ['default'] + tools + local_tools)
 
 tooldir = env.Dir('.').srcnode().abspath

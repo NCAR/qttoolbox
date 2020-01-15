@@ -2,7 +2,7 @@ tools = ['qtt_common', 'qtt_colorbar']
 env = Environment(tools=['default'] + tools)
 
 # uic colorbartest form
-env.Uic4('ColorBarTest.ui')
+env.Uic('ColorBarTest.ui')
 
 # build colorbartest
 colorbartest = env.Program('colorbartest', ['main.cpp', 'ColorBarTest.cpp'])

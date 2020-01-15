@@ -113,5 +113,3 @@ TwoKnobsPlugin::includeFile() const
 	return "TwoKnobs.h";
 }
 
-Q_EXPORT_PLUGIN2(QtToolbox, TwoKnobsPlugin)
-

@@ -2,7 +2,7 @@ tools = ['qtt_common', 'qtt_scopeplot']
 env = Environment(tools = ['default'] + tools)
 
 # uic ScopePlotTest form
-env.Uic4('ScopePlotTest.ui')
+env.Uic('ScopePlotTest.ui')
 
 # build scopeplottest
 sources = Split("""

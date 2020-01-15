@@ -1,1 +1,4 @@
-# Empty.  The library gets built if someone loads the qtt_qtconfig tool.
+# -*- python -*-
+#
+# Just require the tool to cause a build
+env = Environment(tools = ['default', 'qtt_qtbscan'])

@@ -31,6 +31,7 @@
 #ifndef COLORTABLE_H_
 #define COLORTABLE_H_
 
+#include <QObject>
 #include <QList>
 #include <QColor>
 #include <cmath>

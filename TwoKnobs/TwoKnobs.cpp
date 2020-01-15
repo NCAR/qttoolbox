@@ -53,8 +53,8 @@ void
 TwoKnobs::setRanges(double knobOneMin, double knobOneMax,
 					double knobTwoMin, double knobTwoMax)
 {
-	_knob1->setRange(knobOneMin, knobOneMax);
-	_knob2->setRange(knobTwoMin, knobTwoMax);
+	_knob1->setScale(knobOneMin, knobOneMax);
+	_knob2->setScale(knobTwoMin, knobTwoMax);
 }
 
 void
@@ -110,10 +110,10 @@ void
 TwoKnobs::getRanges(double& knobOneMin, double& knobOneMax,
        double& knobTwoMin, double& knobTwoMax)
 {
-	knobOneMin = _knob1->minValue();
-	knobOneMax = _knob1->maxValue();
-	knobTwoMin = _knob2->minValue();
-	knobTwoMax = _knob2->maxValue();
+	knobOneMin = _knob1->minimum();
+	knobOneMax = _knob1->maximum();
+	knobTwoMin = _knob2->minimum();
+	knobTwoMax = _knob2->maximum();
 }
 
 void 

@@ -24,9 +24,7 @@
 #ifndef PPIPLUGIN_H_
 #define PPIPLUGIN_H_
 
-
-#include <QtPlugin>
-#include <QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 ///
 /// Qt plugin class for PPI.
@@ -34,6 +32,7 @@
 class PPIPlugin: public QObject, public QDesignerCustomWidgetInterface 
 {
 	Q_OBJECT
+	Q_PLUGIN_METADATA(IID "QtToolbox/PPIPlugin")
 	Q_INTERFACES(QDesignerCustomWidgetInterface)
 
 public:

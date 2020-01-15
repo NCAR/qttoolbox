@@ -114,5 +114,3 @@ StatusGaugePlugin::includeFile() const
 	return "StatusGauge.h";
 }
 
-Q_EXPORT_PLUGIN2(StatusGaugeplugin, StatusGaugePlugin)
-

@@ -22,9 +22,9 @@
 // ** WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.    
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=* 
 #include "QtConfig.h"
-#include <QList>
-#include <QStringList>
-#include <QVariant>
+#include <QtCore/QList>
+#include <QtCore/QStringList>
+#include <QtCore/QVariant>
 #include <iostream>
 
 //////////////////////////////////////////////////////////

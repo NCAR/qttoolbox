@@ -2,20 +2,20 @@
 
 import os
 import re
-import eol_scons
 
-tools = Split("""
-prefixoptions
-qt4
-qtt_qtconfig
-doxygen
-""")
-
-env = Environment(tools = ['default'] + tools)
+tools = [
+    'prefixoptions',
+    'qt5',
+    'qtcore',
+    'qtprintsupport',
+    'qtwidgets',
+    'qtt_qtconfig'
+]
+# tools we need for the build here, but do not get passed as dependencies
+# to those loading *this* tool
+local_tools = ['qtt_common', 'doxygen']
+env = Environment(tools = ['default'] + tools + local_tools)
 env.AppendUnique(CPPFLAGS = ['-g', '-O0'])
-
-qt4modules = ['QtCore','QtGui']
-env.EnableQt4Modules(qt4modules)
 
 # The directory where shared files (e.g., color tables) for QtBscan will be
 # installed
@@ -39,7 +39,7 @@ DisplayLimitDialog.ui
 GateLimitDialog.ui
 TimeSpanDialog.ui
 """)
-env.Uic4(uifiles)
+env.Uic(uifiles)
 
 sources = Split("""
 BscanMainWindow.cpp
@@ -84,7 +84,7 @@ for file in os.listdir('colortables'):
 ct_targets = []
 for file in colortables:
     ct_targets += env.InstallShare('qtt_qtbscan', file)
-Default(ct_targets)
+Install(ct_targets)
 
 # Finally, the tool section...
 tooldir = env.Dir('.').srcnode().abspath    # this directory
@@ -94,6 +94,5 @@ def qtt_qtbscan(env):
     env.AppendLibrary('qtbscan')
     env.AppendDoxref('qttoolbox_QtBscan')
     env.Require(tools)
-    env.EnableQt4Modules(qt4modules)
 
 Export('qtt_qtbscan')

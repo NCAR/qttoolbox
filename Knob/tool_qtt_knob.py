@@ -1,16 +1,22 @@
-tools = ['qwt', 'qt4']
+tools = [
+    'qt5',
+    'qtcore',
+    'qtwidgets',
+    'qtopengl',
+    'qtxml',
+    'qtdesigner',
+    'qwt'
+]
+
 # tools we need for the build here, but do not get passed as dependencies
 # to those loading *this* tool
-local_tools = ['default', 'qtt_common', 'doxygen']
-env = Environment(tools = local_tools + tools)
-
-qt4modules = ['QtCore', 'QtGui', 'QtOpenGL', 'QtXml', 'QtDesigner']
-env.EnableQt4Modules(qt4modules)
+local_tools = ['qtt_common', 'doxygen']
+env = Environment(tools = ['default'] + tools + local_tools)
 
 tooldir = env.Dir('.').srcnode().abspath
 
 # uic knob form
-env.Uic4('Knob.ui')
+env.Uic('Knob.ui')
 
 # build knob shared library
 sources = Split("""
@@ -34,9 +40,7 @@ html = env.Apidocs(sources + headers)
 
 # Actually define and export the qtt_knob tool
 def qtt_knob(env):
-    for t in tools:
-        env.Tool(t)
-    env.EnableQt4Modules(qt4modules)
+    env.Require(tools)
     env.AppendUnique(CPPPATH = [tooldir])
     env.AppendUnique(LIBPATH = [tooldir])
     env.AppendUnique(RPATH=[tooldir])

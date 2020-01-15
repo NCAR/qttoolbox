@@ -27,7 +27,7 @@
  *  Created on: Sep 3, 2009
  *      Author: burghart
  */
-#include <QtGui/QMessageBox>
+#include <QtWidgets/QMessageBox>
 
 #include "GateLimitDialog.h"
 #include "BscanGraphicsScene.h"

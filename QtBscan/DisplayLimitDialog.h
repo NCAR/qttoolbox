@@ -31,7 +31,7 @@
 #ifndef DISPLAYLIMITDIALOG_H_
 #define DISPLAYLIMITDIALOG_H_
 
-#include <QtGui/QDialog>
+#include <QDialog>
 #include "ui_DisplayLimitDialog.h"
 class BscanGraphicsScene;
 

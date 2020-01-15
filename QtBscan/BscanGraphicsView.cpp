@@ -35,6 +35,7 @@
 #include <QInputDialog>
 #include <QPrintDialog>
 #include <QPrinter>
+#include <QTransform>
 
 #include "BscanGraphicsView.h"
 #include "RayGraphicsItem.h"
@@ -247,8 +248,9 @@ BscanGraphicsView::emitDataUnderMouse(const QPoint &mouseLoc) {
     QPointF sceneLoc = mapToScene(mouseLoc);
     // Get the ray (if any) actually displayed under the mouse, and use
     // its time
+    QTransform transform;
     RayGraphicsItem *ray = 
-        dynamic_cast<RayGraphicsItem*>(scene()->itemAt(sceneLoc));
+        dynamic_cast<RayGraphicsItem*>(scene()->itemAt(sceneLoc, transform));
     if (ray) {
         unsigned int gate = int(sceneLoc.y());
         emit newDataUnderMouse(ray->time(), gate, scene()->displayVar(), 

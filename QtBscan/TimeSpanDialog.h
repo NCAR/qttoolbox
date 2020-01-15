@@ -31,7 +31,7 @@
 #ifndef TIMESPANDIALOG_H_
 #define TIMESPANDIALOG_H_
 
-#include <QtGui/QDialog>
+#include <QDialog>
 #include "ui_TimeSpanDialog.h"
 class BscanGraphicsScene;
 

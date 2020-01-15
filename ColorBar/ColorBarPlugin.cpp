@@ -114,5 +114,3 @@ ColorBarPlugin::includeFile() const
 	return "ColorBar.h";
 }
 
-Q_EXPORT_PLUGIN2(colorbarplugin, ColorBarPlugin)
-

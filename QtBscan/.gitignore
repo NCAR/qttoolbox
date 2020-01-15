@@ -1,5 +1,0 @@
-*.a
-*.o
-BscanShareDir.h
-moc_*
-ui_*

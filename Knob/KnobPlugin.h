@@ -24,7 +24,6 @@
 #ifndef KnobPLUGIN_H_
 #define KnobPLUGIN_H_
 
-#include <QtCore/QtPlugin>
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 ///
@@ -32,8 +31,8 @@
 ///
 class KnobPlugin: public QObject, public QDesignerCustomWidgetInterface 
 {
-	Q_OBJECT
-	Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QDesignerCustomWidgetInterface")
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "QtToolbox/KnobPlugin")
     Q_INTERFACES(QDesignerCustomWidgetInterface)
 
 public:

@@ -30,7 +30,7 @@
 
 #include "BscanWidget.h"
 #include <cmath>
-#include <QtGui>
+#include <QtWidgets>
 
 // semi-transparent PNG image of a "pause" marker
 static const uchar PauseImageData[] = {

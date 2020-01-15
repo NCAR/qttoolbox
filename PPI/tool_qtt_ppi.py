@@ -1,13 +1,11 @@
 import os
 
-tools = ['qt5', 'qtt_colorbar', 'doxygen']
+tools = ['qt5', 'qtcore', 'qtopengl', 'qtt_colorbar', 'gl']
+
 # tools we need for the build here, but do not get passed as dependencies
 # to those loading *this* tool
-local_tools = ['qtt_common']
+local_tools = ['qtt_common', 'doxygen']
 env = Environment(tools=['default'] + tools + local_tools)
-
-qt5modules = ['QtCore', 'QtOpenGL']
-env.EnableQtModules(qt5modules)
 
 tooldir = env.Dir('.').srcnode().abspath
 
@@ -34,10 +32,8 @@ html = env.Apidocs(sources + headers)
 
 # The following function and export actually create the qtt_ppi tool
 def qtt_ppi(env):
-    for t in tools:
-        env.Tool(t)
-    env.EnableQtModules(qt5modules)
-    
+    env.Require(tools)
+
     # Deal with GLUT
     env['GLUTDIR'] = os.environ.get('GLUTDIR', None)
     if (env['GLUTDIR']):

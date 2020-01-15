@@ -23,15 +23,15 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=* 
 #ifndef StatusGaugePLUGIN_H_
 #define StatusGaugePLUGIN_H_
-#include <QtPlugin>
-#include <QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 ///
 /// Qt plugin class for StatusGauge.
 ///
 class StatusGaugePlugin: public QObject, public QDesignerCustomWidgetInterface 
 {
-	Q_OBJECT
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "QtToolbox/StatusGaugePlugin")
     Q_INTERFACES(QDesignerCustomWidgetInterface)
 
 public:

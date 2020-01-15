@@ -23,14 +23,14 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=* 
 #ifndef TWOTwoKnobsSPLUGIN_H_
 #define TWOTwoKnobsSPLUGIN_H_
-#include <QtPlugin>
-#include <QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 ///
 /// Qt plugin class for TwoKnobs.
 ///
 class TwoKnobsPlugin: public QObject, public QDesignerCustomWidgetInterface {
-	Q_OBJECT
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "QtToolbox/TwoKnobsPlugin")
     Q_INTERFACES(QDesignerCustomWidgetInterface)
 
 public:

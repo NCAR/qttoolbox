@@ -112,5 +112,3 @@ PPIPlugin::includeFile() const
 	return "PPI.h";
 }
 
-Q_EXPORT_PLUGIN2(QtToolbox, PPIPlugin)
-

@@ -1,7 +1,7 @@
 env = Environment(tools = ['default', 'qtt_common', 'qtt_knob'])
 
 # uic knobtest form
-env.Uic4('KnobTest.ui')
+env.Uic('KnobTest.ui')
 
 # build knobtest
 knobtest = env.Program('knobtest', ['main.cpp'])

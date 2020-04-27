@@ -1,4 +1,3 @@
-import types
 
 # install library method
 def _InstallLib(self, lib):
@@ -16,8 +15,8 @@ def _InstallBin(self, bin):
 plugindefs = ['_REENTRANT', 'QT_PLUGIN', 'QDESIGNER_EXPORT_WIDGETS','QT_SHARED','QT_NO_DEBUG']
 
 def qtt_common(env):
-    env.InstallLib = types.MethodType(_InstallLib, env)
-    env.InstallBin = types.MethodType(_InstallBin, env)
+    env.AddMethod(_InstallLib, "InstallLib")
+    env.AddMethod(_InstallBin, "InstallBin")
     env.AppendUnique(CPPDEFINES = plugindefs)
     env.Append(CCFLAGS='-g')
     env.Append(CCFLAGS='-O2')

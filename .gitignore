@@ -12,3 +12,11 @@ ScopePlot/Test/scopeplottest
 StatusGauge/Test/statusgaugetest
 TwoKnobs/Test/twoknobstest
 QtBscan/BscanShareDir.h
+
+/PPI/Test/ppitest
+/TAGS
+/apidocs/
+/bin/
+/config.log
+/.sconsign.dblite
+/.sconf_temp/

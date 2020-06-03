@@ -5,7 +5,6 @@ import re
 
 tools = [
     'prefixoptions',
-    'qt5',
     'qtcore',
     'qtprintsupport',
     'qtwidgets',

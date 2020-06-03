@@ -1,5 +1,5 @@
 # build the config library
-tools = ['qt5', 'qtcore']
+tools = ['qtcore']
 # tools we need for the build here, but do not get passed as dependencies
 # to those loading *this* tool
 local_tools = ['qtt_common', 'doxygen']
@@ -25,7 +25,6 @@ html = env.Apidocs(sources + headers)
 def qtt_qtconfig(env):
     env.Require(tools)
     env.AppendUnique(CPPPATH = [tooldir])
-    env.AppendUnique(LIBPATH = [tooldir])
-    env.Append(LIBS = ['qtconfig'])
+    env.AppendUnique(LIBS = [qtconfig])
     
 Export('qtt_qtconfig')

@@ -542,7 +542,7 @@ ScopePlot::pause(bool tf) {
 ////////////////////////////////////////////////////////////////////////
 void
 ScopePlot::saveImageToFile(std::string filePath) {
-	QPixmap pixmap = QPixmap::grabWidget(this);
+	QPixmap pixmap = this->grab();
 
 	pixmap.save(filePath.c_str(), "PNG", 100);
 }

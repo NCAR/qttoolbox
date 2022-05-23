@@ -179,15 +179,7 @@ void QtConfig::setArray(
             std::vector<std::vector<int> > defaultValues) {
     std::vector<std::vector<int> > result;
 
-    // Find out if the array exists, and its size
-    int arraySize = beginReadArray(key.c_str());
-    endArray();
-
-    if (arraySize != 0) {
-        // if the array already exists
-    }
-
-    // now create the array
+    // Write to the array
     beginWriteArray(key.c_str());
     for (unsigned int i = 0; i < defaultValues.size(); i++) {
         setArrayIndex(i);
@@ -252,11 +244,7 @@ void QtConfig::setArray(std::string key,
 		std::vector<std::map<std::string, std::string> > values) {
     std::vector<std::string> result;
 
-    // Find out if the array exists, and its size
-    int arraySize = beginReadArray(key.c_str());
-    endArray();
-
-    // now create the array
+    // Write to the array
     beginWriteArray(key.c_str());
     for (unsigned int i = 0; i < values.size(); i++) {
         setArrayIndex(i);

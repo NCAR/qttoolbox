@@ -1,4 +1,4 @@
-tools = ['qt5', 'qtcore', 'qtwidgets', 'qtdesigner', 'qwt']
+tools = ['qtcore', 'qtwidgets', 'qtdesigner', 'qwt']
 
 # tools we need for the build here, but do not get passed as dependencies
 # to those loading *this* tool

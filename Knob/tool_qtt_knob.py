@@ -1,5 +1,4 @@
 tools = [
-    'qt5',
     'qtcore',
     'qtwidgets',
     'qtopengl',

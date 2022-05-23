@@ -1,6 +1,6 @@
 import os
 
-tools = ['qt5', 'qtcore', 'qtopengl', 'qtt_colorbar', 'gl']
+tools = ['qtcore', 'qtopengl', 'qtt_colorbar', 'gl']
 
 # tools we need for the build here, but do not get passed as dependencies
 # to those loading *this* tool

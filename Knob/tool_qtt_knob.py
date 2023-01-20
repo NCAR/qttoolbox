@@ -3,7 +3,7 @@ tools = [
     'qtwidgets',
     'qtopengl',
     'qtxml',
-    'qtdesigner',
+    'qtuiplugin',
     'qwt'
 ]
 

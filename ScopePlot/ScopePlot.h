@@ -32,6 +32,7 @@
 #include <qwt_scale_engine.h>
 #include "ScrollZoomer.h"
 
+#include <cstring>
 #include <vector>
 
 #ifndef DLL_EXPORT

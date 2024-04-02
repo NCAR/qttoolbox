@@ -25,6 +25,6 @@ html = env.Apidocs(sources + headers)
 def qtt_qtconfig(env):
     env.Require(tools)
     env.AppendUnique(CPPPATH = [tooldir])
-    env.AppendUnique(LIBS = [qtconfig])
+    env.Append(LIBS = [qtconfig])
     
 Export('qtt_qtconfig')

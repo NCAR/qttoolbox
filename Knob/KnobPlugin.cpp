@@ -24,13 +24,13 @@
 #include "KnobPlugin.h"
 #include "Knob.h"
 
-KnobPlugin::KnobPlugin(QObject *parent)
+KnobPlugin::KnobPlugin(QObject* /*parent*/)
 {
 	initialized = false;
 }
 
 void
-KnobPlugin::initialize(QDesignerFormEditorInterface *core)
+KnobPlugin::initialize(QDesignerFormEditorInterface* /*core*/)
 {
 	if (initialized)
 		return;

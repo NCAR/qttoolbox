@@ -91,7 +91,6 @@ tooldir = env.Dir('.').srcnode().abspath    # this directory
 def qtt_qtbscan(env):
     env.AppendUnique(CPPPATH = [tooldir])
     env.AppendLibrary('qtbscan')
-    env.AppendDoxref('qttoolbox_QtBscan')
     env.Require(tools)
 
 Export('qtt_qtbscan')
